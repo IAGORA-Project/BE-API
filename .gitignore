@@ -1,0 +1,7 @@
+node_modules
+package-lock.json
+public/loginhp.html
+public/nohp.html
+public/regwingman.html
+public/upload.html
+public/user.html
