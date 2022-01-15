@@ -15,7 +15,7 @@ async function create_product(req, res) {
             product_name: Buffer.from(product_name, 'utf8').toString('hex'), 
             product_category: Buffer.from(product_category, 'utf8').toString('hex'), 
             product_grade: Buffer.from(product_grade, 'utf8').toString('hex'), 
-            product_image: Buffer.from(product_image, 'utf8').toString('hex'), 
+            product_image, 
             product_price: Buffer.from(product_price, 'utf8').toString('hex'), 
             product_uom:Buffer.from(product_uom, 'utf8').toString('hex')
         });
@@ -49,18 +49,45 @@ async function product_one(req, res) {
 }
 
 async function product_all(req, res) {
-    try {
-        let find = await Product.find({});
-        if (find) {
-            res.status(200).send({
-                status: 200,
-                result: find
-            })
+    try {    
+        const heads = req.header('buff');
+        if (heads == 'no buff') {
+            let find = await Product.find({});
+            if (find) {
+                let result = []
+                for (let i = 0; i < find.length; i++) {
+                    result[i] = {
+                        product_name: Buffer.from(find[i].product_name, 'hex').toString('utf8'), 
+                        product_category: Buffer.from(find[i].product_category, 'hex').toString('utf8'), 
+                        product_grade: Buffer.from(find[i].product_grade, 'hex').toString('utf8'),  
+                        product_image: find[i].product_image, 
+                        product_price: Buffer.from(find[i].product_price, 'hex').toString('utf8'), 
+                        product_uom:Buffer.from(find[i].product_uom, 'hex').toString('utf8')
+                    }
+                }
+                return res.status(200).send({
+                    status: 200,
+                    result
+                })
+            } else {
+                res.status(404).send({
+                    status: 404,
+                    message: 'not found'
+                })
+            }
         } else {
-            res.status(404).send({
-                status: 404,
-                message: 'not found'
-            })
+            let find = await Product.find({});
+            if (find) {
+                res.status(200).send({
+                    status: 200,
+                    result: find
+                })
+            } else {
+                res.status(404).send({
+                    status: 404,
+                    message: 'not found'
+                })
+            }
         }
     } catch (error) {
         console.log(error);
@@ -118,7 +145,7 @@ async function delete_one_product(req, res) {
         })
         return res.status(200).send({
             status: 200,
-            message: `Sukses Delete : ${idst}`
+            message: `Sukses Delete : ${ids}`
         })
     } catch (error) {
         console.log(error);
@@ -128,7 +155,7 @@ async function delete_one_product(req, res) {
 
 async function delete_all_product(req, res) {
     try {
-        Product.deleteMany({});
+        await Product.deleteMany({});
         return res.status(200).send({
             status: 200,
             message: `Sukses Delete all product`

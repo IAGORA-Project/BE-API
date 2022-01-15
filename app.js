@@ -7,6 +7,7 @@ const session = require('express-session');
 // const passport = require('passport');
 const helmet = require('helmet');
 const MemoryStore = require('memorystore')(session);
+const path = require('path')
 const port = process.env.PORT || 5050;
 
 const { connectDb } = require('./db/connect');
@@ -19,8 +20,8 @@ const chatRouter = require('./lib/chat/router/router_chat');
 const productRouter = require('./router/product/router_product');
 const tokenRouter = require('./router/token');
 
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.use(express.json({ limit: '50mb' }));
+app.use(express.urlencoded({ limit: '50mb', extended: true }));
 
 app.set('json spaces', 2);
 const corsConfig = {
@@ -67,7 +68,8 @@ var protectPath = function(regex) {
 };
 
 app.use(protectPath(/^\/file\/.*$/));
-app.use(express.static('public'))
+app.use(express.static('public'));
+app.use(express.static('public/iagora2_2'));
 
 // PASSPORT
 // app.use(passport.initialize());
@@ -81,7 +83,7 @@ app.use(function(req, res, next) {
 })
 
 app.get('/', (req, res) => {
-  res.send({status: 200, message: 'API ONLINE'})
+  res.sendFile(path.resolve('./public/iagora2/index.html'))
 })
 
 app.get('/endpoint', (req, res) => {
