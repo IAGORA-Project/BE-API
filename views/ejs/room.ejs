@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ROOM CHAT</title>
+</head>
+<body>
+    <h2>ROOM DATA</h2>
+    <h4>Length : <%= result.length %> </h4>
+    <% if (Array.isArray(result) && result.length) { %>
+        <% result.forEach((el, index) => { %>
+            <h4><%= index + 1 %>. _id: <%= el._id %> </h4>
+            <p><%= JSON.stringify(el, null, 4) %> </p>
+            <br>
+        <% }); %> 
+    <% } else { %>
+        <p>Data Not Found</p>
+    <% } %>
+</body>
+</html>

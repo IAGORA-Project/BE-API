@@ -4,9 +4,13 @@ const router = express.Router();
 const controllerProduct = require('./controller_product')
 
 const { verifyToken, verifJWT } = require('../token');
+const { Product } = require('../../db/Product');
 
-router.get('/', (req, res) => {
-    res.send('ada')
+router.get('/', async (req, res) => {
+    const data = await Product.find({});
+    res.render('ejs/product', {
+        result: data
+    })
 })
 
 /* CREATE PRODUCT */

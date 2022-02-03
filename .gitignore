@@ -1,5 +1,6 @@
 node_modules
 package-lock.json
+alone
 public/loginhp.html
 public/nohp.html
 public/regwingman.html

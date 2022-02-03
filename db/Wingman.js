@@ -13,6 +13,9 @@ const Wingman = mongoose.Schema({
     nama: { 
         type: String,
     },
+    pin: {
+        type: String,
+    },
     profile: {
         type: String,
     },
@@ -48,7 +51,7 @@ const Wingman = mongoose.Schema({
         required: true
     },
     stars: {
-        type: Number,
+        type: Object,
         required: true
     },
     today_order: {
@@ -65,6 +68,9 @@ const Wingman = mongoose.Schema({
     },
     on_process: {
         type: Array,
+    },
+    kotak_saran: {
+        type: Array
     }
 }, { versionKey: false });
 

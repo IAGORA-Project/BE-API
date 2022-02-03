@@ -6,6 +6,7 @@ const jwt = require('jsonwebtoken');
 const { Token } = require('../../db/Token');
 const { randomOtp } = require('../../lib/function');
 const { Wingman } = require('../../db/Wingman');
+const { waApi, respons } = require('../../lib/setting');
 
 let submitData = false
 
@@ -43,7 +44,7 @@ async function router_wingman(req, res) {
         }
     } catch (error) {
         console.log(error);
-        return res.status(500).send({status: 500, message: 'Internal Server Error'});
+        return res.status(500).send({status: res.statusCode, code: respons.InternalServerError, message: 'Internal Server Error'});
     }
 }
 
@@ -53,129 +54,148 @@ async function data_wingman(req, res) {
             const data = await Wingman.findOne({ no_hp: req.user.no_hp });
             if (data) {
                 return res.status(200).send({
-                    data
+                    status: res.statusCode,
+                    code: respons[200],
+                    message: `Data ${req.user.no_hp} Ditemukan`,
+                    result: data
                 })
             } else {
                 return res.status(404).send({
-                    data: 'not found'
+                    status: res.statusCode,
+                    code: respons.WingmanNotFound,
+                    message: `Data ${req.user.no_hp} Tidak Ditemukan`
                 })
             }
         } else {
-            return res.status(403).send({
-                status: 403,
-                message: 'Login First!'
+            return res.status(401).send({
+                status: res.statusCode,
+                code: respons.NeedLoginWingman,
+                message: 'Login Wingman First!'
             })
         }
 
     } catch (error) {
         console.log(error);
-        return res.status(500).send({status: 500, message: 'Internal Server Error'});
+        return res.status(500).send({status: res.statusCode, code: respons.InternalServerError, message: 'Internal Server Error'});
     }
 }
 
 async function send_otp(req, res) {
     try {
-        if (!req.body || Object.keys(req.body).length === 0) return res.status(404).send({
-            status: 404,
-            message: 'input body'
+        let { no_hp } = req.body;
+        if (!no_hp || Object.keys(req.body).length === 0) return res.status(403).send({
+            status: res.statusCode,
+            code: respons.NeedBodyHP,
+            message: 'input body hp'
         })
-        let { hp } = req.body;
         let random = randomOtp(6);
         let text = `Kode OTP mu Adalah : ${random}`
-        await Token.create({ no_hp: hp, token: random })
-        axios.get(`${process.env.hostApiWa}/api/send?no=${hp}&text=${text}`).then(({ data }) => {
+        await Token.create({ no_hp: no_hp, token: random })
+        axios.get(`${waApi}/api/v1/send?no=${no_hp}&text=${text}`).then(({ data }) => {
             if (data) {
                 res.status(200).send({
-                    status: 200,
-                    message: `Success Send Otp to ${hp} Now Go to login submit your OTP code`
+                    status: res.statusCode,
+                    code: respons[200],
+                    message: `Success Send Otp to ${no_hp}, login and submit your OTP code`
                 })
             } else {
-                res.status(500).send({
-                    status: 500,
-                    message: `Failed Send Otp to ${hp}`
+                res.status(503).send({
+                    status: res.statusCode,
+                    code: respons.FailSendOTP,
+                    message: `Failed Send Otp to ${no_hp}`
                 })
             }
         }).catch(err => {
             console.log(err);
-            res.status(500).send({
-                status: 500,
-                message: `Failed Send Otp to ${hp}`
+            res.status(506).send({
+                status: res.statusCode,
+                code: respons.FailInternalReq,
+                message: `Failed Send Otp to ${no_hp}, due to internal request error`
             })
         })
     } catch (error) {
         console.log(error);
-        return res.status(500).send({status: 500, message: 'Internal Server Error'});
+        return res.status(500).send({status: res.statusCode, code: respons.InternalServerError, message: 'Internal Server Error'});
     }
 }
 
 async function login_wingman(req, res, next) {
     try {
-        if (!req.body || Object.keys(req.body).length === 0) return res.status(404).send({
-            status: 404,
-            message: 'input body'
+        let { no_hp, otp } = req.body;
+        if (!no_hp || !otp || Object.keys(req.body).length === 0) return res.status(403).send({
+            status: res.statusCode,
+            code: respons.NeedBodyHP,
+            message: 'input body hp'
         })
-        let { username, password } = req.body;
-        let findOtp = await Token.findOne({ token: password });
+        let findOtp = await Token.findOne({ token: otp });
         if (findOtp) {
-            if (findOtp.no_hp == username && findOtp.token == password) {
-                const finds = await Wingman.findOne({ no_hp: username });
+            if (findOtp.no_hp == no_hp && findOtp.token == otp) {
+                const finds = await Wingman.findOne({ no_hp: no_hp });
                 if (finds == null) {
+                    const profileNone = `./public/file/wingman/profile/none.png`;
+                    const profile = fs.readFileSync(profileNone);
+        
                     const now = await Wingman.create({
                         type: 'wingman',
-                        no_hp: username,
-                        nama: null, file: null, email: null, alamat: null, kota: null, pasar: null, bank: null, no_rek: null, nama_rek: null,
-                        ktp: null, skck: null, available: true, stars: 0, today_order: 0, total_order:  0, income: 0, on_process: []
+                        no_hp: no_hp,
+                        nama: null, pin: null, file: null, email: null, alamat: null, kota: null, pasar: null, bank: null, no_rek: null, nama_rek: null,
+                        profile: profile.toString('hex'), ktp: null, skck: null, available: true, stars: { starsTotal: 0, countTotal: 0, result: 0, stars: [
+                            { star: 1, count: 0 },
+                            { star: 2, count: 0 },
+                            { star: 3, count: 0 },
+                            { star: 4, count: 0 },
+                            { star: 5, count: 0 }
+                        ]}, 
+                        today_order: 0, total_order:  0, income: 0, on_process: [], kotak_saran: []
                     })
                     const token = createJWT(now._id);
                     res.cookie('jwt', token, { httpOnly: true });
-                    res.send(now)
+                    return res.status(200).send({
+                        status: res.statusCode,
+                        code: respons[200],
+                        message: `Login Sukses`,
+                        result: now
+                    })
                 } else {
                     const token = createJWT(finds._id);
                     res.cookie('jwt', token, { httpOnly: true });
-                    res.send(finds)
+                    return res.status(200).send({
+                        status: res.statusCode,
+                        code: respons[200],
+                        message: `Login Sukses`,
+                        result: finds
+                    })
                 }
-                // passport.authenticate('wingman', function(err, user, info) {
-                //     if (err) { return next(err); }
-                //     if (!user) { 
-                //         return res.status(403).send({
-                //             status: 403,
-                //             message: 'No Wingman'
-                //         })    
-                //     }
-                    
-                //     req.logIn(user, function(err) {
-                //         if (err) { return next(err); }
-                //         console.log(req.isAuthenticated())
-                //         // return res.redirect('/api/v1/wingman');
-                //         res.status(200).send(req.user);
-                //     });
-                // })(req, res, next);
             } else {
-                return res.send({
-                    status: 403,
+                return res.status(403).send({
+                    status: res.statusCode,
+                    code: respons.NotMatch,
                     message: `OTP and no hp not match`
                 })
             }
         } else {
-            return res.send({
-                status: 403,
+            return res.status(406).send({
+                status: res.statusCode,
+                code: respons.InvalidOTP,
                 message: `Invalid OTP or OTP Expired`
             })
         }
 
     } catch (error) {
         console.log(error);
-        return res.status(500).send({status: 500, message: 'Internal Server Error'});
+        return res.status(500).send({status: res.statusCode, code: respons.InternalServerError, message: 'Internal Server Error'});
     }
 }
 
 async function submit_data(req, res) {
     try {
-        if (!req.body || Object.keys(req.body).length === 0) return res.status(404).send({
-            status: 404,
+        const { nama, email, alamat, kota, pasar, bank, no_rek, nama_rek } = req.body;
+        if (!nama || !email || !alamat || !kota || !pasar || !bank || !no_rek || !nama_rek || Object.keys(req.body).length === 0) 
+        return res.status(403).send({
+            status: res.statusCode,
+            code: respons.NeedBody,
             message: 'input body'
         })
-        const { nama, email, alamat, kota, pasar, bank, no_rek, nama_rek } = req.body;
         if (req.user) {
             const { no_hp } = req.user;
             if (!fs.existsSync(`./db/data/${no_hp}.json`)) {
@@ -189,41 +209,41 @@ async function submit_data(req, res) {
             if (!ktp) {
                 fs.unlinkSync(`./db/data/${no_hp}.json`);
                 return res.status(404).send({
-                    status: 404,
+                    status: res.statusCode,
+                    code: respons.FileNotFound,
                     message: 'KTP Kosong'
                 })
             }
             const skckPath = `./public/file/wingman/skck/skck_${no_hp}.png`;
             const skck = fs.existsSync(skckPath) ? fs.readFileSync(skckPath) : null;
-            const profilePath = `./public/file/wingman/profile/profile_${no_hp}.png`;
-            const profileNone = `./public/file/wingman/profile/none.png`;
-            const profile = fs.existsSync(`./public/wingman/file/profile/profile_${no_hp}.png`) ? fs.readFileSync(profilePath) : fs.readFileSync(profileNone);
             const skckFix = skck ? skck.toString('hex') : null
             
             if (Array.isArray(debeh) && debeh.length) {
                 debeh[0] = { nama, email: Buffer.from(email, 'utf8').toString('hex'), alamat, kota, pasar, 
                     bank, no_rek: Buffer.from(no_rek, 'utf8').toString('hex'), nama_rek: Buffer.from(nama_rek, 'utf8').toString('hex'), 
-                    ktp: ktp.toString('hex'), skck: skckFix, profile: profile.toString('hex') };
+                    ktp: ktp.toString('hex'), skck: skckFix };
             } else {
                 debeh.push({ nama, email: Buffer.from(email, 'utf8').toString('hex'), alamat, kota, pasar, 
                     bank, no_rek: Buffer.from(no_rek, 'utf8').toString('hex'), nama_rek: Buffer.from(nama_rek, 'utf8').toString('hex'), 
-                    ktp: ktp.toString('hex'), skck: skckFix, profile: profile.toString('hex') });
+                    ktp: ktp.toString('hex'), skck: skckFix });
             }
             fs.writeFileSync(`./db/data/${no_hp}.json`, JSON.stringify(debeh));
             submitData = true;
             return res.status(200).send({
-                status: 200,
+                status: res.statusCode,
+                code: respons[200],
                 message: 'Sukses Submit Data, Selanjutnya preview'
             })
         } else {
-            return res.status(403).send({
-                status: 403,
-                message: 'Login First!'
+            return res.status(401).send({
+                status: res.statusCode,
+                code: respons.NeedLoginWingman,
+                message: 'Login Wingman First!'
             })
         }
     } catch (error) {
         console.log(error);
-        return res.status(500).send({status: 500, message: 'Internal Server Error'});
+        return res.status(500).send({status: res.statusCode, code: respons.InternalServerError, message: 'Internal Server Error'});
     }
 }
 
@@ -231,80 +251,102 @@ async function preview_data(req, res) {
     try {
         if (submitData == false) {
             return res.status(400).send({
-                status: 400,
+                status: res.statusCode,
+                code: respons.NotSubmitted,
                 message: 'Submit data wingman first!'
             })
         } else {
             if (req.user) {
                 let { no_hp } = req.user;
                 const debeh = JSON.parse(fs.readFileSync(`./db/data/${no_hp}.json`));
-                const { nama, email, alamat, kota, pasar, bank, no_rek, nama_rek, ktp, skck, profile } = debeh[0];
                 res.status(200).send({
-                    status: 200,
-                    no_hp, nama, email, alamat, kota, pasar, bank, no_rek, nama_rek, ktp, skck, profile
+                    status: res.statusCode,
+                    code: respons[200],
+                    message: `Data ditemukan`,
+                    result: debeh[0]
                 })
             } else {
-                return res.status(403).send({
-                    status: 403,
-                    message: 'Login First!'
+                return res.status(401).send({
+                    status: res.statusCode,
+                    code: respons.NeedLoginWingman,
+                    message: 'Login Wingman First!'
                 })
             }
         } 
     } catch (error) {
         console.log(error);
-        return res.status(500).send({status: 500, message: 'Internal Server Error'});
+        return res.status(500).send({status: res.statusCode, code: respons.InternalServerError, message: 'Internal Server Error'});
     }
 }
 
 async function regsiter_wingman(req, res) {
     try {
         if (req.user) {
-            let { no_hp } = req.user;
+            let { no_hp, _id } = req.user;
             const find = await Wingman.findOne({ no_hp: no_hp });
             if (find) {
                 if (find.nama == null) {
-                    const debeh = JSON.parse(fs.readFileSync(`./db/data/${no_hp}.json`));
-                    const { nama, email, alamat, kota, pasar, bank, no_rek, nama_rek, ktp, skck, profile } = debeh[0];
-                    Wingman.updateOne({no_hp: no_hp}, { nama, email, alamat, kota, pasar, bank, no_rek, nama_rek, ktp, skck, profile }, function (err, res) {
+                    const jsonPath = `./db/data/${no_hp}.json`
+                    const jsonPath2 = fs.existsSync(jsonPath) ? fs.readFileSync(jsonPath) : null;
+
+                    if (!jsonPath2) {
+                        fs.unlinkSync(`./db/data/${no_hp}.json`);
+                        return res.status(404).send({
+                            status: res.statusCode,
+                            code: respons.FileNotFound,
+                            message: 'Submit Data First (JSON Not Found)'
+                        })
+                    }
+
+                    const debeh = JSON.parse(fs.readFileSync(jsonPath));
+                    const { nama, email, alamat, kota, pasar, bank, no_rek, nama_rek, ktp, skck } = debeh[0];
+                    Wingman.updateOne({no_hp: no_hp}, { nama, email, alamat, kota, pasar, bank, no_rek, nama_rek, ktp, skck }, function (err, res) {
                         if (err) throw err;
                     })
-                    fs.unlinkSync(`./db/data/${no_hp}.json`);
-                    submitData = false;
+                    let up = await Wingman.updateOne({no_hp: no_hp}, { nama, email, alamat, kota, pasar, bank, no_rek, nama_rek, ktp, skck })
+                    fs.unlinkSync(jsonPath);
+                    let finds = await Wingman.findOne({ _id })
                     return res.status(200).send({
-                        status: 200,
-                        message: 'Register Success'
+                        status: res.statusCode,
+                        code: respons[200],
+                        message: `Register ${no_hp} Success`,
+                        result: finds
                     })
                 }  else {
-                    res.status(403).send({
-                        status: 403,
+                    res.status(406).send({
+                        status: res.statusCode,
+                        code: respons.AlreadyInDB,
                         message: 'Already Registered Before'
                     })
                 }
             } else {
-                res.status(403).send({
-                    status: 403,
-                    message: 'Not found, Login First Using Phone Number'
+                return res.status(401).send({
+                    status: res.statusCode,
+                    code: respons.NeedLoginWingman,
+                    message: 'Login Wingman First!'
                 })
             }
         } else {
-            res.status(403).send({
-                status: 403,
-                message: 'Login First'
+            return res.status(401).send({
+                status: res.statusCode,
+                code: respons.NeedLoginWingman,
+                message: 'Login Wingman First!'
             })
         }
     } catch (error) {
         console.log(error);
-        return res.status(500).send({status: 500, message: 'Internal Server Error'});
+        return res.status(500).send({status: res.statusCode, code: respons.InternalServerError, message: 'Internal Server Error'});
     }
 }
 
 async function delete_submit_data(req, res) {
     try {
-        if (!req.body || Object.keys(req.body).length === 0) return res.status(404).send({
-            status: 404,
-            message: 'input body'
-        })
         let { no_hp } = req.body;
+        if (!no_hp || Object.keys(req.body).length === 0) return res.status(403).send({
+            status: res.statusCode,
+            code: respons.NeedBodyHP,
+            message: 'input body hp'
+        })
         const find = await Wingman.findOne({ no_hp: no_hp });
         if (fs.existsSync(`./db/data/${no_hp}.json`)) {
             fs.unlinkSync(`./db/data/${no_hp}.json`);
@@ -312,33 +354,41 @@ async function delete_submit_data(req, res) {
         if (find) {
             if (find.nama !== null) {
                 return res.status(403).send({
-                    status: 403,
-                    message: 'Foridden, This user has already completed registration'
+                    status: res.statusCode,
+                    message: 'Foridden, This user has already completed registration! use delete-wingman'
                 })
             } else {
                 Wingman.deleteOne({ no_hp: no_hp }, function (err, res) {
                     if (err) throw err;
                 })
                 return res.status(200).send({
-                    status: 200,
-                    message: 'Successfully delete the data'
+                    status: res.statusCode,
+                    code: respons[200],
+                    message: `Successfully delete null Wingman ${no_hp}`
                 })
             }
+        } else {
+            return res.status(404).send({
+                status: res.statusCode,
+                code: respons.WingmanNotFound,
+                message: 'wingman no hp not found'
+            })  
         }
 
     } catch (error) {
         console.log(error);
-        return res.status(500).send({status: 500, message: 'Internal Server Error'});
+        return res.status(500).send({status: res.statusCode, code: respons.InternalServerError, message: 'Internal Server Error'});
     }
 }
 
 async function delete_wingman_data(req, res) {
     try {
-        if (!req.body || Object.keys(req.body).length === 0) return res.status(404).send({
-            status: 404,
-            message: 'input body'
-        })
         let { no_hp } = req.body;
+        if (!no_hp || Object.keys(req.body).length === 0) return res.status(403).send({
+            status: res.statusCode,
+            code: respons.NeedBodyHP,
+            message: 'input body hp'
+        })
         const find = await Wingman.findOne({ no_hp: no_hp });
         if (find) {
             if (find.nama !== null) {
@@ -346,40 +396,51 @@ async function delete_wingman_data(req, res) {
                     if (err) throw err;
                 })
                 return res.status(200).send({
-                    status: 200,
-                    message: 'Successfully delete the data'
+                    status: res.statusCode,
+                    code: respons[200],
+                    message: `Successfully delete Wingman ${no_hp}`
                 })
             } else {
                 return res.status(403).send({
-                    status: 403,
-                    message: 'Foridden, This user is not completed registration'
+                    status: res.statusCode,
+                    message: `Foridden, This user ${no_hp} is not completed registration or null data! use delete-submit`
                 })
             }
-        }  
+        } else {
+            return res.status(404).send({
+                status: res.statusCode,
+                code: respons.WingmanNotFound,
+                message: 'wingman no hp not found'
+            })  
+        }
     } catch (error) {
         console.log(error);
-        return res.status(500).send({status: 500, message: 'Internal Server Error'});
+        return res.status(500).send({status: res.statusCode, code: respons.InternalServerError, message: 'Internal Server Error'});
     }
 }
 
 async function logout_wingman(req, res) {
     try {
         if (req.user) {
+            let cookis = req.cookies.jwt;
             res.cookie('jwt', '', { maxAge: 1 });
             return res.status(200).send({
-                status: 200,
-                message: 'Logout Sukses'
+                status: res.statusCode,
+                code: respons[200],
+                message: `Logout Wingman ${req.user.no_hp} Sukses`,
+                result: { cookie_before: cookis }
             })
         } else {
-            res.status(403).send({
-                status: 403,
-                message: 'Login First'
+            return res.status(401).send({
+                status: res.statusCode,
+                code: respons.NeedLoginWingman,
+                message: 'Login Wingman First!'
             })
         }
 
     } catch (error) {
         console.log(error);
-        return res.status(500).send({status: 500, message: 'Internal Server Error'});
+        return res.status(500).send({status: res.statusCode, code: respons.InternalServerError, message: 'Internal Server Error'});
     }
 }
 
@@ -387,12 +448,18 @@ async function switch_available(req, res) {
     try {
         if (req.user) {
             let { status_available } = req.query;
+            if (!status_available) return res.status(403).send({
+                status: res.statusCode,
+                code: respons.NeedQuery,
+                message: `Input Query`
+            })
             if (status_available == 'true') {
                 Wingman.updateOne({ no_hp: req.user.no_hp }, { available: true }, function (err, res) {
                     if (err) throw err;
                 })
                 return res.status(200).send({
-                    status: 200,
+                    status: res.statusCode,
+                    code: respons[200],
                     message: `Set Available ${req.user.no_hp} = true`
                 })
             } else if (status_available == 'false') {
@@ -400,24 +467,27 @@ async function switch_available(req, res) {
                     if (err) throw err;
                 })
                 return res.status(200).send({
-                    status: 200,
+                    status: res.statusCode,
+                    code: respons[200],
                     message: `Set Available ${req.user.no_hp} = false`
                 })
             } else {
                 return res.status(404).send({
-                    status: 404,
-                    message: `Input query`
+                    status: res.statusCode,
+                    code: respons.WrongQuery,
+                    message: `Wrong Query Request`
                 })
             }
         } else {
-            res.status(200).send({
-                status: 403,
-                message: 'Login First'
+            return res.status(401).send({
+                status: res.statusCode,
+                code: respons.NeedLoginWingman,
+                message: 'Login Wingman First!'
             })
         }
     } catch (error) {
         console.log(error);
-        return res.status(500).send({status: 500, message: 'Internal Server Error'});
+        return res.status(500).send({status: res.statusCode, code: respons.InternalServerError, message: 'Internal Server Error'});
     }
 }
 
@@ -425,42 +495,52 @@ async function edit_order_today(req, res) {
     try {
         if (req.user) {
             let { action } = req.params;
+            if (!action) return res.status(403).send({
+                status: res.statusCode,
+                code: respons.NeedParams,
+                message: `Input Params`
+            })
             if (action == 'reset') {
                 Wingman.updateOne({ no_hp: req.user.no_hp }, { today_order: 0 }, function (err, res) {
                     if (err) throw err;
                 })
                 return res.status(200).send({
-                    status: 200,
+                    status: res.statusCode,
+                    code: respons[200],
                     message: 'Reset today order to 0'
                 })
             } else if (action == 'add') {
-                if (!req.body) return res.status(400).send({
-                    status: 404,
+                let { added } = req.body;
+                if (!added) return res.status(404).send({
+                    status: res.statusCode,
+                    code: respons.NeedBody,
                     message: 'input body'
                 })
-                let { added } = req.body;
                 Wingman.updateOne({ no_hp: req.user.no_hp }, { today_order: Number(req.user.today_order) + Number(added) }, function (err, res) {
                     if (err) throw err;
                 })
                 return res.status(200).send({
-                    status: 200,
+                    status: res.statusCode,
+                    code: respons[200],
                     message: `${req.user.no_hp} today order before : ${req.user.today_order}, and now : ${Number(req.user.today_order) + Number(added)}`
                 })
             } else {
                 return res.status(404).send({
-                    status: 404,
+                    status: res.statusCode,
+                    code: respons.WrongParams,
                     message: 'invalid params'
                 })
             }
         } else {
-            res.status(200).send({
-                status: 403,
-                message: 'Login First'
+            return res.status(401).send({
+                status: res.statusCode,
+                code: respons.NeedLoginWingman,
+                message: 'Login Wingman First!'
             })
         }
     } catch (error) {
         console.log(error);
-        return res.status(500).send({status: 500, message: 'Internal Server Error'});
+        return res.status(500).send({status: res.statusCode, code: respons.InternalServerError, message: 'Internal Server Error'});
     }
 }
 
@@ -468,42 +548,52 @@ async function edit_order_total(req, res) {
     try {
         if (req.user) {
             let { action } = req.params;
+            if (!action) return res.status(403).send({
+                status: res.statusCode,
+                code: respons.NeedParams,
+                message: `Input Params`
+            })
             if (action == 'reset') {
-                Wingman.updateOne({ no_hp: req.user.no_hp }, { total_orde: 0 }, function (err, res) {
+                Wingman.updateOne({ no_hp: req.user.no_hp }, { total_order: 0 }, function (err, res) {
                     if (err) throw err;
                 })
                 return res.status(200).send({
-                    status: 200,
+                    status: res.statusCode,
+                    code: respons[200],
                     message: 'Reset total order to 0'
                 })
             } else if (action == 'add') {
-                if (!req.body) return res.status(400).send({
-                    status: 404,
+                let { added } = req.body;
+                if (!added) return res.status(404).send({
+                    status: res.statusCode,
+                    code: respons.NeedBody,
                     message: 'input body'
                 })
-                let { added } = req.body;
-                Wingman.updateOne({ no_hp: req.user.no_hp }, { total_orde: Number(req.user.total_orde) + Number(added) }, function (err, res) {
+                Wingman.updateOne({ no_hp: req.user.no_hp }, { total_order: Number(req.user.total_order) + Number(added) }, function (err, res) {
                     if (err) throw err;
                 })
                 return res.status(200).send({
-                    status: 200,
-                    message: `${req.user.no_hp} total order before : ${req.user.total_orde}, and now : ${Number(req.user.total_orde) + Number(added)}`
+                    status: res.statusCode,
+                    code: respons[200],
+                    message: `${req.user.no_hp} total order before : ${req.user.total_order}, and now : ${Number(req.user.total_order) + Number(added)}`
                 })
             } else {
                 return res.status(404).send({
-                    status: 404,
+                    status: res.statusCode,
+                    code: respons.WrongParams,
                     message: 'invalid params'
                 })
             }
         } else {
-            res.status(200).send({
-                status: 403,
-                message: 'Login First'
+            return res.status(401).send({
+                status: res.statusCode,
+                code: respons.NeedLoginWingman,
+                message: 'Login Wingman First!'
             })
         }
     } catch (error) {
         console.log(error);
-        return res.status(500).send({status: 500, message: 'Internal Server Error'});
+        return res.status(500).send({status: res.statusCode, code: respons.InternalServerError, message: 'Internal Server Error'});
     }
 }
 
@@ -511,50 +601,61 @@ async function edit_income(req, res) {
     try {
         if (req.user) {
             let { action } = req.params;
+            if (!action) return res.status(403).send({
+                status: res.statusCode,
+                code: respons.NeedParams,
+                message: `Input Params`
+            })
             if (action == 'reset') {
                 Wingman.updateOne({ no_hp: req.user.no_hp }, { income: 0 }, function (err, res) {
                     if (err) throw err;
                 })
                 return res.status(200).send({
-                    status: 200,
+                    status: res.statusCode,
+                    code: respons[200],
                     message: 'Reset income to 0'
                 })
             } else if (action == 'add') {
-                if (!req.body) return res.status(400).send({
-                    status: 404,
+                let { added } = req.body;
+                if (!added) return res.status(404).send({
+                    status: res.statusCode,
+                    code: respons.NeedBody,
                     message: 'input body'
                 })
-                let { added } = req.body;
                 Wingman.updateOne({ no_hp: req.user.no_hp }, { income: Number(req.user.income) + Number(added) }, function (err, res) {
                     if (err) throw err;
                 })
                 return res.status(200).send({
-                    status: 200,
+                    status: res.statusCode,
+                    code: respons[200],
                     message: `${req.user.no_hp} income before : ${req.user.income}, and now : ${Number(req.user.income) + Number(added)}`
                 })
             } else {
                 return res.status(404).send({
-                    status: 404,
+                    status: res.statusCode,
+                    code: respons.WrongParams,
                     message: 'invalid params'
                 })
             }
         } else {
-            res.status(200).send({
-                status: 403,
-                message: 'Login First'
+            return res.status(401).send({
+                status: res.statusCode,
+                code: respons.NeedLoginWingman,
+                message: 'Login Wingman First!'
             })
         }
     } catch (error) {
         console.log(error);
-        return res.status(500).send({status: 500, message: 'Internal Server Error'});
+        return res.status(500).send({status: res.statusCode, code: respons.InternalServerError, message: 'Internal Server Error'});
     }
 }
 
 async function change_data_wingman(req, res) {
     try {
         if (req.user) {
-            if (!req.body || Object.keys(req.body).length === 0) return res.status(404).send({
-                status: 404,
+            if (!req.body || Object.keys(req.body).length === 0) return res.status(403).send({
+                status: res.statusCode,
+                code: respons.NeedBody,
                 message: 'input body'
             })
             const { nama, email, alamat, kota, pasar, bank, no_rek, nama_rek } = req.body;
@@ -565,8 +666,8 @@ async function change_data_wingman(req, res) {
             const pasarFix = pasar ? pasar : req.user.pasar;
             const bankFix = bank ? bank : req.user.bank;
             const no_rekFix = no_rek ? Buffer.from(no_rek, 'utf8').toString('hex') : req.user.no_rek;
-            const nama_rekFix = nama_rek ? nBuffer.from(nama_rek, 'utf8').toString('hex') : req.user.nama_rek;
-            Wingman.updateOne({ no_hp: req.user.no_hp }, { 
+            const nama_rekFix = nama_rek ? Buffer.from(nama_rek, 'utf8').toString('hex') : req.user.nama_rek;
+            let up = await Wingman.updateOne({ no_hp: req.user.no_hp }, { 
                 nama: namaFix,
                 email: emailFix,
                 alamat: alamatFix,
@@ -575,23 +676,25 @@ async function change_data_wingman(req, res) {
                 bank: bankFix,
                 no_rek: no_rekFix,
                 nama_rek: nama_rekFix
-            }, function (err, res) {
-                if (err) throw err;
             })
+            let findAgain = await Wingman.findOne({ _id: req.user._id });
             return res.status(200).send({
-                status: 200,
-                message: 'Sukses change data wingman'
+                status: res.statusCode,
+                code: respons[200],
+                message: 'Sukses change data wingman',
+                result: findAgain,
             })
         } else {
-            res.status(200).send({
-                status: 403,
-                message: 'Login First'
+            return res.status(401).send({
+                status: res.statusCode,
+                code: respons.NeedLoginWingman,
+                message: 'Login Wingman First!'
             })
         }
 
     } catch (error) {
         console.log(error);
-        return res.status(500).send({status: 500, message: 'Internal Server Error'});
+        return res.status(500).send({status: res.statusCode, code: respons.InternalServerError, message: 'Internal Server Error'});
     }
 }
 
@@ -599,12 +702,95 @@ async function delete_all_wingman(req, res) {
     try {
         await Wingman.deleteMany({});
         return res.status(200).send({
-            status: 200,
-            message: 'sukses'
+            status: res.statusCode,
+            code: respons[200],
+            message: 'Sukses Delete All Wingman'
         })
     } catch (error) {
         console.log(error);
-        return res.status(500).send({status: 500, message: 'Internal Server Error'});
+        return res.status(500).send({status: res.statusCode, code: respons.InternalServerError, message: 'Internal Server Error'});
+    }
+}
+
+async function input_Pin(req, res) {
+    try {
+        if (req.user) {
+            let { pin } = req.body;
+            if (!pin) return res.status(403).send({
+                status: res.statusCode,
+                code: respons.NeedBody,
+                message: 'input body'
+            })
+            if (!req.user.name == null) return res.status(403).send({
+                status: res.statusCode,
+                code: respons.WingmanNotRegister,
+                message: 'Wingman Not Registered'
+            })
+            let up = await Wingman.updateOne({ no_hp: req.user.no_hp }, { pin: Buffer.from(pin, 'utf8').toString('hex') })
+            let findAgain = await Wingman.findOne({ _id: req.user._id })
+            return res.status(200).send({
+                status: res.statusCode,
+                code: respons[200],
+                message: 'Sukses Input PIN Wingman',
+                result: findAgain
+            })
+        } else {
+            return res.status(401).send({
+                status: res.statusCode,
+                code: respons.NeedLoginWingman,
+                message: 'Login Wingman First!'
+            })
+        }
+
+    } catch (error) {
+        console.log(error);
+        return res.status(500).send({status: res.statusCode, code: respons.InternalServerError, message: 'Internal Server Error'});
+    }
+}
+
+async function enterPIN(req, res) {
+    try {
+        const jwtToken = req.cookies.jwt;
+        if (jwtToken) return res.status(403).send({
+            status: res.statusCode,
+            code: respons.StillLogin,
+            message: `Masih Dalam Kondisi Login!`
+        })
+        let { no_hp, pin } = req.body;
+        if (!no_hp || !pin) return res.status(403).send({
+            status: res.statusCode,
+            code: respons.NeedBody,
+            message: `Input body!`
+        })
+        let find = await Wingman.findOne({ no_hp });
+        if (find) {
+            let pinFix = Buffer.from(pin, 'utf8').toString('hex')
+            if (find.pin == pinFix) {
+                const token = createJWT(find._id);
+                res.cookie('jwt', token, { httpOnly: true });
+                return res.status(200).send({
+                    status: res.statusCode,
+                    code: respons[200],
+                    message: `Login Sukses`,
+                    result: find
+                })  
+            } else {
+                return res.status(403).send({
+                    status: res.statusCode,
+                    code: respons.NotMatch,
+                    message: 'Wrong PIN'
+                })
+            }
+        } else {
+            return res.status(401).send({
+                status: res.statusCode,
+                code: respons.NeedLoginWingman,
+                message: 'Login OTP Wingman First!'
+            })
+        }
+    } catch (error) {
+        console.log(error);
+        return res.status(500).send({status: res.statusCode, code: respons.InternalServerError, message: 'Internal Server Error'});
     }
 }
 
@@ -624,5 +810,7 @@ module.exports = {
     edit_order_total,
     edit_income,
     change_data_wingman,
-    delete_all_wingman
+    delete_all_wingman,
+    input_Pin,
+    enterPIN
 }

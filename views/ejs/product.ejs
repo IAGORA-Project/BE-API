@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product</title>
+</head>
+<body>
+    <h2>PRODUCT DATA</h2>
+    <h4>Length : <%= result.length %> </h4>
+    <% result.forEach((el, index) => { %>
+        <h4><%= index + 1 %>. _id: <%= el._id %> </h4>
+        <p>product_name : <%= Buffer.from(el.product_name, 'hex').toString('utf8') %> </p>
+        <p>product_category : <%= Buffer.from(el.product_category, 'hex').toString('utf8') %> </p>
+        <p>product_grade : <%= Buffer.from(el.product_grade, 'hex').toString('utf8') %> </p>
+        <p>product_image (base64) : <%= el.product_image.substring(0,8) %>... </p>
+        <p>product_price : <%= Buffer.from(el.product_price, 'hex').toString('utf8') %> </p>
+        <p>product_uom : <%= Buffer.from(el.product_uom, 'hex').toString('utf8') %> </p>
+        <br>
+    <% }); %> 
+</body>
+</html>

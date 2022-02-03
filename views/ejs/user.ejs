@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>USER</title>
+</head>
+<body>
+    <h2>USER DATA</h2>
+    <h4>Length : <%= result.length %> </h4>
+    <% if (Array.isArray(result) && result.length) { %>
+        <% result.forEach((el, index) => { %>
+            <h4><%= index + 1 %>. _id : <%= el._id %>  </h4>
+            <p>type : <%= el.type %>  </p>
+            <p>no_hp : <%= el.no_hp %>  </p>
+            <p>nama : <%= el.nama %>  </p>
+            <% if (el.pin !== null) { %>
+                <p>pin : <%= Buffer.from(el.pin, 'hex').toString('utf8') %> </p>
+            <% } else { %>
+                <p>pin : <%= el.pin %> </p>
+            <% } %>
+            <% if (el.profile !== null) { %>
+                <p>profile (hex) : <%= el.profile.substring(0,8) %>...  </p>
+            <% } else { %>
+                <p>profile : <%= el.profile %> </p>
+            <% } %>
+            <% if (el.email !== null) { %>
+                <p>email : <%= Buffer.from(el.email, 'hex').toString('utf8') %> </p>
+            <% } else { %>
+                <p>email : <%= el.email %> </p>
+            <% } %>
+            <p>alamat : <%= el.alamat %>  </p>
+            <p>cart : <%= JSON.stringify(el.cart, null, 4) %></p>
+            <p>transaction : <%= JSON.stringify(el.transaction, null, 4) %></p>
+            <br>
+        <% }); %> 
+    <% } else { %>
+        <p>Data User Not Found</p>
+    <% } %>
+</body>
+</html>

@@ -13,6 +13,9 @@ const Users = mongoose.Schema({
     nama: { 
         type: String,
     },
+    pin: {
+        type: String,
+    },
     profile: {
         type: String,
     },
@@ -24,6 +27,9 @@ const Users = mongoose.Schema({
     },
     cart: {
         type: Array,
+    },
+    transaction: {
+        type: Array
     }
 }, { versionKey: false });
 module.exports.User = mongoose.model('user', Users);

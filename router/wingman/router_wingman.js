@@ -4,8 +4,16 @@ const path = require('path');
 
 const controllerWingman = require('./contoller_wingman');
 const { verifyToken, verifJWT } = require('../token');
+const { Wingman } = require('../../db/Wingman');
 
-router.get('/', verifJWT, controllerWingman.router_wingman);
+// router.get('/', verifJWT, controllerWingman.router_wingman);
+
+router.get('/', async (req, res) => {
+    let data = await Wingman.find({});
+    res.render('ejs/wingman', {
+        result: data
+    })
+})
 
 /* DATA WINGMAN */
 
@@ -34,7 +42,7 @@ router.get('/register-wingman', verifyToken,  verifJWT, controllerWingman.regsit
 router.get('/submit-data', (req, res) => {
     res.sendFile(path.resolve('./public/regwingman.html'));
 })
-router.post('/submit-data', verifyToken,  verifJWT, controllerWingman.submit_data);
+// router.post('/submit-data', verifyToken,  verifJWT, controllerWingman.submit_data);
 
 /* PREVIEW BEFORE WRITE IN DB */
 
@@ -75,5 +83,13 @@ router.post('/change-data-wingman', verifyToken, verifJWT, controllerWingman.cha
 /* DELETE ALL WINGMAN */
 
 router.get('/delete-all-wingman', verifyToken, controllerWingman.delete_all_wingman);
+
+/* Input PIN */
+
+router.post('/input-pin', verifyToken, verifJWT, controllerWingman.input_Pin);
+
+/* PIN WINGMAN */
+
+router.post('/enter-pin', verifyToken, controllerWingman.enterPIN);
 
 module.exports = router

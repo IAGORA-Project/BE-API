@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wingman</title>
+</head>
+<body>
+    <h2>WINGMAN DATA</h2>
+    <h3>Length : <%= result.length %> </h3>
+    <% if (Array.isArray(result) && result.length) { %>
+        <% result.forEach((el, index) => { %>
+            <h4><%= index + 1 %>. _id : <%= el._id %>  </h4>
+            <p>type : <%= el.type %>  </p>
+            <p>no_hp : <%= el.no_hp %>  </p>
+            <p>nama : <%= el.nama %>  </p>
+            <% if (el.pin !== null) { %>
+                <p>pin : <%= Buffer.from(el.pin, 'hex').toString('utf8') %> </p>
+            <% } else { %>
+                <p>pin : <%= el.pin %> </p>
+            <% } %>
+            <% if (el.profile !== null) { %>
+                <p>profile (hex) : <%= el.profile.substring(0,8) %>...  </p>
+            <% } else { %>
+                <p>profile : <%= el.profile %> </p>
+            <% } %>
+            <% if (el.email !== null) { %>
+                <p>email : <%= Buffer.from(el.email, 'hex').toString('utf8') %> </p>
+            <% } else { %>
+                <p>email : <%= el.email %> </p>
+            <% } %>
+            <p>alamat : <%= el.alamat %>  </p>
+            <p>kota : <%= el.kota %>  </p>
+            <p>pasar : <%= el.pasar %>  </p>
+            <p>bank : <%= el.bank %>  </p>
+            <% if (el.nama_rek !== null) { %>
+                <p>nama_rek : <%= Buffer.from(el.nama_rek, 'hex').toString('utf8') %> </p>
+            <% } else { %>
+                <p>nama_rek : <%= el.nama_rek %> </p>
+            <% } %>
+            <% if (el.no_rek !== null) { %>
+                <p>no_rek : <%= Buffer.from(el.no_rek.toString(), 'hex').toString('utf8') %> </p>
+            <% } else { %>
+                <p>no_rek : <%= el.no_rek %> </p>
+            <% } %>
+            <% if (el.ktp !== null) { %>
+                <p>ktp : <%= el.ktp.substring(0,8) %>...  </p>
+            <% } else { %>
+                <p>ktp : <%= el.ktp %> </p>
+            <% } %>
+            <% if (el.skck !== null) { %>
+                <p>skck : <%= el.skck.substring(0,8) %>...  </p>
+            <% } else { %>
+                <p>skck : <%= el.skck %> </p>
+            <% } %>
+            <p>available : <%= el.available %>  </p>
+            <p>today_order : <%= el.today_order %>  </p>
+            <p>total_order : <%= el.totay_order %>  </p>
+            <p>income : <%= el.income %>  </p>
+            <p>stars : <%= JSON.stringify(el.stars, null, 4) %></p>
+            <p>on_process : <%= JSON.stringify(el.on_process, null, 4) %></p>
+            <p>kotak_saran : <%= JSON.stringify(el.kotak_saran, null, 4) %></p>
+            <br>
+        <% }); %> 
+    <% } else { %>
+        <p>Data Wingman Not Found</p>
+    <% } %>
+</body>
+</html>

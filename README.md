@@ -1,5 +1,7 @@
 # **Api Endpoint**
 
+#### ***Base URL : http://iagora.id***
+
 Setiap Request Endpoint Wingman, User, Product, Chating, dll Membutuhkan Headers `sessid`. Headers Tersebut Didapat Dari :
 
 ```js
@@ -7,531 +9,925 @@ Setiap Request Endpoint Wingman, User, Product, Chating, dll Membutuhkan Headers
 
 const fetch = require('node-fetch');
 
-const sessid = await fetch(`${domain}/api/v1/auth/get-token`, {
+const sessid = await fetch(`${BaseURL}/api/v1/auth/get-token`, {
     headers: {
-        auth: 'ini rahasia' // authnya memang seperti ini "ini rahasia"
+        auth: 'ini rahasia'
     }
 })
-console.log(data.headers.get('sessid')) // jPBI7pczvwGVgpJT6rlj9AOU2pHn81
+console.log(sessid.headers.get('sessid')) // jPBI7pczvwGVgpJT6rlj9AOU2pHn81
 
 /* WITH AXIOS */
 
 const { default: Axios } = require('axios');
 
-const sessid = await Axios.get(`${domain}/api/v1/auth/get-token`, {
+const sessid = await Axios.get(`${BaseURL}/api/v1/auth/get-token`, {
     headers: {
         auth: 'ini rahasia'
     }
 })
-console.log(data.headers.sessid)
+console.log(sessid.headers.sessid)
 ```
 
 # Endpoint WINGMAN
 
-**1. Pendaftaran (Input No HP)**
+***Total 14***
 
-Mengirimkan OTP Ke Nomer WhatsApp Target
+**<details><summary>List Endpoint</summary>**
 
-<img src="imageMD/img_1.png" height="200">
+### **1. Pendaftaran (Input No HP)**
+
+Mengirimkan OTP Ke Nomer WhatsApp Target Menggunakan [WA-API](https://github.com/IAGORA-Project/WA-API)
+
+**`URL : ${BaseURL}/api/v1/wingman/send-otp-wingman`**
+
+<center><img src="imageMD/img_1.png" height="200"></center>
 
 **METHOD : POST**
 
-*body > hp*
-
-*headers > sessid: xxx*
-
-*Endpoint > /api/v1/wingman/send-otp-wingman*
+***BODY (no_hp) :***
 
 ```js
-/* EXAMPLE WITH NODE-FETCH */
+{
+    "no_hp": "6287715579966"
+}
+```
+
+***HEADERS (sessid) :***
+
+```js
+headers: {
+    "sessid": "abcdefghi" // Random String From /api/v1/auth/get-token
+}
+```
+
+***EXAMPLE REQUEST NODE JS :***
+
+```js
 
 const fetch = require('node-fetch');
 
-const send = await fetch(`${domain}/api/v1/wingman/send-otp-wingman`, {
+const send = await fetch(`${BaseURL}/api/v1/wingman/send-otp-wingman`, {
     method: 'POST',
     credentials: 'include',
     body: JSON.stringify({
-        "hp": "6287715579966",
+        "no_hp": "6287715579966",
     }),
     headers: {
         'Accept': "application/json",
         'Content-Type': 'application/json',
-        'sessid': data.headers.get('sessid'),
+        'sessid': sessid.headers.get('sessid'),
     },
 })
 ```
 
-**2. Input OTP**
+### **2. Input OTP**
 
 Login Wingman Dengan Menggunakan OTP, Jika Wingman Belum terdaftar Otomatis akan Dibuat Data `null` pada Beberapa Field DB. Untuk Mengisinya/Push DB Gunakan Endpoint `/register-wingman`
 
-<img src="imageMD/img_2.png" width="200">
+**`URL : ${BaseURL}/api/v1/wingman/login-wingman`**
+
+<center><img src="imageMD/img_2.png" width="200"></center>
 
 **METHOD : POST**
 
-*body > username, password*
-
-*headers > sessid: xxx*
-
-*Endpoint > /api/v1/wingman/login-wingman*
+***BODY (no_np, otp) :***
 
 ```js
-/* EXAMPLE WITH NODE-FETCH */
+{
+    "no_hp": "6287715579966",
+    "otp": "123456" // Random Numbers From WhatsApp
+}
+```
+
+***HEADERS (sessid) :***
+
+```js
+headers: {
+    "sessid": "abcdefghi"
+}
+```
+
+### **3. SUBMIT & PREVIEW IMAGE WINGMAN**
+
+Data Submit Wingman Sementara Disimpan Didalam JSON, Gunakan Endpoint `/api/v1/wingman/register-wingman` Untuk Push JSON ke MongoDB (Pastikan Sudah Login). Pada Endpoint ini Juga Upload KTP & SKCK Wingman.
+
+**`URL : ${BaseURL}/api/v1/upload/wingman/submit-data`**
+
+<center><img src="imageMD/img_3.png" width="200"></center>
+
+**METHOD : POST**
+
+***BODY : (nama, email, alamat, kota, pasar, bank, no_rek, nama_rek)***
+
+```js
+{
+    "nama": "Udin",
+    "email": "udin@email.com",
+    "alamat": "Jln pattimura",
+    "kota": "Balikpapan",
+    "pasar": "Rawa-Indah",
+    "bank": "BRI",
+    "no_rek": "123456789101112",
+    "nama_rek": "Udin Sukamaju",
+}
+```
+
+***HEADERS (sessid, cookie, client-type) :***
+
+```js
+headers: {
+    "sessid": "abcdefghi",
+    "cookie": "jwt=abcdef", // Cookie JWT Dari Login
+    "client-type": "wingman" // Karena Endpoint Ini Akan Diakses Oleh Wingman
+}
+```
+
+***EXAMPLE REQUEST NODE JS :***
+
+```js
+
+const { default: Axios } = require('axios');
+const FormData = require('form-data');
+const fs = require('fs-extra');
+
+const fd = new FormData();
+fd.append('nama', 'Udin');
+fd.append('email', 'udin@email.com');
+fd.append('alamat', 'Jln pattimura');
+fd.append('kota', 'Balikpapan');
+fd.append('pasar', 'Rawa-Indah');
+fd.append('bank', 'BRI');
+fd.append('no_rek', '123456789101112');
+fd.append('nama_rek', 'Udin Sukamaju');
+fd.append('file', fs.createReadStream('./image/ktp_example.png')); // Upload KTP
+fd.append('file', fs.createReadStream('./image/skck_example.png')); // Upload SKCK
+Axios({
+        method: 'POST',
+        withCredentials: true,
+        url: `${BaseURL}/api/v1/upload/wingman/submit-data`,
+        data: fd,
+        headers: {  
+            'content-type': `multipart/form-data; boundary=${fd._boundary}`,
+            'cookie': 'jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYxZjdlZWIxZGM4OTYzODA1NWVhZmVmOCIsImlhdCI6MTY0MzYzODQ5NSwiZXhwIjoxNjQzNjQyMDk1fQ.W2az25O7a2AvoUAZvkQdgADkj136HlqnO3T3xxWt61Q',
+            'sessid': sessid.headers.get('sessid'),
+            'client-type': 'wingman',
+        }
+})
+```
+Adapun Response Yang Diberikan Digunakan Sebagai Preview Data JSON Sebelum di Push ke MonggoDB
+
+<center><img src="imageMD/img_4.png" width="200"></center>
+
+
+### **4. REGISTRASI PUSH DB WINGMAN**
+
+Memperbarui Data `null` Saat Login Dan Mengganti Dengan Apa Yang sudah d Submit (Pastikan Sudah Submit Mengakses Endpoint No 3 Diatas)
+
+**`URL : ${BaseURL}/api/v1/wingman/register-wingman`**
+
+**`NO IMG`**
+
+**METHOD : GET**
+
+***HEADERS (sessid, cookie, client-type) :***
+
+```js
+headers: {
+    "sessid": "abcdefghi",
+    "cookie": "jwt=abcdef", 
+    "client-type": "wingman" 
+}
+```
+
+
+### **5. GET/CHECK DATA WINGMAN**
+
+Melihat Data Wingman Yang Tersimpan di MongoDB (Pastikan Sudah Login)
+
+**`URL : ${BaseURL}/api/v1/wingman/wingman-data`**
+
+<center><img src="imageMD/img_5.png" width="200"></center>
+
+**METHOD : GET**
+
+***HEADERS (sessid, cookie, client-type) :***
+
+```js
+headers: {
+    "sessid": "abcdefghi",
+    "cookie": "jwt=abcdef", 
+    "client-type": "wingman" 
+}
+```
+
+***EXAMPLE REQUEST NODE JS :***
+
+```js
 
 const fetch = require('node-fetch');
 
-const login = await fetch(`${domain}/api/v1/wingman/login-wingman`, {
+const get = await fetch(`${BaseURL}/api/v1/wingman/wingman-data`, {
+    credentials: "include",
+    headers: {
+        'client-type': 'wingman',
+        'sessid': sessid.headers.get('sessid'),
+        'cookie': 'jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYxZjdlZWIxZGM4OTYzODA1NWVhZmVmOCIsImlhdCI6MTY0MzYzODQ5NSwiZXhwIjoxNjQzNjQyMDk1fQ.W2az25O7a2AvoUAZvkQdgADkj136HlqnO3T3xxWt61Q',
+    },
+})
+
+return get.json()
+```
+
+### **6. INPUT PIN WINGMAN**
+
+Input PIN Wingman. PIN Digunakan Untuk Login Kembali Jika JWT Expired / Bukan Logout
+
+**`URL : ${BaseURL}/api/v1/wingman/input-pin`**
+
+**`NO IMG`**
+
+**METHOD : POST**
+
+***BODY : (pin)***
+
+```js
+{
+    "pin": "1234" // PIN 4 Digit
+}
+```
+
+***HEADERS (sessid, cookie, client-type) :***
+
+```js
+headers: {
+    "sessid": "abcdefghi",
+    "cookie": "jwt=abcdef", 
+    "client-type": "wingman" 
+}
+```
+
+### **7. MENGGANTI DATA WINGMAN**
+
+Endpoint ini Hanya Mengganti Apa Yang Sudah di Submit Wingman (Pastikan Sudah Login)
+
+**`URL : ${BaseURL}/api/v1/wingman/change-data-wingman`**
+
+**`NO IMG`**
+
+**METHOD : POST**
+
+***BODY : (nama, email, alamat, kota, pasar, bank, no_rek, nama_rek)***
+
+```js
+{
+    "nama": "Udin",
+    "email": "udin123@email.com",
+    "alamat": "Jln Soedirman",
+    "kota": "Balikpapan",
+    "pasar": "Rawa-Indah",
+    "bank": "MANDIRI",
+    "no_rek": "09876543210987",
+    "nama_rek": "Udin Sukamaju",
+}
+```
+**`NB: Body Tidak Harus Diisi Semua, Bisa Salah Satu Saja Yang Ingin Di Perbarui`**
+
+***HEADERS (sessid, cookie, client-type) :***
+
+```js
+headers: {
+    "sessid": "abcdefghi",
+    "cookie": "jwt=abcdef", 
+    "client-type": "wingman" 
+}
+```
+
+### **8. MENGGANTI STATUS LAYANAN**
+
+Mengubah Status Layanan/Available (Pastikan Sudah Login)
+
+**`URL : ${BaseURL}/api/v1/wingman/switch-available`**
+
+**`Image NO. 5`**
+
+**METHOD : GET**
+
+***QUERY : (status_available: Boolean)***
+
+`${BaseURL}/api/v1/wingman/switch-available/?status_available=false`
+
+***HEADERS (sessid, cookie, client-type) :***
+
+```js
+headers: {
+    "sessid": "abcdefghi",
+    "cookie": "jwt=abcdef", 
+    "client-type": "wingman" 
+}
+```
+
+### **9. MENGGANTI JUMLAH ORDERAN**
+
+Mengubah Jumlah Orderan Wingman, Today Order & Total Order (Pastikan Sudah Login)
+
+Today Order
+**`URL : ${BaseURL}/api/v1/wingman/edit-today-order`**
+
+Total Order
+**`URL : ${BaseURL}/api/v1/wingman/edit-total-order`**
+
+**`Image NO. 5`**
+
+**METHOD : POST**
+
+***PARAMS : (action: add / reset)***
+
+`${BaseURL}/api/v1/wingman/edit-today-order/add`
+Atau
+`${BaseURL}/api/v1/wingman/edit-today-order/reset`
+***BODY : (added)***
+
+```js
+{
+    "added": 1,
+}
+
+// Atau Mines
+{
+    "added": -1,
+}
+
+```
+
+***HEADERS (sessid, cookie, client-type) :***
+
+```js
+headers: {
+    "sessid": "abcdefghi",
+    "cookie": "jwt=abcdef", 
+    "client-type": "wingman" 
+}
+```
+
+### **10. LOGOUT WINGMAN**
+
+Logout Wingman
+
+**`URL : ${BaseURL}/api/v1/wingman/logout-wingman`**
+
+**`NO IMG`**
+
+**METHOD : GET**
+
+***HEADERS (sessid, cookie, client-type) :***
+
+```js
+headers: {
+    "sessid": "abcdefghi",
+    "cookie": "jwt=abcdef", 
+    "client-type": "wingman" 
+}
+```
+
+### **11. LOGIN WITH PIN WINGMAN**
+
+Login Wingman Dengan Menggunakan PIN Yang Telah Di Input Pada Endpoint **`/api/v1/wingman/input-pin`**
+
+**`URL : ${BaseURL}/api/v1/wingman/enter-pin`**
+
+**`NO IMG`**
+
+**METHOD : POST**
+
+***BODY (no_np, pin) :***
+
+```js
+{
+    "no_hp": "6287715579966",
+    "pin": "1234" // PIN 4 Digit
+}
+```
+
+***HEADERS (sessid) :***
+
+```js
+headers: {
+    "sessid": "abcdefghi"
+}
+```
+
+### **12. DELETE NULL WINGMAN**
+
+Menghapus Document Wingman Dengan Status `null`/Belum Push MongoDB + Menghapus Data JSONnya Jika Pernah Submit Data dan Belum Push MongoDB (GET Register)
+
+**`URL : ${BaseURL}/api/v1/wingman/delete-submit`**
+
+**`NO IMG`**
+
+**METHOD : POST**
+
+***BODY (no_hp) :***
+```js
+{
+    "no_hp": "6287715579966",
+}
+```
+
+***HEADERS (sessid) :***
+```js
+headers: {
+    "sessid": "abcdefghi",
+}
+```
+
+### **13. DELETE WINGMAN**
+
+Menghapus Document Wingman Dengan Status **tidak** `null`/Sudah Push MongoDB
+
+**`URL : ${BaseURL}/api/v1/wingman/delete-wingman`**
+
+**`NO IMG`**
+
+**METHOD : POST**
+
+***BODY (no_hp) :***
+```js
+{
+    "no_hp": "6287715579966",
+}
+```
+
+***HEADERS (sessid) :***
+```js
+headers: {
+    "sessid": "abcdefghi",
+}
+```
+
+### **14. DELETE ALL WINGMAN**
+
+Menghapus Semua Document Wingman di MongoDB
+
+**`URL : ${BaseURL}/api/v1/wingman/delete-all-wingman`**
+
+**`NO IMG`**
+
+**METHOD : GET**
+
+***HEADERS (sessid) :***
+```js
+headers: {
+    "sessid": "abcdefghi",
+}
+```
+
+---
+
+</details>
+
+# Endpoint USER
+
+***Total 9***
+
+**<details><summary>List Endpoint</summary>**
+
+### **1. SEND OTP USER**
+
+Mengirimkan OTP Ke Nomer WhatsApp Target User Menggunakan [WA-API](https://github.com/IAGORA-Project/WA-API)
+
+**`URL : ${BaseURL}/api/v1/user/send-otp-user`**
+
+**`NO IMG`**
+
+**METHOD : POST**
+
+***BODY (no_hp) :***
+
+```js
+{
+    "no_hp": "6287715579966"
+}
+```
+
+***HEADERS (sessid) :***
+
+```js
+headers: {
+    "sessid": "abcdefghi" // Random String From /api/v1/auth/get-token
+}
+```
+
+***EXAMPLE REQUEST NODE JS :***
+
+```js
+const fetch = require('node-fetch');
+
+const send = await fetch(`${BaseURL}/api/v1/user/send-otp-user`, {
     method: 'POST',
     credentials: 'include',
     body: JSON.stringify({
-        "username": "6287715579966",
-        "password": "115914"
+        "no_hp": "6287715579966",
     }),
     headers: {
         'Accept': "application/json",
         'Content-Type': 'application/json',
-        'sessid': data.headers.get('sessid'),
+        'sessid': sessid.headers.get('sessid'),
     },
 })
 ```
 
-**3. SUBMIT DATA WINGMAN**
+### **2. LOGIN OTP USER**
 
-Data Submit Wingman Sementara Disimpan Didalam JSON, Gunakan Endpoint `/register-wingman` Untuk Push JSON ke MongoDB (Pastikan Sudah Login)
+Login User Menggunakan OTP, Jika Belum Terdaftar Otomatis Dibuatkan Field Data `null`
 
-<img src="imageMD/img_3.png" width="200">
+**`URL : ${BaseURL}/api/v1/user/login-user`**
+
+**`NO IMG`**
 
 **METHOD : POST**
 
-*body > nama, email, alamat, kota, pasar, bank, no_rek, nama_rek*
-
-*headers > sessid: xxx, client-type: wingman*
-
-*Endpoint > /api/v1/wingman/submit-data*
-
-`NB: Upload KTP/SKCK Menggunakan Endpoint /api/v1/upload`
-
-**4. PREVIEW DATA WINGMAN SEBELUM PUSH DB**
-
-Preview Data JSON Sebelum Di PUSH KE MongoDB
-
-<img src="imageMD/img_4.png" width="200">
-
-**METHOD : GET**
-
-*headers > sessid: xxx, client-type: wingman*
-
-*Endpoint > /api/v1/wingman/preview-wingman*
-
-**5. REGISTRASI PUSH DB WINGMAN**
-
-Memperbarui Data `null` Saat Login Dan Mengganti Dengan Apa Yang sudah d Submit (Pastikan Sudah Submit)
-
-`NO IMG`
-
-**METHOD : GET**
-
-*headers > sessid: xxx, client-type: wingman*
-
-*Endpoint > /api/v1/wingman/register-wingman*
-
-**6. GET/CHECK DATA WINGMAN**
-
-Melihat Data Wingman Yang Tersimpan di MongoDB (Pastikan Sudah Login)
-
-<img src="imageMD/img_5.png" width="200">
-
-**METHOD : GET**
-
-*headers > sessid: xxx, client-type: wingman*
-
-*Endpoint > /api/v1/wingman/wingman-data*
+***BODY (no_np, otp) :***
 
 ```js
-/* EXAMPLE WITH NODE-FETCH */
-
-const fetch = require('node-fetch');
-
-const get = await fetch(`${domain}/api/v1/wingman/wingman-data`, {
-    credentials: "include",
-    headers: {
-        "client-type": "wingman",
-        sessid: data.headers.get('sessid'),
-        cookie: "Cookie Login jwt"
-    },
-})
-
-return get.json()
+{
+    "no_hp": "6287715579966",
+    "otp": "123456" // Random Numbers From WhatsApp
+}
 ```
-**7. MENGGANTI DATA WINGMAN**
 
-Endpoint ini Hanya Mengganti Apa Yang Sudah di Submit Wingman (Pastikan Sudah Login)
+***HEADERS (sessid) :***
 
-`NO IMG`
+```js
+headers: {
+    "sessid": "abcdefghi"
+}
+```
 
-**METHOD : POST**
-
-*body > nama, email, alamat, kota, pasar, bank, no_rek, nama_rek* 
-
-*headers > sessid: xxx, client-type: wingman*
-
-*Endpoint > /api/v1/wingman/change-data-wingman*
-
-`NB: Body Tidak Harus Diisi Semua, Bisa Salah Satu Saja Yang Ingin Di Perbarui`
-
-**8. MENGGANTI STATUS LAYANAN**
-
-Mengubah Status Layanan/Available (Pastikan Sudah Login)
-
-`Image NO. 6`
-
-**METHOD : GET**
-
-*query > ?status_available=(true/false)*
-
-*headers > sessid: xxx, client-type: wingman*
-
-*Endpoint > /api/v1/wingman/switch-available*
-
-**9. MENGGANTI JUMLAH ORDERAN**
-
-Mengubah Jumlah Orderan Wingman, Today Order & Total Order (Pastikan Sudah Login)
-
-`Image NO. 6`
-
-**METHOD : POST**
-
-*params > :action (add/reset)*
-
-*body > added: 3* (Bisa Mines, example > added: -5)
-
-*headers > sessid: xxx, client-type: wingman*
-
-*Endpoint Today > /api/v1/wingman/edit-today-order/:action*
-
-*Endpoint Total > /api/v1/wingman/edit-total-order/:action*
-
-**10. MENGGANTI JUMLAH PENDAPATAN**
-
-Mengubah Jumlah Pendapatan Wingman (Pastikan Sudah Login)
-
-`Image NO. 6`
-
-**METHOD : POST**
-
-*params > :action (add/reset)*
-
-*body > added: 3* (Bisa Mines, example > added: -5)
-
-*headers > sessid: xxx, client-type: wingman*
-
-*Endpoint > /api/v1/wingman/edit-income/:action*
-
-**11. DELETE NULL WINGMAN**
-
-Menghapus Document Wingman Dengan Status `null`/Belum Push MongoDB + Menghapus Data JSONnya Jika Pernah Submit Data dan Belum Push MongoDB
-
-`NO IMG`
-
-**METHOD : POST**
-
-*body > no_hp: 62xx*
-
-*headers > sessid: xxx*
-
-*Endpoint > /api/v1/wingman/delete-submit*
-
-**12. DELETE WINGMAN**
-
-Menghapus Document Wingman Dengan Status **tidak** `null`/Sudah Push MongoDB
-
-`NO IMG`
-
-**METHOD : POST**
-
-*body > no_hp: 62xx*
-
-*headers > sessid: xxx*
-
-*Endpoint > /api/v1/wingman/delete-wingman*
-
-**13. DELETE ALL WINGMAN**
-
-Menghapus Semua Document Wingman di MongoDB
-
-`NO IMG`
-
-**METHOD : GET**
-
-*headers > sessid: xxx*
-
-*Endpoint > /api/v1/wingman/delete-all-wingman*
-
-**14. LOGOUT WINGMAN**
-
-Logout Wingman
-
-`NO IMG`
-
-**METHOD : GET**
-
-*headers > sessid: xxx, client-type: wingman*
-
-*Endpoint > /api/v1/wingman/logout-wingman*
-
-**15. CHECK STATUS WINGMAN**
-
-Untuk Check, Apakah Sudah Login, `null` data (Belum Registrasi), dan **Bukan** `null` data (Sudah Registrasi/Push MongoDB)
-
-`NO IMG`
-
-**METHOD : GET**
-
-*Endpoint > /api/v1/wingman/*
-
-# Endpoint USER
-
-**1. SEND OTP USER**
-
-Mengirimkan OTP Ke Nomer WhatsApp Target User
-
-`NO IMG`
-
-**METHOD : POST**
-
-*body > hp*
-
-*headers > sessid: xxx*
-
-*Endpoint > /api/v1/user/send-otp-user*
-
-**2. LOGIN OTP USER**
-
-Login User Menggunakan OTP, Jika Belum Terdaftar Otomatis Dibuatkan Field data `null`
-
-`NO IMG`
-
-**METHOD : POST**
-
-*body > username, password*
-
-*headers > sessid: xxx*
-
-*Endpoint > /api/v1/user/login-user*
-
-**3. REGISTER USER**
+### **3. REGISTER USER**
 
 Memperbarui Data `null` Saat Login Dan Mengganti Dengan Apa Yang sudah di Submit di body
 
-`NO IMG`
+**`URL : ${BaseURL}/api/v1/user/register-user`**
+
+**`NO IMG`**
 
 **METHOD : POST**
 
-*body > nama, alamat, email*
+***BODY (nama, alamat, email) :***
 
-*headers > sessid: xxx, client-type: user*
+```js
+{
+    "nama": "Bambang",
+    "alamat": "Jl Sudirman",
+    "email": "bambang@email.com"
+}
+```
 
-*Endpoint > /api/v1/user/register-user*
+***HEADERS (sessid, cookie, client-type) :***
 
-**4. CHECK DATA USER**
+```js
+headers: {
+    "sessid": "abcdefghi",
+    "cookie": "jwt=abcdef", 
+    "client-type": "user" 
+}
+```
+
+### **4. INPUT PIN USER**
+
+Input PIN Yang Digunakan Untuk Login PIN
+
+**`URL : ${BaseURL}/api/v1/user/input-pin`**
+
+**`NO IMG`**
+
+**METHOD : POST**
+
+***BODY (pin) :***
+
+```js
+{
+    "pin": "1234", // PIN 4 Digit
+}
+```
+
+***HEADERS (sessid, cookie, client-type) :***
+
+```js
+headers: {
+    "sessid": "abcdefghi",
+    "cookie": "jwt=abcdef", 
+    "client-type": "user" 
+}
+```
+
+
+### **5. CHECK DATA USER**
 
 Check Data User di MongoDB
 
-`NO IMG`
+**`URL : ${BaseURL}/api/v1/user/user-data`**
+
+**`NO IMG`**
 
 **METHOD : GET**
 
-*headers > sessid: xxx, client-type: user*
-
-*Endpoint > /api/v1/user/user-data*
+***HEADERS (sessid, cookie, client-type) :***
 
 ```js
-/* EXAMPLE WITH NODE-FETCH */
+headers: {
+    "sessid": "abcdefghi",
+    "cookie": "jwt=abcdef", 
+    "client-type": "user" 
+}
+```
 
+***EXAMPLE REQUEST NODE JS :***
+
+```js
 const fetch = require('node-fetch');
 
-const get = await fetch(`${domain}/api/v1/user/user-data`, {
+const get = await fetch(`${BaseURL}/api/v1/user/user-data`, {
     credentials: "include",
     headers: {
-        "client-type": "user",
-        sessid: data.headers.get('sessid'),
-        cookie: "Cookie Login jwt"
+        'client-type': 'user',
+        'sessid': sessid.headers.get('sessid'),
+        'cookie': 'jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYxZjdlZWIxZGM4OTYzODA1NWVhZmVmOCIsImlhdCI6MTY0MzYzODQ5NSwiZXhwIjoxNjQzNjQyMDk1fQ.W2az25O7a2AvoUAZvkQdgADkj136HlqnO3T3xxWt61Q',
     },
 })
 
 return get.json()
 ```
 
-**5. MENGGANTI DATA USER**
+### **6. MENGGANTI DATA USER**
 
 Endpoint ini Hanya Mengganti Apa Yang Ada di body (Pastikan Sudah Login)
 
-`NO IMG`
+**`URL : ${BaseURL}/api/v1/user/change-data-user`**
+
+**`NO IMG`**
 
 **METHOD : POST**
 
-*body > nama, alamat, email* 
+***BODY (nama, alamat, email) :***
 
-*headers > sessid: xxx, client-type: user*
+```js
+{
+    "nama": "Budi",
+    "alamat": "Jl MT Haryono",
+    "email": "budi@email.com"
+}
+```
+**`NB: Body Tidak Harus Diisi Semua, Bisa Salah Satu Saja Yang Ingin Di Perbarui`**
 
-*Endpoint > /api/v1/user/change-data-user*
+***HEADERS (sessid, cookie, client-type) :***
 
-`NB: Body Tidak Harus Diisi Semua, Bisa Salah Satu Saja Yang Ingin Di Perbarui`
+```js
+headers: {
+    "sessid": "abcdefghi",
+    "cookie": "jwt=abcdef", 
+    "client-type": "user" 
+}
+```
 
-**6. LOGOUT USER**
+
+### **7. LOGOUT USER**
 
 Logout User
 
-`NO IMG`
+**`URL : ${BaseURL}/api/v1/user/logout-user`**
+
+**`NO IMG`**
 
 **METHOD : GET**
 
-*headers > sessid: xxx, client-type: user*
+***HEADERS (sessid, cookie, client-type) :***
 
-*Endpoint > /api/v1/user/logout-user*
+```js
+headers: {
+    "sessid": "abcdefghi",
+    "cookie": "jwt=abcdef", 
+    "client-type": "user" 
+}
+```
 
-**7. DELETE USER**
+### **8. DELETE USER**
 
 Menghapus Document User Yang Null dan Sudah Register User
 
-`NO IMG`
+**`URL : ${BaseURL}/api/v1/user/delete-user`**
+
+**`NO IMG`**
 
 **METHOD : POST**
 
-*body > no_hp: 62xx*
+***BODY (nama, alamat, email) :***
 
-*headers > sessid: xxx*
+```js
+{
+    "no_hp": "6287715579966",
+}
+```
 
-*Endpoint > /api/v1/user/delete-user*
+***HEADERS (sessid) :***
 
-**8. DELETE ALL USER**
+```js
+headers: {
+    "sessid": "abcdefghi"
+}
+```
+
+### **9. DELETE ALL USER**
 
 Menghapus Semua Document User Yang Tersimpan
 
-`NO IMG`
+**`URL : ${BaseURL}/api/v1/user/delete-all-user`**
 
-**METHOD : POST**
+**`NO IMG`**
 
-*headers > sessid: xxx*
+**METHOD : GET**
 
-*Endpoint > /api/v1/user/delete-all-user*
+***HEADERS (sessid) :***
+
+```js
+headers: {
+    "sessid": "abcdefghi"
+}
+```
+---
+
+</details>
 
 # Endpoint UPLOAD FILE
 
+***Total 3***
+
+**<details><summary>List Endpoint</summary>**
+
 Upload File Menggunakan Multer, Semua File Tersimpan Didalam Folder public/file
 
-**1. UPLOAD KTP WINGMAN**
+### **1. UPLOAD PROFILE IMAGE WINGMAN**
 
-Upload KTP Wingman ke Folder Public dan return Data HEX, ubah ke base64 jika Ingin d Tampilkan
+Upload Image Wingman ke Folder Public dan return Data HEX, ubah ke base64 jika Ingin di Tampilkan
 
-<img src="imageMD/img_10.png" width="200">
+**`URL : ${BaseURL}/api/v1/upload/wingman/profile`**
+
+**`NO IMG`**
 
 **METHOD : POST**
 
-*headers > sessid: xxx, client-type: wingman*
+***BODY (file) :***
 
-*Endpoint > /api/v1/upload/wingman/ktp*
+`file : multipart/form-data`
+
+***HEADERS (sessid) :***
 
 ```js
-/* EXAMPLE WITH AXIOS */
+headers: {
+    "sessid": "abcdefghi",
+    "cookie": "jwt=abcdef", 
+    "client-type": "wingman" 
+}
+```
+***EXAMPLE REQUEST NODE JS :***
 
+```js
 const FormData = require('form-data');
 const { default: Axios } = require('axios');
 const fs = require('fs-extra');
 
 const fd = new FormData()
-fd.append('file', fs.createReadStream(PATH_IMAGE))
+fd.append('file', fs.createReadStream('./image/profile_wingman_example.png'))
 Axios({
         method: 'POST',
         withCredentials: true,
-        url: 'http://localhost:5050/api/v1/upload/wingman/ktp',
+        url: `${BaseURL}/api/v1/upload/wingman/profile`,
         data: fd,
         headers: {  
             'content-type': `multipart/form-data; boundary=${fd._boundary}`,
             'client-type': 'wingman',
-            cookie: "Cookie Login jwt", 
-            'sessid': data.headers.get('sessid'),
+            'cookie': 'jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYxZjdlZWIxZGM4OTYzODA1NWVhZmVmOCIsImlhdCI6MTY0MzYzODQ5NSwiZXhwIjoxNjQzNjQyMDk1fQ.W2az25O7a2AvoUAZvkQdgADkj136HlqnO3T3xxWt61Q', 
+            'sessid': sessid.headers.get('sessid'),
         },
-}).then(({ data }) => {
-    console.log(data)
-}).catch(reject)
+})
 ```
 
+### **2. UPLOAD PROFILE IMAGE USER**
 
-**2. UPLOAD SKCK WINGMAN**
+Upload Image User ke Folder Public dan return Data HEX, ubah ke base64 jika Ingin di Tampilkan
 
-Upload SKCK Wingman ke Folder Public dan return Data HEX, ubah ke base64 jika Ingin d Tampilkan
+**`URL : ${BaseURL}/api/v1/upload/user/profile`**
 
-<img src="imageMD/img_10.png" width="200">
-
-**METHOD : POST**
-
-*headers > sessid: xxx, client-type: wingman*
-
-*Endpoint > /api/v1/upload/wingman/skck*
-
-**3. UPLOAD PROFILE IMAGE WINGMAN**
-
-Upload Image Wingman ke Folder Public dan return Data HEX, ubah ke base64 jika Ingin d Tampilkan
-
-`NO IMG`
+**`NO IMG`**
 
 **METHOD : POST**
 
-*headers > sessid: xxx, client-type: wingman*
+***BODY (file) :***
 
-*Endpoint > /api/v1/upload/wingman/profile*
+`file : multipart/form-data`
 
-**4. UPLOAD PROFILE IMAGE USER**
+***HEADERS (sessid) :***
 
-Upload Image User ke Folder Public dan return Data HEX, ubah ke base64 jika Ingin d Tampilkan
+```js
+headers: {
+    "sessid": "abcdefghi",
+    "cookie": "jwt=abcdef", 
+    "client-type": "user" 
+}
+```
+### **3. UPLOAD PROFILE IMAGE ADMIN**
 
-`NO IMG`
+Upload Image Admin ke Folder Public dan return Data HEX, ubah ke base64 jika Ingin di Tampilkan
+
+**`URL : ${BaseURL}/api/v1/upload/admin/profile`**
+
+**`NO IMG`**
 
 **METHOD : POST**
 
-*headers > sessid: xxx, client-type: user*
+***BODY (file) :***
 
-*Endpoint > /api/v1/upload/user/profile*
+`file : multipart/form-data`
+
+***HEADERS (sessid) :***
+
+```js
+headers: {
+    "sessid": "abcdefghi",
+    "cookie": "jwt=abcdef", 
+    "client-type": "admin",
+    "auths": "iagoraid"
+}
+```
+
+---
+
+</details>
 
 # Endpoint CHATING
 
-**1. CREATE ROOM UNTUK 2 ORANG**
+***Total 8***
+
+**<details><summary>List Endpoint</summary>**
+
+### **1. CREATE ROOM UNTUK 2 ORANG**
 
 Membuat Room Chat untuk 2 Orang
 
-<img src="imageMD/img_6.png" width="200">
+**`URL : ${BaseURL}/api/v1/chat/create`**
+
+<center><img src="imageMD/img_6.png" width="200"></center>
 
 **METHOD : GET**
 
-*params > :user, :target* (Di Isi Masing-Masing Id)
+***PARAMS (ID User & ID Wingman) :***
 
-*headers > sessid: xxx*
+`${BaseURL}/api/v1/chat/create/61f607818e9e9b9583ed5d1c/61f616188e9e9b9583ed5d56`
 
-*Endpoint > /api/v1/chat/create/:user/:target*
+***HEADERS (sessid) :***
 
-**2. SEND MESSAGE KE ROOM**
+```js
+headers: {
+    "sessid": "abcdefghi"
+}
+```
+
+### **2. SEND MESSAGE KE ROOM**
 
 Mengirimkan Pesan Ke Sebuah Room Chat
 
-<img src="imageMD/img_7.png" width="200">
+**`URL : ${BaseURL}/api/v1/chat/msg`**
+
+<center><img src="imageMD/img_7.png" width="200"></center>
 
 **METHOD : POST**
 
-*params > :room, :user* (Di Isi Masing-Masing Id)
+***PARAMS (Room & ID Pengirim) :***
 
-*body > message*
+`${BaseURL}/api/v1/chat/msg/61f62af47091d40478298a9c/61f607818e9e9b9583ed5d1c`
 
-*headers > sessid: xxx*
-
-*Endpoint > /api/v1/chat/msg/:room/:user*
+***BODY (Message) :***
 
 ```js
-/* EXAMPLE WITH NODE-FETCH */
+{
+    "message": "ok thank you gann"
+}
+```
 
+***HEADERS (sessid) :***
+
+```js
+headers: {
+    "sessid": "abcdefghi"
+}
+```
+
+***EXAMPLE REQUEST NODE JS :***
+
+```js
 const fetch = require('node-fetch');
 
-const get = await fetch(`${domain}/api/v1/chat/msg/${room_id}/${user_id/wingman_id}`, {
+const get = await fetch(`${BaseURL}/api/v1/chat/msg/${room_id}/${pengirim_id}`, {
     method: "POST",
     credentials: "include",
     body: JSON.stringify({
@@ -540,155 +936,677 @@ const get = await fetch(`${domain}/api/v1/chat/msg/${room_id}/${user_id/wingman_
     headers: {
         'Accept': "application/json",
         'Content-Type': 'application/json',
-        sessid: data.headers.get('sessid'),
+        'sessid': sessid.headers.get('sessid'),
     },
 })
 
 return get.json()
 ```
 
-**3. GET ALL MESSAGE ROOM**
+### **3. SEND IMAGE/FILE MESSAGE**
 
-Menlihat Semua Pesan Yang ada Di Dalam Sebuah Room Chat
+Mengirim pesan gambar/file
 
-`NO IMG`
+**`URL : ${BaseURL}/api/v1/upload/chat/file`**
+
+**`NO IMG`**
+
+**METHOD : POST**
+
+***BODY (file) :***
+
+`file : multipart/form-data`
+
+***PARAMS (Room & ID Pengirim) + QUERY (text)***
+
+`${BaseURL}/api/v1/upload/chat/file/61f62af47091d40478298a9c/61f616188e9e9b9583ed5d56/?text=halo halo`
+
+***HEADERS (sessid) :***
+
+```js
+headers: {
+    "sessid": "abcdefghi"
+}
+```
+
+***EXAMPLE REQUEST NODE JS :***
+
+```js
+const FormData = require('form-data');
+const { default: Axios } = require('axios');
+const fs = require('fs-extra');
+
+const fd = new FormData()
+fd.append('file', fs.createReadStream('./image/message_image_example.png'))
+Axios({
+        method: 'POST',
+        withCredentials: true,
+        url: `${BaseURL}/api/v1/upload/chat/file/${room_id}/${pengirim_id}/?text=${message}`,
+        data: fd,
+        headers: {  
+            'content-type': `multipart/form-data; boundary=${fd._boundary}`,
+            'sessid': sessid.headers.get('sessid'),
+        },
+})
+```
+
+### **4. GET ALL MESSAGE ROOM**
+
+Melihat Semua Pesan Yang ada Di Dalam Sebuah Room Chat (History Chat)
+
+**`URL : ${BaseURL}/api/v1/chat/get-msg-room`**
+
+**`NO IMG`**
 
 **METHOD : GET**
 
-*params > :room* (Di Isi Masing-Masing Id)
+***PARAMS (Room) :***
 
-*headers > sessid: xxx*
+`${BaseURL}/api/v1/chat/get-msg-room/61f62af47091d40478298a9c`
 
-*Endpoint > /api/v1/chat/get-msg-room/:room*
+***HEADERS (sessid) :***
 
-**4. DELETE MESSAGE**
+```js
+headers: {
+    "sessid": "abcdefghi"
+}
+```
+
+### **5. DELETE MESSAGE**
 
 Menghapus Sebuah Pesan Dari id message
 
-`NO IMG`
+**`URL : ${BaseURL}/api/v1/chat/delete-msg`**
+
+**`NO IMG`**
 
 **METHOD : GET**
 
-*params > :idmsg* (Di Isi Masing-Masing Id)
+***PARAMS (ID Message & Room) :***
 
-*headers > sessid: xxx*
+`${BaseURL}/api/v1/chat/delete-msg/61f62bfb7091d40478298aa7/61f62af47091d40478298a9c`
 
-*Endpoint > /api/v1/chat/delete-msg/:idmsg*
+***HEADERS (sessid) :***
 
-**5. MESSAGE TELAH TERBACA**
+```js
+headers: {
+    "sessid": "abcdefghi"
+}
+```
+
+### **6. MESSAGE TELAH TERBACA**
 
 Menandai Bahwa Pesan Telah Terbaca
 
-`NO IMG`
+**`URL : ${BaseURL}/api/v1/chat/read-msg`**
+
+**`NO IMG`**
 
 **METHOD : GET**
 
-*params > :idmsg* (Di Isi Masing-Masing Id)
+***PARAMS (ID Message) :***
 
-*headers > sessid: xxx*
+`${BaseURL}/api/v1/chat/read-msg/61f607818e9e9b9583ed5d1c`
 
-*Endpoint > /api/v1/chat/read-msg/:idmsg*
+***HEADERS (sessid) :***
 
-**6. SEND MESSAGE WITH FILE**
+```js
+headers: {
+    "sessid": "abcdefghi"
+}
+```
 
-Mengirim pesan dengan File, upload terlebih dahulu
+### **7. GET SEMUA ROOM DI DB**
 
-`NO IMG`
+Melihat Semua Room di DB
 
-**METHOD : POST**
+**`URL : ${BaseURL}/api/v1/chat/all-room`**
 
-*params > :room, :user* (Di Isi Masing-Masing Id)
+**`NO IMG`**
 
-*body > text*
+**METHOD : GET**
 
-*headers > sessid: xxx*
+***HEADERS (sessid) :***
 
-*Endpoint > /api/v1/upload/chat/file/:room/:user*
+```js
+headers: {
+    "sessid": "abcdefghi"
+}
+```
+
+### **8. DELETE ONE ROOM DI DB**
+
+Menghapus Satu Room di DB
+
+**`URL : ${BaseURL}/api/v1/chat/delete-room`**
+
+**`NO IMG`**
+
+**METHOD : GET**
+
+***PARAMS (ID Message) :***
+
+`${BaseURL}/api/v1/chat/delete-room/61f104cfd0cfa4c4309e788c`
+
+***HEADERS (sessid) :***
+
+```js
+headers: {
+    "sessid": "abcdefghi"
+}
+```
+
+---
+
+</details>
 
 # Endpoint PRODUCT
 
-**1. CREATE PRODUCT**
+***Total 6***
+
+**<details><summary>List Endpoint</summary>**
+
+### **1. CREATE PRODUCT**
 
 Membuat Product Baru dan Disimpan di dalam MongoDB
 
-`NO IMG`
+**`URL : ${BaseURL}/api/v1/product/create-product`**
+
+**`NO IMG`**
 
 **METHOD : POST**
 
-*body > product_name, product_category, product_grade, product_image, product_price, product_uom*
+***BODY (product_name, product_category, product_grade, product_image, product_price, product_uom) :***
 
-*headers > sessid: xxx*
+```js
+{
+    "product_name": "Semangka",
+    "product_category": "buah",
+    "product_grade": "A",
+    "product_image": "IMAGE BASE 64",
+    "product_price": "6000",
+    "product_uom": "/kg",
+}
+```
+***HEADERS (sessid) :***
 
-*Endpoint > /api/v1/product/create-product*
+```js
+headers: {
+    "sessid": "abcdefghi"
+}
+```
 
-**2. UPDATE SUATU PRODUCT**
+### **2. UPDATE SUATU PRODUCT**
 
 Mengupdate Suatu Product dari Id Product
 
-`NO IMG`
+**`URL : ${BaseURL}/api/v1/product/update-product`**
+
+**`NO IMG`**
 
 **METHOD : POST**
 
-*params > :ids*
+***PARAMS (ID Product) :***
 
-*body > product_name, product_category, product_grade, product_image, product_price, product_uom*
+`${BaseURL}/api/v1/product/update-product/61f6333dcce79fb36b67ac69`
 
-*headers > sessid: xxx*
+***BODY (product_name, product_category, product_grade, product_image, product_price, product_uom) :***
 
-*Endpoint > /api/v1/product/update-product/:ids*
+```js
+{
+    "product_name": "Semangka",
+    "product_category": "buah",
+    "product_grade": "A",
+    "product_image": "IMAGE BASE 64",
+    "product_price": "6000",
+    "product_uom": "/kg",
+}
+```
+**`NB: Body Tidak Harus Diisi Semua, Bisa Salah Satu Saja Yang Ingin Di Perbarui`**
 
-`NB: Body Tidak Harus Diisi Semua, Bisa Salah Satu Saja Yang Ingin Di Perbarui`
+***HEADERS (sessid) :***
 
-**3. MELIHAT SATU PRODUCT**
+```js
+headers: {
+    "sessid": "abcdefghi"
+}
+```
+
+### **3. MELIHAT SATU PRODUCT**
 
 Read 1 Product di MongoDB dari id nya
 
-<img src="imageMD/img_9.png" width="200">
+**`URL : ${BaseURL}/api/v1/product/read-one-product`**
+
+<center><img src="imageMD/img_9.png" width="200"></center>
 
 **METHOD : GET**
 
-*params > :ids*
+***PARAMS (ID Product) :***
 
-*headers > sessid: xxx*
+`${BaseURL}/api/v1/product/read-one-product/61e262aae6b1e7d71e271635`
 
-*Endpoint > /api/v1/product/read-one-product/:ids*
+***HEADERS (sessid) :***
 
-**4. MELIHAT SEMUA PRODUCT**
+```js
+headers: {
+    "sessid": "abcdefghi"
+}
+```
+
+### **4. MELIHAT SEMUA PRODUCT**
 
 Read ALL Product di MongoDB
 
-<img src="imageMD/img_8.png" width="200">
+**`URL : ${BaseURL}/api/v1/product/read-all-product`**
+
+<center><img src="imageMD/img_8.png" width="200"></center>
 
 **METHOD : GET**
 
-*headers > sessid: xxx*
+***HEADERS (sessid) :***
 
-*Endpoint > /api/v1/product/read-all-product*
+```js
+headers: {
+    "sessid": "abcdefghi"
+}
+```
 
-**5. MENGHAPUS SATU PRODUCT**
+### **5. MENGHAPUS SATU PRODUCT**
 
 Delete Satu Product di MongoDB dari id nya
 
-`NO IMG`
+**`URL : ${BaseURL}/api/v1/product/delete-one-product`**
+
+**`NO IMG`**
 
 **METHOD : GET**
 
-*params > :ids*
+***PARAMS (ID Product) :***
 
-*headers > sessid: xxx*
+`${BaseURL}/api/v1/product/delete-one-product/61e65e24612d6a1f9f82a417`
 
-*Endpoint > /api/v1/product/delete-one-product/:ids*
+***HEADERS (sessid) :***
 
-**6. MENGHAPUS SEMUA PRODUCT**
+```js
+headers: {
+    "sessid": "abcdefghi"
+}
+```
+
+### **6. MENGHAPUS SEMUA PRODUCT**
 
 Delete ALL Product di MongoDB
 
-`NO IMG`
+**`URL : ${BaseURL}/api/v1/product/delete-all-product`**
+
+**`NO IMG`**
 
 **METHOD : GET**
 
-*params > :ids*
+***HEADERS (sessid) :***
 
-*headers > sessid: xxx*
+```js
+headers: {
+    "sessid": "abcdefghi"
+}
+```
 
-*Endpoint > /api/v1/product/delete-all-product*
+---
+
+</details>
+
+# Endpoint ADMIN
+
+***Total 6***
+
+**<details><summary>List Endpoint</summary>**
+
+Register/Login Serta Endpoint Admin Lainnya Berbasis Website.
+
+Headers Tambahan Pada Setiap Endpoint Admin : 
+
+```js
+headers: {
+    'auths': 'iagoraid'
+}
+
+```
+
+### **1. Register ADMIN**
+
+Register dan Push Data Admin ke MongoDB
+
+**`URL : ${BaseURL}/api/v1/admin/register-admin`**
+
+**`NO IMG`**
+
+**METHOD : POST**
+
+***BODY (no_hp, password, nama) :***
+
+```js
+{
+    "no_hp": "6287715579966",
+    "password": "rifky123", 
+    "nama": "Rifky" 
+}
+```
+
+***HEADERS (sessid, cookie, client-type, auths) :***
+
+```js
+headers: {
+    "sessid": "abcdefghi",
+    'auths': 'iagoraid'
+}
+```
+
+### **2. Login ADMIN**
+
+Login Admin
+
+**`URL : ${BaseURL}/api/v1/admin/login-admin`**
+
+**`NO IMG`**
+
+**METHOD : POST**
+
+***BODY (no_hp, password) :***
+
+```js
+{
+    "no_hp": "6287715579966",
+    "password": "rifky123",
+}
+```
+
+***HEADERS (sessid, cookie, client-type, auths) :***
+
+```js
+headers: {
+    "sessid": "abcdefghi",
+    'auths': 'iagoraid'
+}
+```
+
+### **3. Check Data ADMIN**
+
+GET Data Admin di MongoDB
+
+**`URL : ${BaseURL}/api/v1/admin/check-admin`**
+
+**`NO IMG`**
+
+**METHOD : GET**
+
+***HEADERS (sessid, cookie, client-type, auths) :***
+
+```js
+headers: {
+    "sessid": "abcdefghi",
+    "cookie": "jwt=abcdef", 
+    "client-type": "admin",
+    'auths': 'iagoraid'
+}
+```
+
+### **4. Change Data ADMIN**
+
+Menganti Data Admin dan Push ke MongoDB
+
+**`URL : ${BaseURL}/api/v1/admin/change-data-admin`**
+
+**`NO IMG`**
+
+**METHOD : POST**
+
+***BODY (no_hp, password, nama) :***
+
+```js
+{
+    "no_hp": "6287715579966",
+    "password": "upin123", 
+    "nama": "Upin" 
+}
+```
+**`NB: Body Tidak Harus Diisi Semua, Bisa Salah Satu Saja Yang Ingin Di Perbarui`**
+
+***HEADERS (sessid, cookie, client-type, auths) :***
+
+```js
+headers: {
+    "sessid": "abcdefghi",
+    "cookie": "jwt=abcdef", 
+    "client-type": "admin",
+    'auths': 'iagoraid'
+}
+```
+
+### **5. Add Income WINGMAN**
+
+Menambahkan Income Wingman Melalui Admin
+
+**`URL : ${BaseURL}/api/v1/admin/add-income`**
+
+**`NO IMG`**
+
+**METHOD : POST**
+
+***BODY (added, id) :***
+
+```js
+{
+    "added": "10000",
+    "id": "61f7eeb1dc89638055eafef8" // ID WINGMAN
+}
+```
+
+***HEADERS (sessid, cookie, client-type, auths) :***
+
+```js
+headers: {
+    "sessid": "abcdefghi",
+    "cookie": "jwt=abcdef", 
+    "client-type": "admin",
+    'auths': 'iagoraid'
+}
+```
+
+### **6. Delete One ADMIN**
+
+Menghapus 1 Document Admin
+
+**`URL : ${BaseURL}/api/v1/admin/delete-one-admin`**
+
+**`NO IMG`**
+
+**METHOD : GET**
+
+***PARAMS (ID Admin) :***
+
+`${BaseURL}/api/v1/admin/delete-one-admin/61f5cb068e9e9b9583ed5cec`
+
+***HEADERS (sessid) :***
+
+```js
+headers: {
+    "sessid": "abcdefghi",
+    'auths': 'iagoraid'
+}
+```
+---
+
+</details>
+
+# Endpoint CHAT Customer Service
+
+***Total 6***
+
+**<details><summary>List Endpoint</summary>**
+
+## Sisi User/Wingman
+
+### **1. Page Awal Chat**
+
+Membuat Room Dan Mengirimkan Pesan Awal Jika Tidak Ada Room Antar Admin dan User/Wingman (Juga Digunakan Untuk GET History Chat)
+
+**`URL : ${BaseURL}/api/v1/chat/page-cs`**
+
+<center><img src="imageMD/img_23.png" height="200"></center>
+
+**METHOD : GET**
+
+***HEADERS (sessid, cookie, client-type) :***
+
+```js
+headers: {
+    "sessid": "abcdefghi",
+    "cookie": "jwt=abcdef", 
+    "client-type": "user"
+}
+```
+
+Jika Tidak Ada Chat Maka Langsung Mengirimkan Text Awal CS
+
+<center><img src="imageMD/img_24.png" height="150"></center>
+
+### **2. User/Wingman Send Message**
+
+Mengirimkan Pesan Dari User/Wingman
+
+**`URL : ${BaseURL}/api/v1/chat/user-sendmsg`**
+
+<center><img src="imageMD/img_25.png" height="200"></center>
+
+**METHOD : POST**
+
+***BODY (message) :***
+
+```js
+{
+    "message": "aplikasi saya kadang tertutup"
+}
+```
+
+***HEADERS (sessid, cookie, client-type) :***
+
+```js
+headers: {
+    "sessid": "abcdefghi",
+    "cookie": "jwt=abcdef", 
+    "client-type": "user"
+}
+```
+
+Setelah Selesai User/Wingman Send Text Maka CS Otomatis Akan Mengirimkan Pesan Mengunggu
+
+## Sisi Admin / CS
+
+### **1. CS/Admin Send Message**
+
+Mengirimkan Pesan Dari CS/Admin
+
+**`URL : ${BaseURL}/api/v1/chat/cs-sendmsg`**
+
+**`NO IMG`**
+
+**METHOD : POST**
+
+***BODY (message, user_id) :***
+
+```js
+{
+    "message": "Siap kak Sistem Sudah Kami Perbaiki, Silahkan Dicoba Lagi",
+    "user_id": "61f616188e9e9b9583ed5d56" // Target User/Wingman
+}
+```
+
+***HEADERS (sessid, cookie, client-type) :***
+
+```js
+headers: {
+    "sessid": "abcdefghi",
+    "cookie": "jwt=abcdef", 
+    "client-type": "admin",
+    "auths": "iagoraid"
+}
+```
+
+### **2. CS/Admin History Message In One Room**
+
+Melihat History Pesan Dari Sisi CS/Admin
+
+**`URL : ${BaseURL}/api/v1/chat/history-cs`**
+
+**`NO IMG`**
+
+**METHOD : GET**
+
+***PARAMS (room) :***
+
+`${BaseURL}/api/v1/chat/history-cs/61f62d047091d40478298ab5`
+
+***HEADERS (sessid, cookie, client-type) :***
+
+```js
+headers: {
+    "sessid": "abcdefghi",
+    "cookie": "jwt=abcdef", 
+    "client-type": "admin",
+    "auths": "iagoraid"
+}
+```
+
+### **3. Delete One Message**
+
+Menghapus satu Message dari id message
+
+**`URL : ${BaseURL}/api/v1/chat/delete-one`**
+
+**`NO IMG`**
+
+**METHOD : GET**
+
+***PARAMS (id message, room) :***
+
+`${BaseURL}/api/v1/chat/delete-one/61f630aadd4720e1478ce182/61f62d047091d40478298ab5`
+
+***HEADERS (sessid, cookie, client-type) :***
+
+```js
+headers: {
+    "sessid": "abcdefghi",
+    "cookie": "jwt=abcdef", 
+    "client-type": "admin",
+    "auths": "iagoraid"
+}
+```
+
+### **4. Delete All Message In One Room**
+
+Menghapus Semua Message dari id room
+
+**`URL : ${BaseURL}/api/v1/chat/delete-all-msg-room`**
+
+**`NO IMG`**
+
+**METHOD : GET**
+
+***PARAMS (room) :***
+
+`${BaseURL}/api/v1/chat/delete-all-msg-room/61f62d047091d40478298ab5`
+
+***HEADERS (sessid, cookie, client-type) :***
+
+```js
+headers: {
+    "sessid": "abcdefghi",
+    "cookie": "jwt=abcdef", 
+    "client-type": "admin",
+    "auths": "iagoraid"
+}
+```
+---
+
+</details>
