@@ -2,6 +2,17 @@
 
 #### ***Base URL : http://iagora.id***
 
+##### *Status Code Defined in <a href="https://github.com/IAGORA-Project/BE-API/blob/main/lib/setting.js#L4" target="_blank">lib/setting.js:4</a>*
+
+##### *Postman Example : <a href="https://github.com/IAGORA-Project/BE-API/blob/main/imageMD" target="_blank">lib/IAGORA-API VPS.postman_collection.json</a>*
+
+```text
+NB POSTMAN : 
+    Request Yang Dicoret, Merupakan Endpoint Yang Tidak Terpakai dan terganti Langsung Dengan 1 Enpoint yakni /api/v1/upload/wingman/submit-data
+```
+
+### Auth Token (SESSID)
+
 Setiap Request Endpoint Wingman, User, Product, Chating, dll Membutuhkan Headers `sessid`. Headers Tersebut Didapat Dari :
 
 ```js
@@ -28,7 +39,7 @@ const sessid = await Axios.get(`${BaseURL}/api/v1/auth/get-token`, {
 console.log(sessid.headers.sessid)
 ```
 
-##### *Defined in <a href="https://github.com/IAGORA-Project/BE-API/blob/main/router/token.js#L12">router/token.js:12</a>*
+##### *Defined in <a href="https://github.com/IAGORA-Project/BE-API/blob/main/router/token.js#L12" target="_blank">router/token.js:12</a>*
 
 # Endpoint WINGMAN
 
@@ -36,7 +47,7 @@ console.log(sessid.headers.sessid)
 
 **<details><summary>List Endpoint</summary>**
 
-##### *Defined in <a href="https://github.com/IAGORA-Project/BE-API/blob/main/router/wingman/router_wingman.js">router/wingman/router_wingman.js</a>*
+##### *Defined in <a href="https://github.com/IAGORA-Project/BE-API/blob/main/router/wingman/router_wingman.js" target="_blank">router/wingman/router_wingman.js</a>*
 
 ### **1. Pendaftaran (Input No HP)**
 
@@ -495,7 +506,7 @@ headers: {
 
 **<details><summary>List Endpoint</summary>**
 
-##### *Defined in <a href="https://github.com/IAGORA-Project/BE-API/blob/main/router/user/router_user.js">router/user/router_user.js</a>*
+##### *Defined in <a href="https://github.com/IAGORA-Project/BE-API/blob/main/router/user/router_user.js" target="_blank">router/user/router_user.js</a>*
 
 ### **1. SEND OTP USER**
 
@@ -770,7 +781,7 @@ headers: {
 
 **<details><summary>List Endpoint</summary>**
 
-##### *Defined in <a href="https://github.com/IAGORA-Project/BE-API/blob/main/router/upload/router_upload.js">router/upload/router_upload.js</a>*
+##### *Defined in <a href="https://github.com/IAGORA-Project/BE-API/blob/main/router/upload/router_upload.js" target="_blank">router/upload/router_upload.js</a>*
 
 Upload File Menggunakan Multer, Semua File Tersimpan Didalam Folder public/file
 
@@ -878,7 +889,7 @@ headers: {
 
 **<details><summary>List Endpoint</summary>**
 
-##### *Defined in <a href="https://github.com/IAGORA-Project/BE-API/blob/main/lib/chat/router/router_chat.js#L24">lib/chat/router/router_chat.js:24</a>*
+##### *Defined in <a href="https://github.com/IAGORA-Project/BE-API/blob/main/lib/chat/router/router_chat.js#L24" target="_blank">lib/chat/router/router_chat.js:24</a>*
 
 ### **1. CREATE ROOM UNTUK 2 ORANG**
 
@@ -1116,7 +1127,7 @@ headers: {
 
 **<details><summary>List Endpoint</summary>**
 
-##### *Defined in <a href="https://github.com/IAGORA-Project/BE-API/blob/main/router/product/router_product.js">router/product/router_product.js</a>*
+##### *Defined in <a href="https://github.com/IAGORA-Project/BE-API/blob/main/router/product/router_product.js" target="_blank">router/product/router_product.js</a>*
 
 ### **1. CREATE PRODUCT**
 
@@ -1274,7 +1285,7 @@ headers: {
 
 **<details><summary>List Endpoint</summary>**
 
-##### *Defined in <a href="https://github.com/IAGORA-Project/BE-API/blob/main/router/admin/router_admin.js">router/admin/router_admin.js</a>*
+##### *Defined in <a href="https://github.com/IAGORA-Project/BE-API/blob/main/router/admin/router_admin.js" target="_blank">router/admin/router_admin.js</a>*
 
 Register/Login Serta Endpoint Admin Lainnya Berbasis Website.
 
@@ -1286,7 +1297,7 @@ headers: {
 }
 
 ```
-##### *Defined in <a href="https://github.com/IAGORA-Project/BE-API/blob/main/router/token.js#L58">router/token.js:58</a>*
+##### *Defined in <a href="https://github.com/IAGORA-Project/BE-API/blob/main/router/token.js#L58" target="_blank">router/token.js:58</a>*
 
 
 ### **1. Register ADMIN**
@@ -1461,7 +1472,7 @@ headers: {
 
 **<details><summary>List Endpoint</summary>**
 
-##### *Defined in <a href="https://github.com/IAGORA-Project/BE-API/blob/main/lib/chat/router/router_chat.js#L53">lib/chat/router/router_chat.js:53</a>*
+##### *Defined in <a href="https://github.com/IAGORA-Project/BE-API/blob/main/lib/chat/router/router_chat.js#L53" target="_blank">lib/chat/router/router_chat.js:53</a>*
 
 ## Sisi User/Wingman
 
@@ -1631,4 +1642,4 @@ headers: {
 
 # Endpoint Transaction
 
-Moved to [Transaction Markdown](https://github.com/IAGORA-Project/BE-API/blob/main/Transaction.md)
+##### *Moved to <a href="https://github.com/IAGORA-Project/BE-API/blob/main/Transaction.md" target="_blank">Transaction Markdown</a>*
