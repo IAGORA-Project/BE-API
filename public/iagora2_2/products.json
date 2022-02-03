@@ -1,0 +1,742 @@
+{
+    "products": [
+        {
+            "id": "1",
+            "product_name": "Semangka ",
+            "product_category": "buah",
+            "product_grade": "A",
+            "product_image": "https://images.unsplash.com/photo-1587049352846-4a222e784d38?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8NHx8d2F0ZXJtZWxvbnxlbnwwfHwwfHw%3D&auto=format&fit=crop&w=500&q=60",
+            "product_price": 6000,
+            "product_uom": "/kg"
+        },
+        {
+            "id": "2",
+            "product_name": "Melon",
+            "product_category": "buah",
+            "product_grade": "B",
+            "product_image": "https://images.unsplash.com/photo-1563288525-8f1ee0f874a8?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mnx8bWVsb258ZW58MHx8MHx8&auto=format&fit=crop&w=500&q=60",
+            "product_price": 7000,
+            "product_uom": "/kg"
+        },
+        {
+            "id": "3",
+            "product_name": "Pisang",
+            "product_category": "buah",
+            "product_grade": "B",
+            "product_image": "https://images.unsplash.com/photo-1603833665858-e61d17a86224?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8NHx8YmFuYW5hfGVufDB8fDB8fA%3D%3D&auto=format&fit=crop&w=500&q=60",
+            "product_price": 15000,
+            "product_uom": "/sisir"
+        },
+        {
+            "id": "4",
+            "product_name": "Pepaya",
+            "product_category": "buah",
+            "product_grade": "B",
+            "product_image": "https://images.unsplash.com/photo-1604778234463-762cf933e155?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mnx8cGFwYXlhfGVufDB8fDB8fA%3D%3D&auto=format&fit=crop&w=500&q=60",
+            "product_price": 5000,
+            "product_uom": "/kg"
+        },
+        {
+            "id": "5",
+            "product_name": "Buah Naga",
+            "product_category": "buah",
+            "product_grade": "B",
+            "product_image": "https://media.istockphoto.com/photos/white-dragon-fruit-picture-id503603245?b=1&k=20&m=503603245&s=170667a&w=0&h=cuZpv-EeQhrteKvlJvYvJo6bMn0szx6dUO9XfDYOIlU=",
+            "product_price": 13000,
+            "product_uom": "/kg"
+        },
+        {
+            "id": "6",
+            "product_name": "Nenas",
+            "product_category": "buah",
+            "product_grade": "B",
+            "product_image": "https://images.unsplash.com/photo-1550828520-4cb496926fc9?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8NXx8cGluZWFwcGxlfGVufDB8fDB8fA%3D%3D&auto=format&fit=crop&w=500&q=60",
+            "product_price": 6000,
+            "product_uom": "/pcs"
+        },
+        {
+            "id": "7",
+            "product_name": "Kelapa",
+            "product_category": "buah",
+            "product_grade": "B",
+            "product_image": "https://images.unsplash.com/photo-1537191072641-5e19cc173c6a?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8OHx8Y29jb251dHxlbnwwfHwwfHw%3D&auto=format&fit=crop&w=500&q=60",
+            "product_price": 6000,
+            "product_uom": "/pcs"
+        },
+        {
+            "id": "8",
+            "product_name": "Sirsak",
+            "product_category": "buah",
+            "product_grade": "B",
+            "product_image": "https://media.istockphoto.com/photos/close-up-photo-stack-of-soursop-fruit-picture-id1329052658?b=1&k=20&m=1329052658&s=170667a&w=0&h=aFXivZmZvsh2SucYVzxlCN8LcdJplSzZOEcIh4V0Vk8=",
+            "product_price": 15000,
+            "product_uom": "/pcs"
+        },
+        {
+            "id": "9",
+            "product_name": "Alpukat",
+            "product_category": "buah",
+            "product_grade": "C",
+            "product_image": "https://images.unsplash.com/photo-1583029901628-8039767c7ad0?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8OHx8YXZvY2Fkb3xlbnwwfHwwfHw%3D&auto=format&fit=crop&w=500&q=60",
+            "product_price": 18000,
+            "product_uom": "/kg"
+        },
+        {
+            "id": "10",
+            "product_name": "Mangga",
+            "product_category": "buah",
+            "product_grade": "C",
+            "product_image": "https://images.unsplash.com/photo-1501746877-14782df58970?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Nnx8bWFuZ298ZW58MHx8MHx8&auto=format&fit=crop&w=500&q=60",
+            "product_price": 15000,
+            "product_uom": "/kg"
+        },
+        {
+            "id": "11",
+            "product_name": "Salak",
+            "product_category": "buah",
+            "product_grade": "C",
+            "product_image": "https://media.istockphoto.com/photos/salak-fruit-known-as-snake-fruit-on-wooden-plate-picture-id1135662330?b=1&k=20&m=1135662330&s=170667a&w=0&h=_JskL_jx5ei0k8qHjYZvoymD9w3-JrVOaJrK_N7Lfjo=",
+            "product_price": 15000,
+            "product_uom": "/kg"
+        },
+        {
+            "id": "12",
+            "product_name": "Jeruk",
+            "product_category": "buah",
+            "product_grade": "C",
+            "product_image": "https://images.unsplash.com/photo-1459663296021-50769c04b149?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8b3JhbmdlJTIwZ3JvY2VyaWVzfGVufDB8fDB8fA%3D%3D&auto=format&fit=crop&w=500&q=60",
+            "product_price": 15000,
+            "product_uom": "/kg"
+        },
+        {
+            "id": "13",
+            "product_name": "Apel",
+            "product_category": "buah",
+            "product_grade": "C",
+            "product_image": "https://images.unsplash.com/photo-1560806887-1e4cd0b6cbd6?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8NXx8YXBwbGV8ZW58MHx8MHx8&auto=format&fit=crop&w=500&q=60",
+            "product_price": 20000,
+            "product_uom": "/kg"
+        },
+        {
+            "id": "14",
+            "product_name": "Guava",
+            "product_category": "buah",
+            "product_grade": "C",
+            "product_image": "https://images.unsplash.com/photo-1600659090872-74ca5ca1023a?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mnx8Z3VhdmF8ZW58MHx8MHx8&auto=format&fit=crop&w=500&q=60",
+            "product_price": 5000,
+            "product_uom": "/kg"
+        },
+        {
+            "id": "15",
+            "product_name": "Belimbing",
+            "product_category": "buah",
+            "product_grade": "C",
+            "product_image": "https://images.unsplash.com/photo-1605879883262-0cd26b362f54?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8c3RhcmZydWl0fGVufDB8fDB8fA%3D%3D&auto=format&fit=crop&w=500&q=60",
+            "product_price": 8000,
+            "product_uom": "/kg"
+        },
+        {
+            "id": "16",
+            "product_name": "Markisa",
+            "product_category": "buah",
+            "product_grade": "C",
+            "product_image": "https://images.unsplash.com/photo-1476837579993-f1d3948f17c2?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MTd8fG1hcmtpc2ElMjBmcnVpdHxlbnwwfHwwfHw%3D&auto=format&fit=crop&w=500&q=60",
+            "product_price": 12000,
+            "product_uom": "/kg"
+        },
+        {
+            "id": "17",
+            "product_name": "Terong belanda",
+            "product_category": "buah",
+            "product_grade": "C",
+            "product_image": "https://ltomkiw.files.wordpress.com/2012/08/img_4779.jpg?w=584",
+            "product_price": 16500,
+            "product_uom": "/kg"
+        },
+        {
+            "id": "18",
+            "product_name": "Kedondong",
+            "product_category": "buah",
+            "product_grade": "C",
+            "product_image": "https://media.istockphoto.com/photos/kedondong-fruit-that-has-a-fairly-large-size-picture-id1357965283?b=1&k=20&m=1357965283&s=170667a&w=0&h=yq2vRYXZi1KCpoxKVCYiAaQv3SE6WGlp7OjCy2YSWgc=",
+            "product_price": 13000,
+            "product_uom": "/kg"
+        },
+        {
+            "id": "19",
+            "product_name": "Terong",
+            "product_category": "sayur",
+            "product_grade": "B",
+            "product_image": "https://images.unsplash.com/photo-1604321272882-07c73743be32?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8NHx8ZWdncGxhbnR8ZW58MHx8MHx8&auto=format&fit=crop&w=500&q=60",
+            "product_price": 6000,
+            "product_uom": "/ kg"
+        },
+        {
+            "id": "20",
+            "product_name": "Kacang panjang",
+            "product_category": "sayur",
+            "product_grade": "B",
+            "product_image": "https://media.istockphoto.com/photos/group-of-asparagus-bean-or-long-yard-bean-fresh-green-vegetable-for-picture-id1282037441?b=1&k=20&m=1282037441&s=170667a&w=0&h=gYaXLAL2V13kDulS6NxJzv5w25ROh2UQ273JyyhId5M=",
+            "product_price": 8000,
+            "product_uom": "/ kg"
+        },
+        {
+            "id": "21",
+            "product_name": "Sawi putih",
+            "product_category": "sayur",
+            "product_grade": "B",
+            "product_image": "https://media.istockphoto.com/photos/peking-cabbage-it-is-also-chinese-cabbage-or-petsai-or-salad-and-picture-id1347068633?b=1&k=20&m=1347068633&s=170667a&w=0&h=_k_8bXZJQPGK9lRG87BX7yn3eOaz-nXLUPOVkw1LgB0=",
+            "product_price": 4500,
+            "product_uom": "/ kg"
+        },
+        {
+            "id": "22",
+            "product_name": "Tahu",
+            "product_category": "sayur",
+            "product_grade": "B",
+            "product_image": "https://media.istockphoto.com/photos/block-and-cubes-of-tofu-picture-id465944034?b=1&k=20&m=465944034&s=170667a&w=0&h=xpkqkqEkkqNpBjH3Z1-e2mUYiMHd2UMlSebum1ezQH0=",
+            "product_price": 35000,
+            "product_uom": "/ papan"
+        },
+        {
+            "id": "23",
+            "product_name": "Kangkung",
+            "product_category": "sayur",
+            "product_grade": "B",
+            "product_image": "https://media.istockphoto.com/photos/kangkung-water-spinach-picture-id1351249614?b=1&k=20&m=1351249614&s=170667a&w=0&h=V8ttdo_6FszDo5dYcDP0mvprR0zHWlsKEaEeqvmwsog=",
+            "product_price": 3000,
+            "product_uom": "/ ikat"
+        },
+        {
+            "id": "24",
+            "product_name": "Bayam",
+            "product_category": "sayur",
+            "product_grade": "B",
+            "product_image": "https://images.unsplash.com/photo-1576045057995-568f588f82fb?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8c3BpbmFjaHxlbnwwfHwwfHw%3D&auto=format&fit=crop&w=500&q=60",
+            "product_price": 3500,
+            "product_uom": "/ ikat"
+        },
+        {
+            "id": "25",
+            "product_name": "Sawi pahit",
+            "product_category": "sayur",
+            "product_grade": "B",
+            "product_image": "https://kartian.my.id/wp-content/uploads/2020/09/FB_IMG_1601266890745-760x490.jpg",
+            "product_price": 8000,
+            "product_uom": "/ kg"
+        },
+        {
+            "id": "26",
+            "product_name": "Sayur parit",
+            "product_category": "sayur",
+            "product_grade": "B",
+            "product_image": "https://homemadeindonesia.com/apihmi/images/datatoko/KA87097E129_brg10722.jpg",
+            "product_price": 3000,
+            "product_uom": "/ ikat"
+        },
+        {
+            "id": "27",
+            "product_name": "Tomat",
+            "product_category": "sayur",
+            "product_grade": "B",
+            "product_image": "https://images.unsplash.com/photo-1561136594-7f68413baa99?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mnx8dG9tYXRvfGVufDB8fDB8fA%3D%3D&auto=format&fit=crop&w=500&q=60",
+            "product_price": 6000,
+            "product_uom": "/ kg"
+        },
+        {
+            "id": "28",
+            "product_name": "Labu",
+            "product_category": "sayur",
+            "product_grade": "B",
+            "product_image": "https://images.unsplash.com/photo-1509622905150-fa66d3906e09?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8M3x8cHVtcGtpbnxlbnwwfHwwfHw%3D&auto=format&fit=crop&w=500&q=60",
+            "product_price": 8000,
+            "product_uom": "/ kg"
+        },
+        {
+            "id": "29",
+            "product_name": "Lengkoas",
+            "product_category": "sayur",
+            "product_grade": "C",
+            "product_image": "https://res.cloudinary.com/dk0z4ums3/image/upload/v1601603417/attached_image/inilah-manfaat-lengkuas-bagi-kesehatan.jpg",
+            "product_price": 8000,
+            "product_uom": "/ kg"
+        },
+        {
+            "id": "30",
+            "product_name": "Kencur",
+            "product_category": "sayur",
+            "product_grade": "C",
+            "product_image": "https://media.istockphoto.com/photos/a-pile-of-kencur-sold-in-the-market-picture-id1349883429?b=1&k=20&m=1349883429&s=170667a&w=0&h=mEajp9G9tSD3CNazs4_0V0fyLIoyGDuH1ArOHWEHB6I=",
+            "product_price": 18000,
+            "product_uom": "/ kg"
+        },
+        {
+            "id": "31",
+            "product_name": "Singkong",
+            "product_category": "sayur",
+            "product_grade": "C",
+            "product_image": "https://asset.kompas.com/crops/SKkQ_9arFnmRpid-5nO5vKKV-uA=/0x0:5184x3456/750x500/data/photo/2021/08/21/612061ab7e697.jpg",
+            "product_price": 4000,
+            "product_uom": "/ kg"
+        },
+        {
+            "id": "32",
+            "product_name": "Sereh",
+            "product_category": "sayur",
+            "product_grade": "C",
+            "product_image": "https://media.istockphoto.com/photos/lemongrass-for-sale-picture-id177436824?b=1&k=20&m=177436824&s=170667a&w=0&h=mkBX2zAPWaTRsH_bXM4dMMTBTDMytww3RXEjQUhME0Y=",
+            "product_price": 5000,
+            "product_uom": "/ ikat"
+        },
+        {
+            "id": "33",
+            "product_name": "Daun Salam",
+            "product_category": "sayur",
+            "product_grade": "C",
+            "product_image": "https://media.istockphoto.com/photos/fresh-organic-bay-leaves-on-rustic-wooden-table-picture-id1180779806?b=1&k=20&m=1180779806&s=170667a&w=0&h=JVc8A_8oy9xke6mRFp8YpgK55s5Jq8be3YrpCBRCMbE=",
+            "product_price": 3000,
+            "product_uom": "/ ikat"
+        },
+        {
+            "id": "34",
+            "product_name": "Kecombrang",
+            "product_category": "sayur",
+            "product_grade": "C",
+            "product_image": "https://img.okezone.com/content/2017/10/30/481/1805074/kecombrang-tanaman-liar-dengan-segudang-khasiat-mujarab-redakan-batuk-bkUDBq4dhA.jpg",
+            "product_price": 10000,
+            "product_uom": "/ kg"
+        },
+        {
+            "id": "35",
+            "product_name": "Daun Bawang",
+            "product_category": "sayur",
+            "product_grade": "C",
+            "product_image": "https://images.unsplash.com/photo-1602769515559-e15133a7e992?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8c2NhbGxpb25zfGVufDB8fDB8fA%3D%3D&auto=format&fit=crop&w=500&q=60",
+            "product_price": 18000,
+            "product_uom": "/ kg"
+        },
+        {
+            "id": "36",
+            "product_name": "Lobak",
+            "product_category": "sayur",
+            "product_grade": "C",
+            "product_image": "https://asset-a.grid.id/crop/0x0:0x0/x/photo/2021/07/25/khasiat-lobak-untuk-kecantikan-k-20210725040422.jpg",
+            "product_price": 5000,
+            "product_uom": "/ kg"
+        },
+        {
+            "id": "37",
+            "product_name": "Wortel",
+            "product_category": "sayur",
+            "product_grade": "C",
+            "product_image": "https://images.unsplash.com/photo-1598170845058-32b9d6a5da37?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mnx8Y2Fycm90fGVufDB8fDB8fA%3D%3D&auto=format&fit=crop&w=500&q=60",
+            "product_price": 4000,
+            "product_uom": "/ kg"
+        },
+        {
+            "id": "38",
+            "product_name": "Parya / pare",
+            "product_category": "sayur",
+            "product_grade": "C",
+            "product_image": "https://statics.indozone.id/content/2020/04/14/bns363/t_5e996138c37b4_700.jpg",
+            "product_price": 15000,
+            "product_uom": "/ kg"
+        },
+        {
+            "id": "39",
+            "product_name": "Timun",
+            "product_category": "sayur",
+            "product_grade": "C",
+            "product_image": "https://images.unsplash.com/photo-1604977042946-1eecc30f269e?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Nnx8Y3VjdW1iZXJ8ZW58MHx8MHx8&auto=format&fit=crop&w=500&q=60",
+            "product_price": 6000,
+            "product_uom": "/ kg"
+        },
+        {
+            "id": "40",
+            "product_name": "Cabai",
+            "product_category": "sayur",
+            "product_grade": "C",
+            "product_image": "https://images.unsplash.com/photo-1546860255-95536c19724e?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8M3x8Y2hpbGxpfGVufDB8fDB8fA%3D%3D&auto=format&fit=crop&w=500&q=60",
+            "product_price": 28000,
+            "product_uom": "/ kg"
+        },
+        {
+            "id": "41",
+            "product_name": "Jeruk nipis",
+            "product_category": "sayur",
+            "product_grade": "C",
+            "product_image": "https://images.unsplash.com/photo-1578855691621-8a08ea00d1fb?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8bGltZXxlbnwwfHwwfHw%3D&auto=format&fit=crop&w=500&q=60",
+            "product_price": 7000,
+            "product_uom": "/ kg"
+        },
+        {
+            "id": "42",
+            "product_name": "Kol",
+            "product_category": "sayur",
+            "product_grade": "C",
+            "product_image": "https://images.unsplash.com/photo-1594282486552-05b4d80fbb9f?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8Y2FiYmFnZXxlbnwwfHwwfHw%3D&auto=format&fit=crop&w=500&q=60",
+            "product_price": 4000,
+            "product_uom": "/ kg"
+        },
+        {
+            "id": "43",
+            "product_name": "Labu Jipang",
+            "product_category": "sayur",
+            "product_grade": "C",
+            "product_image": "https://media.istockphoto.com/photos/pile-of-chayote-fruits-for-sale-picture-id482451066?b=1&k=20&m=482451066&s=170667a&w=0&h=z-Th7UGaBZUtDfR-hsjLr9yZl29uqTY-RFUnbLNm6qY=",
+            "product_price": 4000,
+            "product_uom": "/ kg"
+        },
+        {
+            "id": "44",
+            "product_name": "Jagung",
+            "product_category": "sayur",
+            "product_grade": "C",
+            "product_image": "https://images.unsplash.com/photo-1551754655-cd27e38d2076?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8NHx8Y29ybnxlbnwwfHwwfHw%3D&auto=format&fit=crop&w=500&q=60",
+            "product_price": 6000,
+            "product_uom": "/ kg"
+        },
+        {
+            "id": "45",
+            "product_name": "Kentang kuning",
+            "product_category": "sayur",
+            "product_grade": "C",
+            "product_image": "https://images.unsplash.com/photo-1590165482129-1b8b27698780?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8M3x8cG90YXRvfGVufDB8fDB8fA%3D%3D&auto=format&fit=crop&w=500&q=60",
+            "product_price": 8000,
+            "product_uom": "/ kg"
+        },
+        {
+            "id": "46",
+            "product_name": "Kentang merah",
+            "product_category": "sayur",
+            "product_grade": "C",
+            "product_image": "https://media.istockphoto.com/photos/red-potatoes-picture-id157286077?b=1&k=20&m=157286077&s=170667a&w=0&h=0BJywvNLhlj_dZrFIyykxrNFeU6roiibJ7ic_Cl9fh8=",
+            "product_price": 10000,
+            "product_uom": "/ kg"
+        },
+        {
+            "id": "47",
+            "product_name": "Tempe",
+            "product_category": "sayur",
+            "product_grade": "C",
+            "product_image": "https://media.istockphoto.com/photos/tempeh-picture-id481199705?b=1&k=20&m=481199705&s=170667a&w=0&h=SqyAb_ol9LuCwDNrfFRXLF54NnAHOuFM1v9sAgEmhQw=",
+            "product_price": 5000,
+            "product_uom": "/ pcs"
+        },
+        {
+            "id": "48",
+            "product_name": "Ubi",
+            "product_category": "sayur",
+            "product_grade": "C",
+            "product_image": "https://media.istockphoto.com/photos/raw-whole-sweet-potatoes-yams-fresh-healthy-root-vegetable-picture-id172245358?b=1&k=20&m=172245358&s=170667a&w=0&h=OchgjGnr54AF2I0UhxYtDtZ7d8UACUu8J_jWIr_6sCE=",
+            "product_price": 5000,
+            "product_uom": "/ kg"
+        },
+        {
+            "id": "49",
+            "product_name": "Kunyit",
+            "product_category": "sayur",
+            "product_grade": "C",
+            "product_image": "https://i0.wp.com/homesteadandchill.com/wp-content/uploads/2019/09/how-to-grow-turmeric-hands-hawaiian-red-indira-yellow-harvest.jpeg?resize=686%2C536&ssl=1",
+            "product_price": 10000,
+            "product_uom": "/ kg"
+        },
+        {
+            "id": "50",
+            "product_name": "Bawang merah",
+            "product_category": "sayur",
+            "product_grade": "C",
+            "product_image": "https://images.unsplash.com/photo-1508747703725-719777637510?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Nnx8b25pb258ZW58MHx8MHx8&auto=format&fit=crop&w=500&q=60",
+            "product_price": 24000,
+            "product_uom": "/ kg"
+        },
+        {
+            "id": "51",
+            "product_name": "Bawang putih",
+            "product_category": "sayur",
+            "product_grade": "C",
+            "product_image": "https://images.unsplash.com/photo-1540148426945-6cf22a6b2383?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8M3x8Z2FybGljfGVufDB8fDB8fA%3D%3D&auto=format&fit=crop&w=500&q=60",
+            "product_price": 25000,
+            "product_uom": "/ kg"
+        },
+        {
+            "id": "52",
+            "product_name": "Bawang bombay",
+            "product_category": "sayur",
+            "product_grade": "C",
+            "product_image": "https://images.unsplash.com/photo-1580201092675-a0a6a6cafbb1?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mnx8b25pb258ZW58MHx8MHx8&auto=format&fit=crop&w=500&q=60",
+            "product_price": 16000,
+            "product_uom": "/ kg"
+        },
+        {
+            "id": "53",
+            "product_name": "Genjer",
+            "product_category": "sayur",
+            "product_grade": "C",
+            "product_image": "https://www.parenting.co.id/img/images/Juli/A1.jpg",
+            "product_price": 3000,
+            "product_uom": "/ ikat"
+        },
+        {
+            "id": "54",
+            "product_name": "Brokoli",
+            "product_category": "sayur",
+            "product_grade": "C",
+            "product_image": "https://image-cdn.medkomtek.com/fuwN5D2Sg4TsnsuYWHjPWukgKs0=/640x480/smart/klikdokter-media-buckets/medias/2304198/original/065679300_1551778172-Kenali-Manfaat-Brokoli-untuk-Asam-Urat-By-S_derevianko-Shutterstock.jpg",
+            "product_price": 15000,
+            "product_uom": "/ kg"
+        },
+        {
+            "id": "55",
+            "product_name": "Buncis",
+            "product_category": "sayur",
+            "product_grade": "C",
+            "product_image": "https://media.istockphoto.com/photos/fresh-beans-harvested-picture-id1325908747?b=1&k=20&m=1325908747&s=170667a&w=0&h=CxF6SvALEubccyNRnbzm9NMjfeszKmDd0wqmyrfMEtA=",
+            "product_price": 8000,
+            "product_uom": "/ kg"
+        },
+        {
+            "id": "56",
+            "product_name": "Selada",
+            "product_category": "sayur",
+            "product_grade": "B",
+            "product_image": "https://images.unsplash.com/photo-1622206151226-18ca2c9ab4a1?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mnx8bGV0dHVjZXxlbnwwfHwwfHw%3D&auto=format&fit=crop&w=500&q=60",
+            "product_price": 15000,
+            "product_uom": "/ kg"
+        },
+        {
+            "id": "57",
+            "product_name": "Seledri",
+            "product_category": "sayur",
+            "product_grade": "B",
+            "product_image": "https://media.istockphoto.com/photos/celery-picture-id119540472?b=1&k=20&m=119540472&s=170667a&w=0&h=s0b1T7jZjuD-C4Cdatevj9SxVnKWvVMjIxs6blszahI=",
+            "product_price": 13000,
+            "product_uom": "/ kg"
+        },
+        {
+            "id": "58",
+            "product_name": "Kacang Merah",
+            "product_category": "sayur",
+            "product_grade": "C",
+            "product_image": "https://cdn1-production-images-kly.akamaized.net/bx-kHyQb_8YvF8cFKZgzJKHatjk=/640x360/smart/filters:quality(75):strip_icc():format(jpeg)/kly-media-production/medias/1679946/original/081116900_1502788465-5-Khasiat-Ajaib-Kacang-Merah.jpg",
+            "product_price": 35000,
+            "product_uom": "/ kg"
+        },
+        {
+            "id": "59",
+            "product_name": "Kemangi",
+            "product_category": "sayur",
+            "product_grade": "C",
+            "product_image": "https://images.unsplash.com/photo-1538596313828-41d729090199?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8NXx8YmFzaWx8ZW58MHx8MHx8&auto=format&fit=crop&w=500&q=60",
+            "product_price": 8000,
+            "product_uom": "/ ikat"
+        },
+        {
+            "id": "60",
+            "product_name": "Tauge",
+            "product_category": "sayur",
+            "product_grade": "C",
+            "product_image": "https://media.istockphoto.com/photos/bean-sprouts-picture-id178605117?b=1&k=20&m=178605117&s=170667a&w=0&h=lruVJJq_73yCU5wp1knlOOFdXlWJHpcmxQLJzY7KRc8=",
+            "product_price": 15000,
+            "product_uom": "/ kg"
+        },
+        {
+            "id": "61",
+            "product_name": "Pete",
+            "product_category": "sayur",
+            "product_grade": "C",
+            "product_image": "https://images.creativemarket.com/0.1.0/ps/6548676/1820/1213/m1/fpnw/wm1/aa896jg9rkea1baroo2dussxqabiplvlfmxf62ztnacdl3wmucyrzfct3kpzt6vv-.jpg?1560715019&s=3b6df56a72599f4d7cc2ce57b887fb6e",
+            "product_price": 35000,
+            "product_uom": "/ ikat"
+        },
+        {
+            "id": "62",
+            "product_name": "Melinjo",
+            "product_category": "sayur",
+            "product_grade": "C",
+            "product_image": "https://www.jurnalasia.com/wp-content/uploads/2014/08/photo3555_6-IMG_6274-melinjo_p1.jpg",
+            "product_price": 15000,
+            "product_uom": "/ kg"
+        },
+        {
+            "id": "63",
+            "product_name": "Jengkol",
+            "product_category": "sayur",
+            "product_grade": "C",
+            "product_image": "https://media.istockphoto.com/photos/jengkol-stock-photo-picture-id1350976579?b=1&k=20&m=1350976579&s=170667a&w=0&h=1F69M31PxERHTKL457ODHqnEQ3bzmb-pkfxpz3qsfRM=",
+            "product_price": 30000,
+            "product_uom": "/ kg"
+        },
+        {
+            "id": "64",
+            "product_name": "Jahe",
+            "product_category": "sayur",
+            "product_grade": "C",
+            "product_image": "https://images.unsplash.com/photo-1603431777782-912e3b76f60d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8NXx8Z2luZ2VyfGVufDB8fDB8fA%3D%3D&auto=format&fit=crop&w=500&q=60",
+            "product_price": 13000,
+            "product_uom": "/ kg"
+        },
+        {
+            "id": "65",
+            "product_name": "Ikan Gembung",
+            "product_category": "daging",
+            "product_grade": "B",
+            "product_image": "https://images.unsplash.com/photo-1568727349458-1bb59fb3fb63?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MTJ8fG1hY2tlcmVsfGVufDB8fDB8fA%3D%3D&auto=format&fit=crop&w=500&q=60",
+            "product_price": 45000,
+            "product_uom": "/ kg"
+        },
+        {
+            "id": "66",
+            "product_name": "Kakap putih",
+            "product_category": "daging",
+            "product_grade": "B",
+            "product_image": "https://fishmarkets.id/wp-content/uploads/2021/04/fishmarkets.id-jual-ikan-kakap-putih-jakarta-murah-.jpg",
+            "product_price": 40000,
+            "product_uom": "/ kg"
+        },
+        {
+            "id": "67",
+            "product_name": "Kakap merah",
+            "product_category": "daging",
+            "product_grade": "B",
+            "product_image": "https://www.hargabulanini.com/wp-content/uploads/2018/01/Daftar-Harga-Ikan-Kakap-Per-Kg-Terbaru-1280x720.jpg",
+            "product_price": 80000,
+            "product_uom": "/ kg"
+        },
+        {
+            "id": "68",
+            "product_name": "Udang swalo",
+            "product_category": "daging",
+            "product_grade": "B",
+            "product_image": "https://s1.bukalapak.com/img/61212746701/large/data.png",
+            "product_price": 60000,
+            "product_uom": "/ kg"
+        },
+        {
+            "id": "69",
+            "product_name": "Udang kelong",
+            "product_category": "daging",
+            "product_grade": "B",
+            "product_image": "https://v-images2.antarafoto.com/udang-kelong-laut-mvbglp-hl.jpg",
+            "product_price": 120000,
+            "product_uom": "/ kg"
+        },
+        {
+            "id": "70",
+            "product_name": "Ikan pare",
+            "product_category": "daging",
+            "product_grade": "B",
+            "product_image": "https://upload.wikimedia.org/wikipedia/commons/4/47/Brevitry_heteru_190930_153203_lab.jpg",
+            "product_price": 40000,
+            "product_uom": "/ kg"
+        },
+        {
+            "id": "71",
+            "product_name": "Cumi-cumi",
+            "product_category": "daging",
+            "product_grade": "B",
+            "product_image": "https://images.unsplash.com/photo-1631967311898-52b9ce52b1bf?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mnx8c3F1aWQlMjBtYXJrZXR8ZW58MHx8MHx8&auto=format&fit=crop&w=500&q=60",
+            "product_price": 65000,
+            "product_uom": "/ kg"
+        },
+        {
+            "id": "72",
+            "product_name": "Ikan dencis",
+            "product_category": "daging",
+            "product_grade": "B",
+            "product_image": "https://images.tokopedia.net/img/cache/700/product-1/2019/1/20/5257055/5257055_022d6140-63c1-4f8a-924c-c199d1dab521_1224_1224.jpg",
+            "product_price": 40000,
+            "product_uom": "/ kg"
+        },
+        {
+            "id": "73",
+            "product_name": "Kerang",
+            "product_category": "daging",
+            "product_grade": "B",
+            "product_image": "https://asset-a.grid.id/crop/0x0:0x0/x/photo/2021/09/08/kerang-yang-sudah-tidak-segarjp-20210908064254.jpg",
+            "product_price": 30000,
+            "product_uom": "/ kg"
+        },
+        {
+            "id": "74",
+            "product_name": "Ikan kerapuh",
+            "product_category": "daging",
+            "product_grade": "B",
+            "product_image": "https://asset.kompas.com/crops/jOrI37OeebVqwMprkuzwkZ48eMY=/33x0:877x563/750x500/data/photo/2020/01/14/5e1dc49af337a.jpg",
+            "product_price": 60000,
+            "product_uom": "/ kg"
+        },
+        {
+            "id": "75",
+            "product_name": "Ikan nila",
+            "product_category": "daging",
+            "product_grade": "B",
+            "product_image": "https://2.bp.blogspot.com/-rW4khe4jnqs/WVnvYsgk7EI/AAAAAAAAAEQ/4O33fasq1QALNMq4UHgqbOi6YGcGCYVnACLcBGAs/s1600/Untitled.jpg",
+            "product_price": 30000,
+            "product_uom": "/ kg"
+        },
+        {
+            "id": "76",
+            "product_name": "Ikan tongkol",
+            "product_category": "daging",
+            "product_grade": "B",
+            "product_image": "https://news.kkp.go.id/wp-content/uploads/2015/10/tongkol.jpg",
+            "product_price": 30000,
+            "product_uom": "/ kg"
+        },
+        {
+            "id": "77",
+            "product_name": "Rajungan",
+            "product_category": "daging",
+            "product_grade": "B",
+            "product_image": "https://cf.shopee.co.id/file/95f6ffac193235159a1ffc8fc3e0c0f9",
+            "product_price": 100000,
+            "product_uom": "/ kg"
+        },
+        {
+            "id": "78",
+            "product_name": "Udang galah",
+            "product_category": "daging",
+            "product_grade": "B",
+            "product_image": "https://s1.bukalapak.com/img/6093005122/large/udang_galah_segar.jpg",
+            "product_price": 110000,
+            "product_uom": "/ kg"
+        },
+        {
+            "id": "79",
+            "product_name": "Kepiting",
+            "product_category": "daging",
+            "product_grade": "A",
+            "product_image": "https://images.unsplash.com/photo-1573699209155-e1364b8746a5?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8OHx8Y3JhYnxlbnwwfHwwfHw%3D&auto=format&fit=crop&w=500&q=60",
+            "product_price": 90000,
+            "product_uom": "/ kg"
+        },
+        {
+            "id": "80",
+            "product_name": "Ayam boiler",
+            "product_category": "daging",
+            "product_grade": "B",
+            "product_image": "https://gdmagri.com/wp-content/uploads/2020/07/harga-ayam-3.jpg",
+            "product_price": 32000,
+            "product_uom": "/ kg"
+        },
+        {
+            "id": "81",
+            "product_name": "Dada ayam",
+            "product_category": "daging",
+            "product_grade": "B",
+            "product_image": "https://i2.wp.com/blog.amurya.com/wp-content/uploads/2021/04/bisnis-jualan-ayam-potong.png?fit=670%2C445&ssl=1",
+            "product_price": 34000,
+            "product_uom": "/ kg"
+        },
+        {
+            "id": "82",
+            "product_name": "Paha ayam",
+            "product_category": "daging",
+            "product_grade": "B",
+            "product_image": "https://images.tokopedia.net/img/cache/500-square/VqbcmM/2021/9/14/3b7855d1-50d8-4778-be57-a015fae633ff.jpg",
+            "product_price": 34000,
+            "product_uom": "/ kg"
+        }
+    ]
+}
