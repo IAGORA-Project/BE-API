@@ -14,7 +14,7 @@
 
 ## IN USER
 
-##### *Defined in <a href="https://github.com/IAGORA-Project/BE-API/blob/main/router/transaction/user/router_user_transaction.js" target="_blank">router/transaction/user/router_user_transaction.js</a>*
+##### *Defined in <a href="https://github.com/IAGORA-Project/BE-API/blob/main/router/transaction/user/router_user_transaction.js" target="__blank">router/transaction/user/router_user_transaction.js</a>*
 
 ### 1. ADD TO CART
 
@@ -313,7 +313,7 @@ headers: {
 
 ## IN WINGMAN
 
-##### *Defined in <a href="https://github.com/IAGORA-Project/BE-API/blob/main/router/transaction/wingman/router_wm_transaction.js" target="_blank">router/transaction/wingman/router_wm_transaction.js</a>*
+##### *Defined in <a href="https://github.com/IAGORA-Project/BE-API/blob/main/router/transaction/wingman/router_wm_transaction.js" target="__blank">router/transaction/wingman/router_wm_transaction.js</a>*
 
 ### 9. Accept Oerder
 
@@ -572,7 +572,7 @@ headers: {
 
 # IN ADMIN 
 
-##### *Defined in <a href="https://github.com/IAGORA-Project/BE-API/blob/main/router/admin/router_admin.js#L44" target="_blank">router/admin/router_admin.js:44</a>*
+##### *Defined in <a href="https://github.com/IAGORA-Project/BE-API/blob/main/router/admin/router_admin.js#L44" target="__blank">router/admin/router_admin.js:44</a>*
 
 ### 17. Check All Status Order Wingman
 

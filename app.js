@@ -4,7 +4,6 @@ const app = express();
 const cors = require('cors');
 const cookieParser = require('cookie-parser');
 const session = require('express-session');
-// const passport = require('passport');
 const helmet = require('helmet');
 const compression = require('compression');
 const morgan = require('morgan');
@@ -82,11 +81,6 @@ var protectPath = function(regex) {
 // app.use(protectPath(/^\/file\/.*$/));
 app.use(express.static('public'));
 // app.use(express.static('public/iagora2_2'));
-
-// PASSPORT
-// app.use(passport.initialize());
-// app.use(passport.session());
-// require('./lib/config')(passport);
 
 app.use(function(req, res, next) {
   res.header("Access-Control-Allow-Credentials", "true");
