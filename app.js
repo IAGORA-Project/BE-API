@@ -24,6 +24,7 @@ const transactionUser = require('./router/transaction/user/router_user_transacti
 const transactionWingman = require('./router/transaction/wingman/router_wm_transaction')
 
 const { default: axios } = require('axios');
+const path = require('path');
 
 app.set('trust proxy', 1);
 app.use(compression())
@@ -125,6 +126,12 @@ app.get('/arrs', (req, res) => {
     arr
   })
 })
+
+app.get('/image/product/:imageName', function (req, res) {
+  const { imageName } = req.params
+
+  res.sendFile(path.join(__dirname, `./public/images/products/${imageName}`));
+});
 
 app.use('/api/v1/upload', uploadRouter);
 app.use('/api/v1/wingman', wingmanRouter);

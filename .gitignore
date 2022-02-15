@@ -1,8 +1,8 @@
-node_modules
-package-lock.json
-alone
-public/loginhp.html
-public/nohp.html
-public/regwingman.html
-public/upload.html
-public/user.html
+/node_modules
+/alone
+/public/loginhp.html
+/public/nohp.html
+/public/regwingman.html
+/public/upload.html
+/public/user.html
+/public/images/products/*
