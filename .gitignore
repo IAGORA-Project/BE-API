@@ -7,3 +7,4 @@ package-lock.json
 /public/upload.html
 /public/user.html
 /public/images/products/*
+.env

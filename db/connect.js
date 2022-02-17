@@ -1,7 +1,8 @@
 const mongoose = require('mongoose');
 
 function connectDb() {
-    mongoose.connect(`mongodb://localhost:27017/ecom`, { 
+    const nodeEnv = process.env.NODE_ENV === 'development' ? 'mongodb://localhost:27017/ecom' : process.env.MONGO_URL
+    mongoose.connect(nodeEnv, { 
       useNewUrlParser: true, 
       useUnifiedTopology: true
     });
