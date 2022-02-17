@@ -22,6 +22,7 @@ const tokenRouter = require('./router/token');
 const adminRouter = require('./router/admin/router_admin');
 const transactionUser = require('./router/transaction/user/router_user_transaction')
 const transactionWingman = require('./router/transaction/wingman/router_wm_transaction')
+const cartRoute = require('./router/transaction/user/cartRoute')
 
 const { default: axios } = require('axios');
 const path = require('path');
@@ -142,6 +143,7 @@ app.use('/api/v1/product', productRouter);
 app.use('/api/v1/admin', adminRouter);
 app.use('/api/v1/transaction/user', transactionUser);
 app.use('/api/v1/transaction/wingman', transactionWingman);
+app.use('/api/v1/cart', cartRoute);
 
 app.get('/tess', async(req, res) => {
   const get = await axios.get(`https://shopee.co.id/api/v2/search_items/?by=relevancy&keyword=wortel&limit=10&newest=0&order=desc&page_type=search&version=2`)
