@@ -179,9 +179,32 @@ const deleteAllCart = async (req, res) => {
   }
 }
 
+const getUserCart = async (req, res) => {
+  const { userId } = req.params
+
+  try {
+    const user = await User.findById(userId)
+
+    if(user) {
+      const cart = await Cart.findOne({ user: user._id })
+      
+      if(cart) {
+        return res.status(200).json({ cart })
+      }
+
+      return res.status(404).json({ notFound: 'Cart anda masih kosong.' })
+    }
+
+    return res.status(404).json({ notFound: `User dengan id: ${userId} tidak ditemukan!` })
+  } catch (error) {
+    return res.status(500).json({ error })
+  }
+}
+
 module.exports = {
   addToCart,
   updateQuantity,
   deleteOneProductCart,
-  deleteAllCart
+  deleteAllCart,
+  getUserCart
 }
