@@ -26,10 +26,14 @@ const Users = mongoose.Schema({
         type: String,
     },
     cart: {
-        type: Array,
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'cart'
     },
     transaction: {
         type: Array
+    },
+    auth: {
+        token: String
     }
 }, { versionKey: false });
 module.exports.User = mongoose.model('user', Users);

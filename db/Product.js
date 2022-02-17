@@ -3,7 +3,8 @@ const mongoose = require('mongoose');
 const Product = mongoose.Schema({
     product_name: { 
         type: String,
-        required: true
+        required: true,
+        unique: true
     },
     product_category: { 
         type: String,
@@ -11,6 +12,7 @@ const Product = mongoose.Schema({
     },
     product_grade: { 
         type: String,
+        enum : ['A','B', 'C'],
         required: true
     },
     product_image: { 

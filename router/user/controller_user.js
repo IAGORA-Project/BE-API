@@ -16,37 +16,37 @@ const createJWT = id => {
     })
 }
 
-async function router_user(req, res) {
-    try {
-        // if (!req.isAuthenticated()) {
-        if (!req.isAuthenticated) {
-            return res.status(403).send({
-                status: 403,
-                message: 'Please login User to continue'
-            })
-        } else {
-            console.log('req.user: ', req.user)
-            let { nama } = req.user;
-            if (nama == null) {
-                return res.status(201).send({
-                    status: 201,
-                    regis: false,
-                    message: 'Login User Berhasil dan Kamu belum registrasi'
-                })
-            } else {
-                return res.status(200).send({
-                    status: 200,
-                    regis: true,
-                    message: 'Login User Sukses dan kamu sudah terdaftar di db'
-                })
-            }
-        }
+// async function router_user(req, res) {
+//     try {
+//         // if (!req.isAuthenticated()) {
+//         if (!req.isAuthenticated) {
+//             return res.status(403).send({
+//                 status: 403,
+//                 message: 'Please login User to continue'
+//             })
+//         } else {
+//             console.log('req.user: ', req.user)
+//             let { nama } = req.user;
+//             if (nama == null) {
+//                 return res.status(201).send({
+//                     status: 201,
+//                     regis: false,
+//                     message: 'Login User Berhasil dan Kamu belum registrasi'
+//                 })
+//             } else {
+//                 return res.status(200).send({
+//                     status: 200,
+//                     regis: true,
+//                     message: 'Login User Sukses dan kamu sudah terdaftar di db'
+//                 })
+//             }
+//         }
 
-    } catch (error) {
-        console.log(error);
-        return res.status(500).send({status: res.statusCode, code: respons.InternalServerError, message: 'Internal Server Error'});
-    }
-}
+//     } catch (error) {
+//         console.log(error);
+//         return res.status(500).send({status: res.statusCode, code: respons.InternalServerError, message: 'Internal Server Error'});
+//     }
+// }
 
 async function data_user(req, res) {
     try {
@@ -110,7 +110,8 @@ async function send_otp_user(req, res) {
             res.status(506).send({
                 status: res.statusCode,
                 code: respons.FailInternalReq,
-                message: `Failed Send Otp to ${no_hp}, due to internal request error`
+                message: `Failed Send Otp to ${no_hp}, due to internal request error`,
+                err
             })
         })
     } catch (error) {
@@ -394,7 +395,7 @@ module.exports = {
     data_user,
     send_otp_user,
     login_user,
-    router_user,
+    // router_user,
     register_user,
     change_data_user,
     logout_user,

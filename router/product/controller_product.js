@@ -8,11 +8,7 @@ async function create_product(req, res) {
         const product_image = req.file
 
         if(!product_image) {
-            return res.status(403).send({
-                status: res.statusCode,
-                code: respons.NeedBody,
-                message: "Input Body"
-            })
+            return res.status(422).json({ validationError: 'Gambar produk wajib diisi.' })
         }
 
         if (!product_name || !product_category || !product_grade || !product_price || !product_uom) return res.status(403).send({
@@ -28,12 +24,7 @@ async function create_product(req, res) {
             product_price, 
             product_uom
         });
-        return res.status(200).send({
-            status: res.statusCode,
-            code: respons[200],
-            message: `Sukses Create Product`,
-            result: create
-        })
+        return res.status(201).json({ success: `Produk ${create.product_name} berhasil ditambahkan.`, data: create })
 
     } catch (error) {
         console.log(error);
@@ -160,14 +151,20 @@ async function delete_one_product(req, res) {
             code: respons.NeedParams,
             message: `Input Params`
         })
-        Product.deleteOne({ _id: ids }, function (err, res) {
-            if (err) throw err;
-        })
-        return res.status(200).send({
-            status: res.statusCode,
-            code: respons[200],
-            message: `Sukses Delete : ${ids}`
-        })
+
+        const product = await Product.findById(ids)
+
+        if(product) {
+            product.remove()
+
+            fs.unlinkSync(`./public/images/products/${product.product_image}`)
+            
+            return res.status(200).send({
+                status: res.statusCode,
+                code: respons[200],
+                message: `Sukses Delete : ${ids}`
+            })
+        }
     } catch (error) {
         console.log(error);
         return res.status(500).send({status: res.statusCode, code: respons.InternalServerError, message: 'Internal Server Error'}); 
@@ -177,6 +174,7 @@ async function delete_one_product(req, res) {
 async function delete_all_product(req, res) {
     try {
         await Product.deleteMany({});
+        fs.readdirSync('./public/images/products').forEach(f => fs.rmSync(`${'./public/images/products'}/${f}`));
         return res.status(200).send({
             status: res.statusCode,
             code: respons[200],

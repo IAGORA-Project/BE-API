@@ -6,6 +6,7 @@ const controllerProduct = require('./controller_product')
 const { verifyToken, verifJWT } = require('../token');
 const { Product } = require('../../db/Product');
 const { productUpload } = require('../../utils/image-upload');
+const { createProductValidator } = require('../../utils/validators/prodoctValidator');
 
 router.get('/', async (req, res) => {
     const data = await Product.find({});
@@ -16,7 +17,7 @@ router.get('/', async (req, res) => {
 
 /* CREATE PRODUCT */
 
-router.post('/create-product', verifyToken, productUpload().single('product_image'), controllerProduct.create_product);
+router.post('/create-product', productUpload().single('product_image'), createProductValidator, controllerProduct.create_product);
 
 /* CREATE PRODUCT */
 
@@ -32,10 +33,10 @@ router.put('/update-product/:ids', verifyToken, productUpload().single('product_
 
 /* CREATE PRODUCT */
 
-router.get('/delete-one-product/:ids', verifyToken, controllerProduct.delete_one_product);
+router.delete('/delete-one-product/:ids', verifyToken, controllerProduct.delete_one_product);
 
 /* CREATE PRODUCT */
 
-router.get('/delete-all-product', verifyToken, controllerProduct.delete_all_product);
+router.delete('/delete-all-product', verifyToken, controllerProduct.delete_all_product);
 
 module.exports = router
