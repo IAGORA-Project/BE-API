@@ -12,8 +12,10 @@ const Cart = mongoose.Schema({
         ref: 'product'
       },
       quantity: Number,
-      total: Number
+      subTotal: Number,
+      _id: false
     }
-  ]
+  ],
+  total: Number
 }, { timestamps: true });
 module.exports.Cart = mongoose.model('cart', Cart);

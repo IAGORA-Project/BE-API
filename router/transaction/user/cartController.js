@@ -19,25 +19,41 @@ const addToCart = async (req, res) => {
           const filterProduct = products.filter(prd => prd.product.toString() === product._id.toString())[0]
           if(filterProduct) {
             filterProduct.quantity = filterProduct.quantity + 1
-            filterProduct.total = filterProduct.quantity * product.product_price
+            filterProduct.subTotal = filterProduct.quantity * product.product_price
             
             const productsIndex = products.findIndex(p => p.product.toString() === filterProduct.product.toString())
 
             products[productsIndex] = filterProduct
 
             await Cart.updateOne({ _id: cart._id }, { products }, { new: true })
+
+            const updatedCart = await Cart.findOne({ user: user._id })
+            let countTotal = null
+            updatedCart.products.map(p => {
+              countTotal += p.subTotal
+            })
+            await Cart.updateOne({ user: user._id }, { total: countTotal })
           } else {
             const newProductCart = await Cart.findOne({ _id: cart._id })
             newProductCart.products.push({
               product: product._id,
               quantity: 1,
-              total: product.product_price
+              subTotal: product.product_price
             })
 
             await newProductCart.save()
+
+            const updatedCart = await Cart.findOne({ user: user._id })
+            let countTotal = null
+            updatedCart.products.map(p => {
+              countTotal += p.subTotal
+            })
+            await Cart.updateOne({ user: user._id }, { total: countTotal })
           }
 
-          return res.status(200).json({ success: `Cart id: ${cart._id} updated` })
+          const updatedCart = await Cart.findOne({ user: user._id }).populate('products.product')
+
+          return res.status(200).json({ success: `Cart id: ${cart._id} updated`, data: updatedCart })
         }
         
         const createCart = await Cart.create({ 
@@ -46,9 +62,10 @@ const addToCart = async (req, res) => {
             {
               product: product._id,
               quantity: 1,
-              total: product.product_price
+              subTotal: product.product_price
             }
-          ]
+          ],
+          total: product.product_price
         })
 
         if(createCart) {
@@ -56,7 +73,9 @@ const addToCart = async (req, res) => {
           await user.save()
         }
 
-        return res.status(201).json({ success: `Cart berhasil ditambahkan`, data: createCart })
+        const updatedCart = await Cart.findOne({ user: user._id }).populate('products.product')
+
+        return res.status(201).json({ success: `Cart berhasil ditambahkan`, data: updatedCart })
       }
 
       return res.status(404).json({ notFound: `Product dengan id: ${productId} tidak ditemukan!` })
@@ -87,7 +106,7 @@ const updateQuantity = async (req, res) => {
 
           if(filterProduct) {
             filterProduct.quantity = quantity
-            filterProduct.total = filterProduct.quantity * product.product_price
+            filterProduct.subTotal = filterProduct.quantity * product.product_price
             
             const productsIndex = products.findIndex(p => p.product.toString() === filterProduct.product.toString())
 
@@ -95,7 +114,14 @@ const updateQuantity = async (req, res) => {
 
             await Cart.updateOne({ _id: cart._id }, { products }, { new: true })
 
-            return res.status(200).json({ success: `Cart id: ${cart._id} updated` })
+            const updatedCart = await Cart.findOne({ user: user._id })
+            let countTotal = null
+            updatedCart.products.map(p => {
+              countTotal += p.subTotal
+            })
+            await Cart.updateOne({ user: user._id }, { total: countTotal })
+
+            return res.status(200).json({ success: `Cart id: ${cart._id} updated`, data: await Cart.findOne({ user: user._id }).populate('products.product') })
           }
 
           return res.status(404).json({ notFound: 'Produk belum di tambahkan kedalam cart, tambahkan terlebih dahulu!' })
@@ -136,7 +162,14 @@ const deleteOneProductCart = async (req, res) => {
 
             await Cart.updateOne({ _id: cart._id }, { products }, { new: true })
 
-            return res.status(200).json({ success: `Cart id: ${cart._id} updated` })
+            const updatedCart = await Cart.findOne({ user: user._id })
+            let countTotal = null
+            updatedCart.products.map(p => {
+              countTotal += p.subTotal
+            })
+            await Cart.updateOne({ user: user._id }, { total: countTotal })
+
+            return res.status(200).json({ success: `Cart id: ${cart._id} updated`, data: await Cart.findOne({ user: user._id }).populate('products.product') })
           }
 
           return res.status(404).json({ notFound: 'Produk belum di tambahkan kedalam cart, tambahkan terlebih dahulu!' })
@@ -166,6 +199,8 @@ const deleteAllCart = async (req, res) => {
       if(cart) {
         cart.products = []
         await cart.save()
+        
+        await Cart.updateOne({ user: user._id }, { total: 0 })
 
         return res.status(202).json({ success: `Cart id: ${cart._id} berhasil dihapus.` })
       }
@@ -186,7 +221,7 @@ const getUserCart = async (req, res) => {
     const user = await User.findById(userId)
 
     if(user) {
-      const cart = await Cart.findOne({ user: user._id })
+      const cart = await Cart.findOne({ user: user._id }).populate('products.product')
       
       if(cart) {
         return res.status(200).json({ cart })
