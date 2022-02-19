@@ -3,10 +3,11 @@ const jwt = require('jsonwebtoken');
 const fs = require('fs-extra');
 const { default: axios } = require("axios");
 
-const { Token } = require("../../db/Token");
+const { OneTimePassword } = require("../../db/OneTimePassword");
 const { randomOtp } = require("../../lib/function");
 const { User } = require('../../db/User');
 const { respons, waApi } = require('../../lib/setting');
+const { generateRefreshToken } = require('../../utils/authentication');
 
 const maxAge = Math.floor(Date.now() / 1000) + (60 * 60)
 
@@ -83,100 +84,108 @@ async function data_user(req, res) {
 async function send_otp_user(req, res) {
     try {
         let { no_hp } = req.body;
-        if (!no_hp || Object.keys(req.body).length === 0) return res.status(403).send({
-            status: res.statusCode,
-            code: respons.NeedBodyHP,
-            message: 'input body hp'
-        })
-        let random = randomOtp(6);
-        let text = `Kode OTP mu Adalah : ${random}`
-        await Token.create({ no_hp: no_hp, token: random })
-        await axios.get(`${waApi}/api/v1/send?no=${no_hp}&text=${text}`).then(({ data }) => {
-            if (data) {
-                res.status(200).send({
-                    status: res.statusCode,
-                    code: respons[200],
-                    message: `Success Send Otp to ${no_hp}, login and submit your OTP code`
-                })
-            } else {
-                res.status(503).send({
-                    status: res.statusCode,
-                    code: respons.FailSendOTP,
-                    message: `Failed Send Otp to ${no_hp}`
-                })
+
+        const isPhone = /^(^\+62|62|^08)(\d{3,4}-?){2}\d{3,4}$/g.test(parseInt(no_hp))
+        if(!isPhone) {
+            return res.status(400).json({ error: "Nomor hp tidak valid!" })
+        }
+
+        const oneTimePassword = await OneTimePassword.findOne({ no_hp })
+
+        if(oneTimePassword) {
+            // Jika user sudah pernah melakukan request dengan nomor hp
+            if(Date.parse(oneTimePassword.expire_at) > Date.now()) {
+                // Check apabila expire otpnya berakhir
+                // Jika belum expire, kode otp di database dikirim ke user
+                const sendMessage = await axios.get(`${waApi}/api/v1/otp/${no_hp}/send?message=Kode OTP mu Adalah ${oneTimePassword.otp_code}`)
+                
+                if(sendMessage.status === 200) {
+                    return res.status(202).json({ success: sendMessage.data.success, message: "Segera verifikasi kode otp anda, akan expire dalam 1 menit" })
+                }
+
+                return res.status(500).json({ error: err.response.data })
             }
-        }).catch(err => {
-            console.log(err);
-            res.status(506).send({
-                status: res.statusCode,
-                code: respons.FailInternalReq,
-                message: `Failed Send Otp to ${no_hp}, due to internal request error`,
-                err
-            })
-        })
+
+            // Jika kode otp expire akan dibuat kode baru
+            const updateOtp = await OneTimePassword.findOneAndUpdate(
+                { no_hp }, { otp_code: randomOtp(6), expire_at: new Date(Date.now() + (1000 * 60)).getTime() }, { new: true }
+            )
+
+            console.log(updateOtp);
+
+            const sendMessage = await axios.get(`${waApi}/api/v1/otp/${no_hp}/send?message=Kode OTP mu Adalah ${updateOtp.otp_code}`)
+
+            if(sendMessage.status === 200) {
+                return res.status(202).json({ success: sendMessage.data.success, message: "Segera verifikasi kode otp anda, akan expire dalam 1 menit" })
+            }
+
+            return res.status(500).json({ error: err.response.data })
+        }
+
+        // Jika belum pernah melakukan request nomor hp, maka akan dibuat data baru
+        const createOtp = await OneTimePassword.create({ no_hp, otp_code: randomOtp(6) })
+
+        const sendMessage = await axios.get(`${waApi}/api/v1/otp/${no_hp}/send?message=Kode OTP mu Adalah ${createOtp.otp_code}`)
+
+        if(sendMessage.status === 200) {
+            return res.status(202).json({ success: sendMessage.data.success, message: "Segera verifikasi kode otp anda, akan expire dalam 1 menit" })
+        }
+
+        return res.status(500).json({ error: err.response.data })
     } catch (error) {
         console.log(error);
-        return res.status(500).send({status: res.statusCode, code: respons.InternalServerError, message: 'Internal Server Error'});
+        return res.status(500).send({ error });
     }
 }
 
-async function login_user(req, res, next) {
+async function verifyOtp(req, res) {
+    const { no_hp, otp_code } = req.body;
+
+    const isPhone = /^(^\+62|62|^08)(\d{3,4}-?){2}\d{3,4}$/g.test(parseInt(no_hp))
+    if(!isPhone) {
+        return res.status(400).json({ error: "Nomor hp tidak valid!" })
+    }
+
     try {
-        let { no_hp, otp } = req.body;
-        if (!no_hp || !otp || Object.keys(req.body).length === 0) return res.status(403).send({
-            status: res.statusCode,
-            code: respons.NeedBodyHP,
-            message: 'input body hp'
-        })
-        let findOtp = await Token.findOne({ token: otp });
-        if (findOtp) {
-            if (findOtp.no_hp == no_hp && findOtp.token == otp) {
-                const finds = await User.findOne({ no_hp: no_hp });
-                if (finds == null) {
-                    const profileNone = `./public/file/user/profile/none.png`;
-                    const profile = fs.readFileSync(profileNone);
-        
-                    const now = await User.create({
-                        type: 'user',
-                        no_hp: no_hp, nama: null, pin: null,
-                        profile: profile.toString('hex'), email: null, alamat: null, cart: [], transaction: []
-                    })
-                    const token = createJWT(now._id);
-                    res.cookie('jwt', token, { httpOnly: true });
-                    return res.status(200).send({
-                        status: res.statusCode,
-                        code: respons[200],
-                        message: `Login Sukses`,
-                        result: now
-                    })
-                } else {
-                    const token = createJWT(finds._id);
-                    res.cookie('jwt', token, { httpOnly: true });
-                    return res.status(200).send({
-                        status: res.statusCode,
-                        code: respons[200],
-                        message: `Login Sukses`,
-                        result: finds
-                    })
+        const oneTimePassword = await OneTimePassword.findOne({ no_hp })
+
+        // Check apakah user sudah melakukan request otp
+        if(oneTimePassword) {
+            // Check apakan otp sudah kadaluarsa atau tidak
+            if(Date.parse(oneTimePassword.expire_at) > Date.now()) {
+                // Jika tidak user melanjutkan pengecekan code otp
+                if(otp_code === oneTimePassword.otp_code) {
+                    // Jika otp valid check apakah user telah terdaftar
+                    // Hapus data otp
+                    await oneTimePassword.remove()
+                    const user = await User.findOne({ no_hp })
+                    const baseUrl = `${req.protocol}://${req.hostname}`
+                    if(user) {
+                        const refreshToken = generateRefreshToken(user._id, user.no_hp, baseUrl)
+
+                        return res.status(200).json({ refreshToken })
+                    }
+
+                    // Jika belum maka buat user baru
+                    const createNewUser = await User.create({ type: 'User', no_hp })
+
+                    const refreshToken = generateRefreshToken(createNewUser._id, createNewUser.no_hp, baseUrl)
+
+                    return res.status(200).json({ refreshToken })
                 }
-            } else {
-                return res.status(403).send({
-                    status: res.statusCode,
-                    code: respons.NotMatch,
-                    message: `OTP and no hp not match`
-                })
+
+                // Jika kadaluarsa user gagal melakukan verifikasi dan harus mengulangi request otp
+                return res.status(400).json({ failed: "Kode otp anda tidak sesuai!" })
             }
-        } else {
-            return res.status(406).send({
-                status: res.statusCode,
-                code: respons.InvalidOTP,
-                message: `Invalid OTP or OTP Expired`
-            })
+            
+            // Jika kadaluarsa user gagal melakukan verifikasi dan harus mengulangi request otp
+            return res.status(400).json({ failed: "Kode otp anda sudah kadaluarsa!" })
         }
 
+        // Jika user belum pernah melakukan request OTP
+        return res.status(404).json({ error: "Anda belum melakukan request OTP!" })
     } catch (error) {
-        console.log(error);
-        return res.status(500).send({status: res.statusCode, code: respons.InternalServerError, message: 'Internal Server Error'});
+        return res.status(500).json({ error });
     }
 }
 
@@ -394,7 +403,7 @@ async function enterPin(req, res) {
 module.exports = {
     data_user,
     send_otp_user,
-    login_user,
+    verifyOtp,
     // router_user,
     register_user,
     change_data_user,

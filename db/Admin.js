@@ -39,5 +39,5 @@ const Transactionss = mongoose.Schema({
         type: Object,
         required: true,
     }
-}, { timestamps: true, versionKey: false });
+}, { timestamps: true });
 module.exports.Transaction = mongoose.model('transaction', Transactionss);

@@ -31,9 +31,6 @@ const Users = mongoose.Schema({
     },
     transaction: {
         type: Array
-    },
-    auth: {
-        token: String
     }
-}, { versionKey: false });
+}, { timestamps: true });
 module.exports.User = mongoose.model('user', Users);

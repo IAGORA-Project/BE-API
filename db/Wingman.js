@@ -72,6 +72,6 @@ const Wingman = mongoose.Schema({
     kotak_saran: {
         type: Array
     }
-}, { versionKey: false });
+}, { timestamps: true });
 
 module.exports.Wingman = mongoose.model('wingman', Wingman);

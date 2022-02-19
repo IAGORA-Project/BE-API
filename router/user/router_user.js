@@ -1,5 +1,6 @@
 const express = require('express');
 const { User } = require('../../db/User');
+const { sendOtpValidator, verifyOtpValidator } = require('../../utils/validators/userValidator');
 const { verifyToken, verifJWT } = require('../token');
 const router = express.Router();
 
@@ -20,11 +21,11 @@ router.get('/user-data', verifyToken, verifJWT, controllerUser.data_user)
 
 /* SEND OTP USER */
 
-router.post('/send-otp-user', verifyToken, controllerUser.send_otp_user);
+router.post('/send-otp-user', sendOtpValidator, controllerUser.send_otp_user);
 
 /* LOGIN VIA OTP USER*/
 
-router.post('/login-user', verifyToken, controllerUser.login_user);
+router.post('/verify-otp', verifyOtpValidator, controllerUser.verifyOtp);
 
 /* REGISTER USER*/
 

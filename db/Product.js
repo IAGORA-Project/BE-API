@@ -27,5 +27,5 @@ const Product = mongoose.Schema({
         type: String,
         required: true
     },
-}, { versionKey: false });
+}, { timestamps: true });
 module.exports.Product = mongoose.model('product', Product);

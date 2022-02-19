@@ -1,17 +1,18 @@
 const jwt = require('jsonwebtoken')
 
-const generateToken = (id, no_hp) => {
-  const jwtSecret = process.env.JWT_SECRET
+const generateRefreshToken = (id, no_hp, url) => {
+  const jwtRefreshSecret = process.env.JWT_REFRESH_SECRET
   
   const token = jwt.sign({
     jti: id,
-    no_hp: no_hp,
-    iat: Date.now()
-  }, jwtSecret)
+    no_hp,
+    iss: url,
+    aud: url
+  }, jwtRefreshSecret, { expiresIn: '30d' })
 
   return token
 }
 
 module.exports = {
-  generateToken
+  generateRefreshToken
 }

@@ -3,7 +3,7 @@ const axios = require('axios');
 const fs = require('fs-extra');
 const jwt = require('jsonwebtoken');
 
-const { Token } = require('../../db/Token');
+const { OneTimePassword } = require('../../db/OneTimePassword');
 const { randomOtp } = require('../../lib/function');
 const { Wingman } = require('../../db/Wingman');
 const { waApi, respons } = require('../../lib/setting');
@@ -90,7 +90,7 @@ async function send_otp(req, res) {
         })
         let random = randomOtp(6);
         let text = `Kode OTP mu Adalah : ${random}`
-        await Token.create({ no_hp: no_hp, token: random })
+        await OneTimePassword.create({ no_hp, otp_code: random })
         axios.get(`${waApi}/api/v1/send?no=${no_hp}&text=${text}`).then(({ data }) => {
             if (data) {
                 res.status(200).send({
@@ -127,9 +127,9 @@ async function login_wingman(req, res, next) {
             code: respons.NeedBodyHP,
             message: 'input body hp'
         })
-        let findOtp = await Token.findOne({ token: otp });
+        let findOtp = await OneTimePassword.findOne({ otp_code: otp });
         if (findOtp) {
-            if (findOtp.no_hp == no_hp && findOtp.token == otp) {
+            if (findOtp.no_hp == no_hp && findOtp.otp_code == otp) {
                 const finds = await Wingman.findOne({ no_hp: no_hp });
                 if (finds == null) {
                     const profileNone = `./public/file/wingman/profile/none.png`;
