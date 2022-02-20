@@ -1,6 +1,7 @@
 const { Cart } = require("../../../db/Cart")
 const { Product } = require("../../../db/Product")
 const { User } = require("../../../db/User")
+const { basicResponse } = require("../../../utils/basic-response")
 
 const addToCart = async (req, res) => {
   const { userId, productId } = req.params
@@ -53,7 +54,11 @@ const addToCart = async (req, res) => {
 
           const updatedCart = await Cart.findOne({ user: user._id }).populate('products.product')
 
-          return res.status(200).json({ success: `Cart id: ${cart._id} updated`, data: updatedCart })
+          return res.status(200).json(basicResponse({
+            status: res.statusCode,
+            message: `Cart id: ${cart._id} updated`,
+            result: updatedCart
+          }))
         }
         
         const createCart = await Cart.create({ 
@@ -75,15 +80,28 @@ const addToCart = async (req, res) => {
 
         const updatedCart = await Cart.findOne({ user: user._id }).populate('products.product')
 
-        return res.status(201).json({ success: `Cart berhasil ditambahkan`, data: updatedCart })
+        return res.status(201).json(basicResponse({
+          status: res.statusCode,
+          message: 'Cart berhasil ditambahkan',
+          result: updatedCart
+        }))
       }
 
-      return res.status(404).json({ notFound: `Product dengan id: ${productId} tidak ditemukan!` })
+      return res.status(404).json(basicResponse({
+        status: res.statusCode,
+        message: `Product dengan id: ${productId} tidak ditemukan!`
+      }))
     }
 
-    return res.status(404).json({ notFound: `User dengan id: ${userId} tidak ditemukan!` })
+    return res.status(404).json(basicResponse({
+      status: res.statusCode,
+      message: `User dengan id: ${userId} tidak ditemukan!`
+    }))
   } catch (error) {
-    return res.status(500).json({ error })
+    return res.status(500).json(basicResponse({
+      status: res.statusCode,
+      result: error
+    }))
   }
 }
 
@@ -121,21 +139,39 @@ const updateQuantity = async (req, res) => {
             })
             await Cart.updateOne({ user: user._id }, { total: countTotal })
 
-            return res.status(200).json({ success: `Cart id: ${cart._id} updated`, data: await Cart.findOne({ user: user._id }).populate('products.product') })
+            return res.status(200).json(basicResponse({
+              status: res.statusCode,
+              message: `Cart id: ${cart._id} updated`,
+              result: await Cart.findOne({ user: user._id }).populate('products.product')
+            }))
           }
 
-          return res.status(404).json({ notFound: 'Produk belum di tambahkan kedalam cart, tambahkan terlebih dahulu!' })
+          return res.status(404).json(basicResponse({
+            status: res.statusCode,
+            message: 'Produk belum di tambahkan kedalam cart, tambahkan terlebih dahulu!'
+          }))
         }
 
-        return res.status(404).json({ notFound: 'Cart anda masih kosong, silahkan tambahkan product terlebih dahulu!' })
+        return res.status(404).json(basicResponse({
+          status: res.statusCode,
+          message: 'Cart anda masih kosong, silahkan tambahkan product terlebih dahulu!'
+        }))
       }
 
-      return res.status(404).json({ notFound: `Product dengan id: ${productId} tidak ditemukan!` })
+      return res.status(404).json(basicResponse({
+        status: res.statusCode,
+        message: `Product dengan id: ${productId} tidak ditemukan!`
+      }))
     }
 
-    return res.status(404).json({ notFound: `User dengan id: ${userId} tidak ditemukan!` })
+    return res.status(404).json(basicResponse({
+      status: res.statusCode,
+      message: `User dengan id: ${userId} tidak ditemukan!`
+    }))
   } catch (error) {
-    return res.status(500).json({ error })
+    return res.status(500).json(basicResponse({
+      status: res.statusCode
+    }))
   }
 }
 
@@ -169,21 +205,39 @@ const deleteOneProductCart = async (req, res) => {
             })
             await Cart.updateOne({ user: user._id }, { total: countTotal })
 
-            return res.status(200).json({ success: `Cart id: ${cart._id} updated`, data: await Cart.findOne({ user: user._id }).populate('products.product') })
+            return res.status(200).json(basicResponse({
+              status: res.statusCode,
+              message: `Cart id: ${cart._id} updated`,
+              result: await Cart.findOne({ user: user._id }).populate('products.product')
+            }))
           }
 
-          return res.status(404).json({ notFound: 'Produk belum di tambahkan kedalam cart, tambahkan terlebih dahulu!' })
+          return res.status(404).json(basicResponse({
+            status: res.statusCode,
+            message: 'Produk belum di tambahkan kedalam cart, tambahkan terlebih dahulu!'
+          }))
         }
 
-        return res.status(404).json({ notFound: 'Cart anda masih kosong, silahkan tambahkan product terlebih dahulu!' })
+        return res.status(404).json(basicResponse({
+          status: res.statusCode,
+          message: 'Cart anda masih kosong, silahkan tambahkan product terlebih dahulu!'
+        }))
       }
 
-      return res.status(404).json({ notFound: `Product dengan id: ${productId} tidak ditemukan!` })
+      return res.status(404).json(basicResponse({
+        status: res.statusCode,
+        message: `Product dengan id: ${productId} tidak ditemukan!`
+      }))
     }
 
-    return res.status(404).json({ notFound: `User dengan id: ${userId} tidak ditemukan!` })
+    return res.status(404).json(basicResponse({
+      status: res.statusCode,
+      message: `User dengan id: ${userId} tidak ditemukan!`
+    }))
   } catch (error) {
-    return res.status(500).json({ error })
+    return res.status(500).json(basicResponse({
+      status: res.statusCode
+    }))
   }
 }
 
@@ -202,15 +256,26 @@ const deleteAllCart = async (req, res) => {
         
         await Cart.updateOne({ user: user._id }, { total: 0 })
 
-        return res.status(202).json({ success: `Cart id: ${cart._id} berhasil dihapus.` })
+        return res.status(202).json(basicResponse({
+          status: res.statusCode,
+          message: `Cart id: ${cart._id} berhasil dihapus.`
+        }))
       }
 
-      return res.status(404).json({ notFound: 'Cart anda masih kosong.' })
+      return res.status(404).json(basicResponse({
+        status: res.statusCode,
+        message: 'Cart anda masih kosong.'
+      }))
     }
 
-    return res.status(404).json({ notFound: `User dengan id: ${userId} tidak ditemukan!` })
+    return res.status(404).json(basicResponse({
+      status: res.statusCode,
+      message: `User dengan id: ${userId} tidak ditemukan!`
+    }))
   } catch (error) {
-    return res.status(500).json({ error })
+    return res.status(500).json(basicResponse({
+      status: res.statusCode
+    }))
   }
 }
 
@@ -224,15 +289,27 @@ const getUserCart = async (req, res) => {
       const cart = await Cart.findOne({ user: user._id }).populate('products.product')
       
       if(cart) {
-        return res.status(200).json({ cart })
+        return res.status(200).json(basicResponse({
+          status: res.statusCode,
+          message: `User ${user.nama} carts`,
+          result: cart
+        }))
       }
 
-      return res.status(404).json({ notFound: 'Cart anda masih kosong.' })
+      return res.status(404).json(basicResponse({
+        status: res.statusCode,
+        message: 'Cart anda masih kosong.'
+      }))
     }
 
-    return res.status(404).json({ notFound: `User dengan id: ${userId} tidak ditemukan!` })
+    return res.status(404).json(basicResponse({
+      status: res.statusCode,
+      message: `User dengan id: ${userId} tidak ditemukan!`
+    }))
   } catch (error) {
-    return res.status(500).json({ error })
+    return res.status(500).json(basicResponse({
+      status: res.statusCode
+    }))
   }
 }
 

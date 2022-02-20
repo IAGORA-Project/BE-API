@@ -8,6 +8,7 @@ const { randomOtp } = require("../../lib/function");
 const { User } = require('../../db/User');
 const { respons, waApi } = require('../../lib/setting');
 const { generateRefreshToken } = require('../../utils/authentication');
+const { basicResponse } = require('../../utils/basic-response');
 
 const maxAge = Math.floor(Date.now() / 1000) + (60 * 60)
 
@@ -87,7 +88,10 @@ async function send_otp_user(req, res) {
 
         const isPhone = /^(^\+62|62|^08)(\d{3,4}-?){2}\d{3,4}$/g.test(parseInt(no_hp))
         if(!isPhone) {
-            return res.status(400).json({ error: "Nomor hp tidak valid!" })
+            return res.status(400).json(basicResponse({
+                status: res.statusCode,
+                message: "Nomor hp tidak valid!"
+            }))
         }
 
         const oneTimePassword = await OneTimePassword.findOne({ no_hp })
@@ -97,44 +101,70 @@ async function send_otp_user(req, res) {
             if(Date.parse(oneTimePassword.expire_at) > Date.now()) {
                 // Check apabila expire otpnya berakhir
                 // Jika belum expire, kode otp di database dikirim ke user
-                const sendMessage = await axios.get(`${waApi}/api/v1/otp/${no_hp}/send?message=Kode OTP mu Adalah ${oneTimePassword.otp_code}`)
+                try {
+                    const sendMessage = await axios.get(`${waApi}/api/v1/otp/${no_hp}/send?message=Kode OTP mu Adalah ${oneTimePassword.otp_code}`)
                 
-                if(sendMessage.status === 200) {
-                    return res.status(202).json({ success: sendMessage.data.success, message: "Segera verifikasi kode otp anda, akan expire dalam 1 menit" })
+                    if(sendMessage.status === 200) {
+                        return res.status(202).json(basicResponse({
+                            status: res.statusCode,
+                            message: "Segera verifikasi kode otp anda, akan expire dalam 1 menit"
+                        }))
+                    }
+                } catch (error) {
+                    return res.status(400).json(basicResponse({
+                        status: res.statusCode,
+                        message: "Nomor anda tidak terdaftar di whatsapp!"
+                    }))
                 }
-
-                return res.status(500).json({ error: err.response.data })
             }
 
-            // Jika kode otp expire akan dibuat kode baru
-            const updateOtp = await OneTimePassword.findOneAndUpdate(
-                { no_hp }, { otp_code: randomOtp(6), expire_at: new Date(Date.now() + (1000 * 60)).getTime() }, { new: true }
-            )
+            
+            try {
+                // Jika kode otp expire akan dibuat kode baru
+                const updateOtp = await OneTimePassword.findOneAndUpdate(
+                    { no_hp }, { otp_code: randomOtp(6), expire_at: new Date(Date.now() + (1000 * 60)).getTime() }, { new: true }
+                )
 
-            console.log(updateOtp);
+                const sendMessage = await axios.get(`${waApi}/api/v1/otp/${no_hp}/send?message=Kode OTP mu Adalah ${updateOtp.otp_code}`)
+            
+                if(sendMessage.status === 200) {
+                    return res.status(202).json(basicResponse({
+                        status: res.statusCode,
+                        message: "Segera verifikasi kode otp anda, akan expire dalam 1 menit"
+                    }))
+                }
+            } catch (error) {
+                return res.status(400).json(basicResponse({
+                    status: res.statusCode,
+                    message: "Nomor anda tidak terdaftar di whatsapp!"
+                }))
+            }
+        }
 
-            const sendMessage = await axios.get(`${waApi}/api/v1/otp/${no_hp}/send?message=Kode OTP mu Adalah ${updateOtp.otp_code}`)
+        
+        try {
+            // Jika belum pernah melakukan request nomor hp, maka akan dibuat data baru
+            const createOtp = await OneTimePassword.create({ no_hp, otp_code: randomOtp(6) })
 
+            const sendMessage = await axios.get(`${waApi}/api/v1/otp/${no_hp}/send?message=Kode OTP mu Adalah ${createOtp.otp_code}`)
+        
             if(sendMessage.status === 200) {
-                return res.status(202).json({ success: sendMessage.data.success, message: "Segera verifikasi kode otp anda, akan expire dalam 1 menit" })
+                return res.status(202).json(basicResponse({
+                    status: res.statusCode,
+                    message: "Segera verifikasi kode otp anda, akan expire dalam 1 menit"
+                }))
             }
-
-            return res.status(500).json({ error: err.response.data })
+        } catch (error) {
+            return res.status(400).json(basicResponse({
+                status: res.statusCode,
+                message: "Nomor anda tidak terdaftar di whatsapp!"
+            }))
         }
-
-        // Jika belum pernah melakukan request nomor hp, maka akan dibuat data baru
-        const createOtp = await OneTimePassword.create({ no_hp, otp_code: randomOtp(6) })
-
-        const sendMessage = await axios.get(`${waApi}/api/v1/otp/${no_hp}/send?message=Kode OTP mu Adalah ${createOtp.otp_code}`)
-
-        if(sendMessage.status === 200) {
-            return res.status(202).json({ success: sendMessage.data.success, message: "Segera verifikasi kode otp anda, akan expire dalam 1 menit" })
-        }
-
-        return res.status(500).json({ error: err.response.data })
     } catch (error) {
-        console.log(error);
-        return res.status(500).send({ error });
+        return res.status(500).send(basicResponse({
+            status: res.statusCode,
+            result: error
+        }));
     }
 }
 
@@ -143,7 +173,10 @@ async function verifyOtp(req, res) {
 
     const isPhone = /^(^\+62|62|^08)(\d{3,4}-?){2}\d{3,4}$/g.test(parseInt(no_hp))
     if(!isPhone) {
-        return res.status(400).json({ error: "Nomor hp tidak valid!" })
+        return res.status(400).json(basicResponse({
+            status: res.statusCode,
+            message: "Nomor hp tidak valid!"
+        }))
     }
 
     try {
@@ -163,7 +196,11 @@ async function verifyOtp(req, res) {
                     if(user) {
                         const refreshToken = generateRefreshToken(user._id, user.no_hp, baseUrl)
 
-                        return res.status(200).json({ refreshToken })
+                        return res.status(200).json(basicResponse({
+                            status: res.statusCode,
+                            message: 'Varifikasi berhasil!',
+                            result: { refreshToken }
+                        }))
                     }
 
                     // Jika belum maka buat user baru
@@ -171,21 +208,36 @@ async function verifyOtp(req, res) {
 
                     const refreshToken = generateRefreshToken(createNewUser._id, createNewUser.no_hp, baseUrl)
 
-                    return res.status(200).json({ refreshToken })
+                    return res.status(200).json(basicResponse({
+                        status: res.statusCode,
+                        message: 'Verifikasi berhasil!',
+                        result: { refreshToken }
+                    }))
                 }
 
                 // Jika kadaluarsa user gagal melakukan verifikasi dan harus mengulangi request otp
-                return res.status(400).json({ failed: "Kode otp anda tidak sesuai!" })
+                return res.status(400).json(basicResponse({
+                    status: res.statusCode,
+                    message: "Kode otp anda tidak sesuai!"
+                }))
             }
             
             // Jika kadaluarsa user gagal melakukan verifikasi dan harus mengulangi request otp
-            return res.status(400).json({ failed: "Kode otp anda sudah kadaluarsa!" })
+            return res.status(400).json(basicResponse({
+                status: res.statusCode,
+                message: "Kode otp anda sudah kadaluarsa!"
+            }))
         }
 
         // Jika user belum pernah melakukan request OTP
-        return res.status(404).json({ error: "Anda belum melakukan request OTP!" })
+        return res.status(404).json(basicResponse({
+            status: res.statusCode,
+            message: "Anda belum melakukan request OTP!"
+        }))
     } catch (error) {
-        return res.status(500).json({ error });
+        return res.status(500).json(basicResponse({
+            status: res.statusCode
+        }));
     }
 }
 

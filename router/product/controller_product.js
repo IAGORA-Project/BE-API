@@ -1,6 +1,7 @@
 const { Product } = require("../../db/Product");
 const { respons } = require("../../lib/setting");
-const fs = require('fs')
+const fs = require('fs');
+const { basicResponse } = require("../../utils/basic-response");
 
 async function create_product(req, res) {
     try {
@@ -8,14 +9,9 @@ async function create_product(req, res) {
         const product_image = req.file
 
         if(!product_image) {
-            return res.status(422).json({ validationError: 'Gambar produk wajib diisi.' })
+            return res.status(422).json(basicResponse(res.statusCode, 'Gambar produk wajib diisi.'))
         }
 
-        if (!product_name || !product_category || !product_grade || !product_price || !product_uom) return res.status(403).send({
-            status: res.statusCode,
-            code: respons.NeedBody,
-            message: "Input Body"
-        })
         const create = await Product.create({ 
             product_name, 
             product_category, 
@@ -24,7 +20,7 @@ async function create_product(req, res) {
             product_price, 
             product_uom
         });
-        return res.status(201).json({ success: `Produk ${create.product_name} berhasil ditambahkan.`, data: create })
+        return res.status(201).json(basicResponse(res.statusCode, `Produk ${create.product_name} berhasil ditambahkan.`, create))
 
     } catch (error) {
         console.log(error);

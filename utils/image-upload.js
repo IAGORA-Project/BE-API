@@ -1,4 +1,5 @@
-const multer = require('multer')
+const multer = require('multer');
+const { basicResponse } = require('./basic-response');
 
 
 const productUpload = () => {
@@ -24,7 +25,10 @@ const productUpload = () => {
         cb(null, true);
       } else {
         cb(null, false);
-        return req.res?.status(422).json({ errorImage: 'Harus berupa gambar (.jpg, .jpeg atau .png)' })
+        return req.res?.status(422).json(basicResponse({
+          status: res.statusCode,
+          message: 'Harus berupa gambar (.jpg, .jpeg atau .png)',
+        }))
       }
     }
   });

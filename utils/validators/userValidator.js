@@ -1,4 +1,5 @@
 const { check, validationResult } = require('express-validator')
+const { basicResponse } = require('../basic-response')
 
 const sendOtpValidator = [
   check('no_hp')
@@ -8,7 +9,11 @@ const sendOtpValidator = [
     const errors = validationResult(req)
 
     if(!errors.isEmpty()) {
-      return res.status(422).json({ validationErrors: errors.array() })
+      return res.status(422).json(basicResponse({
+        status: res.statusCode,
+        message: 'Validation errors!',
+        result: errors.array()
+      }))
     }
 
     next()
@@ -26,7 +31,11 @@ const verifyOtpValidator = [
     const errors = validationResult(req)
 
     if(!errors.isEmpty()) {
-      return res.status(422).json({ validationErrors: errors.array() })
+      return res.status(422).json(basicResponse({
+        status: res.statusCode,
+        message: 'Validation Errors!',
+        result: errors.array()
+      }))
     }
 
     next()

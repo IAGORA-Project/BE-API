@@ -1,5 +1,6 @@
 const { check, validationResult } = require('express-validator')
 const { Product } = require('../../db/Product')
+const { basicResponse } = require('../basic-response')
 
 const createProductValidator = [
   check('product_name')
@@ -29,7 +30,11 @@ const createProductValidator = [
     const errors = validationResult(req)
 
     if(!errors.isEmpty()) {
-      return res.status(422).json({ validationErrors: errors.array() })
+      return res.status(422).json(basicResponse({
+        status: res.statusCode,
+        message: 'Validation Errors!',
+        result: errors.array()
+      }))
     }
 
     next()

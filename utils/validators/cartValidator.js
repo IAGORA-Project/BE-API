@@ -1,4 +1,5 @@
 const { check, validationResult } = require('express-validator')
+const { basicResponse } = require('../basic-response')
 
 const updateQuantityValidator = [
   check('quantity')
@@ -8,7 +9,11 @@ const updateQuantityValidator = [
     const errors = validationResult(req)
 
     if(!errors.isEmpty()) {
-      return res.status(422).json({ validationErrors: errors.array() })
+      return res.status(422).json(basicResponse({
+        status: res.statusCode,
+        message: 'Validation Errors',
+        result: errors.array()
+      }))
     }
 
     next()
