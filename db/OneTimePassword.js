@@ -6,7 +6,7 @@ const oneTimePassword = mongoose.Schema({
         required: true
     },
     otp_code: { 
-        type: Number,
+        type: String,
         required: true
     },
     expire_at: {

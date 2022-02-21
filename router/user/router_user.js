@@ -1,6 +1,8 @@
 const express = require('express');
 const { User } = require('../../db/User');
-const { sendOtpValidator, verifyOtpValidator } = require('../../utils/validators/userValidator');
+const { accessUser, refreshUser } = require('../../middlewares/auth-middleware');
+const { userUpload } = require('../../utils/image-upload');
+const { sendOtpValidator, verifyOtpValidator, completeRegisterValidator } = require('../../utils/validators/userValidator');
 const { verifyToken, verifJWT } = require('../token');
 const router = express.Router();
 
@@ -15,6 +17,10 @@ router.get('/', async (req, res) => {
 })
 
 
+/* GET ACCESS TOKEN USER */
+
+router.get('/:userId/get-access-token', refreshUser, controllerUser.getAccessToken)
+
 /* DATA USER */
 
 router.get('/user-data', verifyToken, verifJWT, controllerUser.data_user)
@@ -27,13 +33,9 @@ router.post('/send-otp-user', sendOtpValidator, controllerUser.send_otp_user);
 
 router.post('/verify-otp', verifyOtpValidator, controllerUser.verifyOtp);
 
-/* REGISTER USER*/
-
-router.post('/register-user', verifyToken, verifJWT, controllerUser.register_user);
-
 /* CHANGE DATA USER*/
 
-router.post('/change-data-user', verifyToken, verifJWT, controllerUser.change_data_user);
+router.put('/:userId/complete-registration', accessUser, userUpload().single('avatar'), completeRegisterValidator, controllerUser.completeRegistration);
 
 /* LOGOUT USER*/
 

@@ -7,8 +7,9 @@ const { OneTimePassword } = require("../../db/OneTimePassword");
 const { randomOtp } = require("../../lib/function");
 const { User } = require('../../db/User');
 const { respons, waApi } = require('../../lib/setting');
-const { generateRefreshToken } = require('../../utils/authentication');
+const { generateRefreshToken, generateAccessToken } = require('../../utils/authentication');
 const { basicResponse } = require('../../utils/basic-response');
+const { isValidObjectId } = require('mongoose')
 
 const maxAge = Math.floor(Date.now() / 1000) + (60 * 60)
 
@@ -16,6 +17,42 @@ const createJWT = id => {
     return jwt.sign({ id }, 'created room', {
         expiresIn: '1h'
     })
+}
+
+async function getAccessToken(req, res) {
+    const { userId } = req.params
+
+    if(!isValidObjectId(userId)) {
+        return res.status(400).json(basicResponse({
+            status: res.statusCode,
+            message: "ID user tidak valid!"
+        }))
+    }
+
+    try {
+        const user = await User.findById(userId)
+        const baseUrl = `${req.protocol}://${req.hostname}`
+
+        if(user) {
+            const accessToken = generateAccessToken(user._id, user.no_hp, baseUrl)
+
+            return res.status(200).json(basicResponse({
+                status: res.statusCode,
+                message: "Access token akan expire dalam 24 jam.",
+                result: { accessToken }
+            }))
+        }
+
+        return res.status(404).json(basicResponse({
+            status: res.statusCode,
+            message: "User tidak ditemukan!"
+        }))
+    } catch (error) {
+        return res.status(500).json(basicResponse({
+            status: res.statusCode,
+            result: error
+        }))
+    }
 }
 
 // async function router_user(req, res) {
@@ -241,70 +278,51 @@ async function verifyOtp(req, res) {
     }
 }
 
-async function register_user(req, res) {
-    try {
-        if (req.user) {
-            let { nama, alamat, email } = req.body;
-            if (!nama || !email || !alamat) return res.status(403).send({
-                status: res.statusCode,
-                code: respons.NeedBody,
-                message: 'input body'
-            })
-            let { no_hp } = req.user
-            let up = await User.updateOne({ no_hp: no_hp }, { nama, alamat,
-                email: Buffer.from(email, 'utf8').toString('hex') });
-            let findAgain = await User.findOne({ _id: req.user._id })
-            return res.status(200).send({
-                status: res.statusCode,
-                code: respons[200],
-                message: 'Sukses Register User',
-                result: findAgain
-            })
-        } else {
-            return res.status(401).send({
-                status: res.statusCode,
-                code: respons.NeedLoginUser,
-                message: 'Login User First!'
-            })
-        }
+async function completeRegistration(req, res) {
+    const { name, email, address } = req.body
+    const { userId } = req.params
+    const avatar = req.file
 
-    } catch (error) {
-        console.log(error);
-        return res.status(500).send({status: res.statusCode, code: respons.InternalServerError, message: 'Internal Server Error'});
+    if(!isValidObjectId(userId)) {
+        return res.status(400).json(basicResponse({
+            status: res.statusCode,
+            message: "ID user tidak valid!"
+        }))
     }
-}
 
-async function change_data_user(req, res) {
+    if(!avatar) {
+        return res.status(422).json(basicResponse({
+            status: res.statusCode,
+            message: "Gambar profile wajib diisi!"
+        }))
+    }
+    
     try {
-        if (req.user) {
-            if (!req.body || Object.keys(req.body).length === 0) return res.status(403).send({
+        const user = await User.findById(userId)
+
+        if(user) {
+            const updatedUser = await User.findByIdAndUpdate(user._id, {
+                $set: {userDetail: {
+                    name, email, address, avatar: avatar.filename
+                }}
+            }, { new: true })
+
+            return res.status(200).json(basicResponse({
                 status: res.statusCode,
-                code: respons.NeedBody,
-                message: 'input body'
-            })
-            const { nama, alamat, email } = req.body;
-            const namaFix = nama ? nama : req.user.nama;
-            const emailFix = email ? Buffer.from(email, 'utf8').toString('hex') : req.user.email;
-            const alamatFix = alamat ? alamat : req.user.alamat;
-            let up = await User.updateOne({ no_hp: req.user.no_hp }, { nama: namaFix, email: emailFix, alamat: alamatFix })
-            let findAgain = await User.findOne({ _id: req.user._id })
-            return res.status(200).send({
-                status: res.statusCode,
-                code: respons[200],
-                message: 'Sukses Change Data User',
-                result: findAgain
-            })
-        } else {
-            return res.status(401).send({
-                status: res.statusCode,
-                code: respons.NeedLoginUser,
-                message: 'Login User First!'
-            })
+                message: "Data anda berhasil dilengkapi.",
+                result: updatedUser
+            }))
         }
 
+        return res.status(404).json(basicResponse({
+            status: res.statusCode,
+            message: "User tidak ditemukan."
+        }))
     } catch (error) {
-        console.log(error);
-        return res.status(500).send({status: res.statusCode, code: respons.InternalServerError, message: 'Internal Server Error'});
+        return res.status(500).json(basicResponse({
+            status: res.statusCode,
+            result: error
+        }))
     }
 }
 
@@ -453,12 +471,12 @@ async function enterPin(req, res) {
 }
 
 module.exports = {
+    getAccessToken,
     data_user,
     send_otp_user,
     verifyOtp,
-    // router_user,
-    register_user,
-    change_data_user,
+    // router_user
+    completeRegistration,
     logout_user,
     delete_user,
     delete_all_user,

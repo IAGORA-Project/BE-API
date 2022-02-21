@@ -133,6 +133,11 @@ app.get('/image/product/:imageName', function (req, res) {
 
   res.sendFile(path.join(__dirname, `./public/images/products/${imageName}`));
 });
+app.get('/image/user/:imageName', function (req, res) {
+  const { imageName } = req.params
+
+  res.sendFile(path.join(__dirname, `./public/images/user/${imageName}`));
+});
 
 app.use('/api/v1/upload', uploadRouter);
 app.use('/api/v1/wingman', wingmanRouter);

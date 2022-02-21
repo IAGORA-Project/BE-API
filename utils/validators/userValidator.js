@@ -42,7 +42,33 @@ const verifyOtpValidator = [
   }
 ]
 
+const completeRegisterValidator = [
+  check('name')
+    .notEmpty()
+    .withMessage("Nama lengkap anda wajib diisi."),
+  check('email')
+    .isEmail()
+    .withMessage("Email anda wajib diisi dengan email yang valid."),
+  check('address')
+    .notEmpty()
+    .withMessage("Alamat lengkap anda wajib diisi."),
+  (req, res, next) => {
+    const errors = validationResult(req)
+
+    if(!errors.isEmpty()) {
+      return res.status(422).json(basicResponse({
+        status: res.statusCode,
+        message: 'Validation Errors!',
+        result: errors.array()
+      }))
+    }
+
+    next()
+  }
+]
+
 module.exports = {
   sendOtpValidator,
-  verifyOtpValidator
+  verifyOtpValidator,
+  completeRegisterValidator
 }

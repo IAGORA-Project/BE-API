@@ -6,24 +6,12 @@ const Users = mongoose.Schema({
         required: true
     },
     no_hp: {
-        type: String,
+        type: Number,
         required: true,
         unique: true,
     },
-    nama: { 
-        type: String,
-    },
     pin: {
-        type: String,
-    },
-    profile: {
-        type: String,
-    },
-    email: {
-        type: String,
-    },
-    alamat: { 
-        type: String,
+        type: Number,
     },
     cart: {
         type: mongoose.Schema.Types.ObjectId,
@@ -31,6 +19,21 @@ const Users = mongoose.Schema({
     },
     transaction: {
         type: Array
+    },
+    userDetail: {
+        name: { 
+            type: String,
+        },
+        avatar: {
+            type: String,
+        },
+        email: {
+            type: String,
+        },
+        address: { 
+            type: String,
+        },
+        _id: false
     }
 }, { timestamps: true });
 module.exports.User = mongoose.model('user', Users);

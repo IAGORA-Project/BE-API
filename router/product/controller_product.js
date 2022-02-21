@@ -17,14 +17,20 @@ async function create_product(req, res) {
             product_category, 
             product_grade, 
             product_image: product_image.filename, 
-            product_price, 
+            product_price,
             product_uom
         });
-        return res.status(201).json(basicResponse(res.statusCode, `Produk ${create.product_name} berhasil ditambahkan.`, create))
+        return res.status(201).json(basicResponse({
+            status: res.statusCode,
+            message: 'Produk berhasil ditambahkan.',
+            result: create
+        }))
 
     } catch (error) {
-        console.log(error);
-        return res.status(500).send({status: res.statusCode, code: respons.InternalServerError, message: 'Internal Server Error'}); 
+        return res.status(500).json(basicResponse({
+            status: res.statusCode,
+            result: error
+        })); 
     }
 }
 

@@ -13,6 +13,20 @@ const generateRefreshToken = (id, no_hp, url) => {
   return token
 }
 
+const generateAccessToken = (id, no_hp, url) => {
+  const jwtAccessSecret = process.env.JWT_ACCESS_SECRET
+  
+  const token = jwt.sign({
+    jti: id,
+    no_hp,
+    iss: url,
+    aud: url
+  }, jwtAccessSecret, { expiresIn: '24h' })
+
+  return token
+}
+
 module.exports = {
-  generateRefreshToken
+  generateRefreshToken,
+  generateAccessToken
 }
