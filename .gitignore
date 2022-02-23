@@ -6,6 +6,8 @@ package-lock.json
 /public/regwingman.html
 /public/upload.html
 /public/user.html
-/public/images/products/*
-/public/images/user/*
+public/images/products/*
+public/images/user/*
+public/images/wingman/documents/*
+public/images/wingman/profile/*
 .env

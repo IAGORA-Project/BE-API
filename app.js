@@ -138,6 +138,11 @@ app.get('/image/user/:imageName', function (req, res) {
 
   res.sendFile(path.join(__dirname, `./public/images/user/${imageName}`));
 });
+app.get('/image/wingman/:wingmanId/document/:imageName', function (req, res) {
+  const { imageName, wingmanId } = req.params
+
+  res.sendFile(path.join(__dirname, `./public/images/wingman/documents/${wingmanId}/${imageName}`));
+});
 
 app.use('/api/v1/upload', uploadRouter);
 app.use('/api/v1/wingman', wingmanRouter);

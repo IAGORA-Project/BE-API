@@ -132,6 +132,7 @@ async function send_otp_user(req, res) {
         }
 
         const oneTimePassword = await OneTimePassword.findOne({ no_hp })
+        const randomOTP = randomOtp(6)
 
         if(oneTimePassword) {
             // Jika user sudah pernah melakukan request dengan nomor hp
@@ -157,14 +158,14 @@ async function send_otp_user(req, res) {
 
             
             try {
-                // Jika kode otp expire akan dibuat kode baru
-                const updateOtp = await OneTimePassword.findOneAndUpdate(
-                    { no_hp }, { otp_code: randomOtp(6), expire_at: new Date(Date.now() + (1000 * 60)).getTime() }, { new: true }
-                )
-
-                const sendMessage = await axios.get(`${waApi}/api/v1/otp/${no_hp}/send?message=Kode OTP mu Adalah ${updateOtp.otp_code}`)
+                const sendMessage = await axios.get(`${waApi}/api/v1/otp/${no_hp}/send?message=Kode OTP mu Adalah ${randomOTP}`)
             
                 if(sendMessage.status === 200) {
+                    // Jika kode otp expire akan dibuat kode baru
+                    await OneTimePassword.findOneAndUpdate(
+                        { no_hp }, { otp_code: randomOTP, expire_at: new Date(Date.now() + (1000 * 60)).getTime() }
+                    )
+
                     return res.status(202).json(basicResponse({
                         status: res.statusCode,
                         message: "Segera verifikasi kode otp anda, akan expire dalam 1 menit"
@@ -180,12 +181,12 @@ async function send_otp_user(req, res) {
 
         
         try {
-            // Jika belum pernah melakukan request nomor hp, maka akan dibuat data baru
-            const createOtp = await OneTimePassword.create({ no_hp, otp_code: randomOtp(6) })
-
-            const sendMessage = await axios.get(`${waApi}/api/v1/otp/${no_hp}/send?message=Kode OTP mu Adalah ${createOtp.otp_code}`)
+            const sendMessage = await axios.get(`${waApi}/api/v1/otp/${no_hp}/send?message=Kode OTP mu Adalah ${randomOTP}`)
         
             if(sendMessage.status === 200) {
+                // Jika belum pernah melakukan request nomor hp, maka akan dibuat data baru
+                await OneTimePassword.create({ no_hp, otp_code: randomOTP })
+
                 return res.status(202).json(basicResponse({
                     status: res.statusCode,
                     message: "Segera verifikasi kode otp anda, akan expire dalam 1 menit"
@@ -236,7 +237,7 @@ async function verifyOtp(req, res) {
                         return res.status(200).json(basicResponse({
                             status: res.statusCode,
                             message: 'Varifikasi berhasil!',
-                            result: { refreshToken }
+                            result: { userId: user._id, refreshToken }
                         }))
                     }
 
@@ -248,7 +249,7 @@ async function verifyOtp(req, res) {
                     return res.status(200).json(basicResponse({
                         status: res.statusCode,
                         message: 'Verifikasi berhasil!',
-                        result: { refreshToken }
+                        result: { userId: createNewUser._id, refreshToken }
                     }))
                 }
 
@@ -273,7 +274,8 @@ async function verifyOtp(req, res) {
         }))
     } catch (error) {
         return res.status(500).json(basicResponse({
-            status: res.statusCode
+            status: res.statusCode,
+            result: error
         }));
     }
 }
@@ -281,19 +283,11 @@ async function verifyOtp(req, res) {
 async function completeRegistration(req, res) {
     const { name, email, address } = req.body
     const { userId } = req.params
-    const avatar = req.file
 
     if(!isValidObjectId(userId)) {
         return res.status(400).json(basicResponse({
             status: res.statusCode,
             message: "ID user tidak valid!"
-        }))
-    }
-
-    if(!avatar) {
-        return res.status(422).json(basicResponse({
-            status: res.statusCode,
-            message: "Gambar profile wajib diisi!"
         }))
     }
     
@@ -303,7 +297,7 @@ async function completeRegistration(req, res) {
         if(user) {
             const updatedUser = await User.findByIdAndUpdate(user._id, {
                 $set: {userDetail: {
-                    name, email, address, avatar: avatar.filename
+                    name, email, address
                 }}
             }, { new: true })
 

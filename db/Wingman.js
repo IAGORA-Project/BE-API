@@ -10,67 +10,46 @@ const Wingman = mongoose.Schema({
         unique: true,
         required: true
     },
-    nama: { 
-        type: String,
-    },
     pin: {
-        type: String,
-    },
-    profile: {
-        type: String,
-    },
-    email: { 
-        type: String,
-    },
-    alamat: { 
-        type: String,
-    },
-    kota: { 
         type: String,
     },
     pasar: { 
         type: String,
     },
-    bank: { 
-        type: String,
-    },
-    no_rek: { 
-        type: Number,
-    },
-    nama_rek: { 
-        type: String,
-    },
-    ktp: {
-        type: String,
-    },
-    skck: {
-        type: String,
-    },
     available: {
-        type: Boolean,
-        required: true
+        type: Boolean
     },
     stars: {
-        type: Object,
-        required: true
+        type: Object
     },
     today_order: {
-        type: Number,
-        required: true
+        type: Number
     },
     total_order: {
-        type: Number,
-        required: true
+        type: Number
     },
     income: {
-        type: Number,
-        required: true
+        type: Number
     },
     on_process: {
         type: Array,
     },
     kotak_saran: {
         type: Array
+    },
+    wingmanDetail: {
+        name: String,
+        email: String,
+        address: String,
+        city: String,
+        avatar: String,
+    },
+    wingmanDocument: {
+        ktp: String,
+        skck: String,
+        bank: String,
+        no_rek: Number,
+        nama_rek: String,
     }
 }, { timestamps: true });
 

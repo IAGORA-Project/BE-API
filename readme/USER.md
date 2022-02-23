@@ -76,7 +76,12 @@ await axios.get(`${baseURL}/api/v1/user/620d088e027d82d89d344ae0/get-access-toke
 **`URL : ${BaseURL}/api/v1/user/userId/complete-registration`**
 ```js
 // AXIOS
-await axios.put(`${baseURL}/api/v1/user/6212f14598faa8e6e82d28de/complete-registration`, {
+const data = {
+    name: 'Nama lengkap',
+    email: 'contoh@gmail.com',
+    address: 'Jl. aja dulu'
+}
+await axios.put(`${baseURL}/api/v1/user/6212f14598faa8e6e82d28de/complete-registration`, data, {
   headers: {
       'x-access-token': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI2MjEyZjE0NTk4ZmFhOGU2ZTgyZDI4ZGUiLCJub19ocCI6NjI4MjExNjEwNDAxNiwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdCIsImF1ZCI6Imh0dHA6Ly9sb2NhbGhvc3QiLCJpYXQiOjE2NDU0MzU4NDgsImV4cCI6MTY0NTUyMjI0OH0.yMha3e80dQDPlvw_2Ou6hA3XyNAcBjlZzEF_meo42l8'
   }

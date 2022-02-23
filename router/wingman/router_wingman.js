@@ -5,6 +5,9 @@ const path = require('path');
 const controllerWingman = require('./contoller_wingman');
 const { verifyToken, verifJWT } = require('../token');
 const { Wingman } = require('../../db/Wingman');
+const { sendOtpValidator, verifyOtpValidator, completeWingmanDetailValidator, completeWingmanDocumentValidator } = require('../../utils/validators/wingmanValidator');
+const { authAccess, authRefresh } = require('../../middlewares/auth-middleware');
+const { wingmanDocumentUpload } = require('../../utils/image-uploads/wingman/document');
 
 // router.get('/', verifJWT, controllerWingman.router_wingman);
 
@@ -17,21 +20,27 @@ router.get('/', async (req, res) => {
 
 /* DATA WINGMAN */
 
+router.get('/:wingmanId/get-access-token', authRefresh, controllerWingman.getAccessToken)
+
+/* DATA WINGMAN */
+
 router.get('/wingman-data', verifyToken, verifJWT, controllerWingman.data_wingman)
 
 /* SEND OTP */
 
-router.get('/send-otp-wingman', (req, res) => {
-    res.sendFile(path.resolve('./public/nohp.html'));
-})
-router.post('/send-otp-wingman', verifyToken, controllerWingman.send_otp);
+router.post('/send-otp-wingman', sendOtpValidator, controllerWingman.send_otp_wingman);
 
 /* LOGIN WITH OTP */
 
-router.get('/login-wingman', (req, res) => {
-    res.sendFile(path.resolve('./public/loginhp.html'));
-})
-router.post('/login-wingman', verifyToken,  controllerWingman.login_wingman);
+router.post('/verify-otp', verifyOtpValidator,  controllerWingman.verifyOtp);
+
+/* COMPLETE WINGMAN DETAIL */
+
+router.put('/:wingmanId/complate-wingman-detail', authAccess, completeWingmanDetailValidator, controllerWingman.complateWingmanDetail);
+
+/* COMPLETE WINGMAN DOCUMENT */
+
+router.put('/:wingmanId/complate-wingman-document', authAccess, wingmanDocumentUpload.fields([{ name: 'ktp', maxCount: 1 }, { name: 'skck', maxCount: 1 }]), completeWingmanDocumentValidator, controllerWingman.complateWingmanDocument);
 
 /* REGSITER IF USER.NAME = null */
 

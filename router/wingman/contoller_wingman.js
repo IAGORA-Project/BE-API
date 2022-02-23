@@ -7,6 +7,9 @@ const { OneTimePassword } = require('../../db/OneTimePassword');
 const { randomOtp } = require('../../lib/function');
 const { Wingman } = require('../../db/Wingman');
 const { waApi, respons } = require('../../lib/setting');
+const { basicResponse } = require('../../utils/basic-response');
+const { generateRefreshToken, generateAccessToken } = require('../../utils/authentication');
+const { isValidObjectId } = require('mongoose');
 
 let submitData = false
 
@@ -16,6 +19,42 @@ const createJWT = id => {
     return jwt.sign({ id }, 'created room', {
         expiresIn: '1h'
     })
+}
+
+async function getAccessToken(req, res) {
+    const { wingmanId } = req.params
+
+    if(!isValidObjectId(wingmanId)) {
+        return res.status(400).json(basicResponse({
+            status: res.statusCode,
+            message: "ID wingman tidak valid!"
+        }))
+    }
+
+    try {
+        const wingman = await Wingman.findById(wingmanId)
+        const baseUrl = `${req.protocol}://${req.hostname}`
+
+        if(wingman) {
+            const accessToken = generateAccessToken(wingman._id, wingman.no_hp, baseUrl)
+
+            return res.status(200).json(basicResponse({
+                status: res.statusCode,
+                message: "Access token akan expire dalam 24 jam.",
+                result: { wingmanId: wingman._id, accessToken }
+            }))
+        }
+
+        return res.status(404).json(basicResponse({
+            status: res.statusCode,
+            message: "Wingman tidak ditemukan!"
+        }))
+    } catch (error) {
+        return res.status(500).json(basicResponse({
+            status: res.statusCode,
+            result: error
+        }))
+    }
 }
 
 async function router_wingman(req, res) {
@@ -80,170 +119,255 @@ async function data_wingman(req, res) {
     }
 }
 
-async function send_otp(req, res) {
+async function send_otp_wingman(req, res) {
     try {
         let { no_hp } = req.body;
-        if (!no_hp || Object.keys(req.body).length === 0) return res.status(403).send({
-            status: res.statusCode,
-            code: respons.NeedBodyHP,
-            message: 'input body hp'
-        })
-        let random = randomOtp(6);
-        let text = `Kode OTP mu Adalah : ${random}`
-        await OneTimePassword.create({ no_hp, otp_code: random })
-        axios.get(`${waApi}/api/v1/send?no=${no_hp}&text=${text}`).then(({ data }) => {
-            if (data) {
-                res.status(200).send({
-                    status: res.statusCode,
-                    code: respons[200],
-                    message: `Success Send Otp to ${no_hp}, login and submit your OTP code`
-                })
-            } else {
-                res.status(503).send({
-                    status: res.statusCode,
-                    code: respons.FailSendOTP,
-                    message: `Failed Send Otp to ${no_hp}`
-                })
-            }
-        }).catch(err => {
-            console.log(err);
-            res.status(506).send({
-                status: res.statusCode,
-                code: respons.FailInternalReq,
-                message: `Failed Send Otp to ${no_hp}, due to internal request error`
-            })
-        })
-    } catch (error) {
-        console.log(error);
-        return res.status(500).send({status: res.statusCode, code: respons.InternalServerError, message: 'Internal Server Error'});
-    }
-}
 
-async function login_wingman(req, res, next) {
-    try {
-        let { no_hp, otp } = req.body;
-        if (!no_hp || !otp || Object.keys(req.body).length === 0) return res.status(403).send({
-            status: res.statusCode,
-            code: respons.NeedBodyHP,
-            message: 'input body hp'
-        })
-        let findOtp = await OneTimePassword.findOne({ otp_code: otp });
-        if (findOtp) {
-            if (findOtp.no_hp == no_hp && findOtp.otp_code == otp) {
-                const finds = await Wingman.findOne({ no_hp: no_hp });
-                if (finds == null) {
-                    const profileNone = `./public/file/wingman/profile/none.png`;
-                    const profile = fs.readFileSync(profileNone);
-        
-                    const now = await Wingman.create({
-                        type: 'wingman',
-                        no_hp: no_hp,
-                        nama: null, pin: null, file: null, email: null, alamat: null, kota: null, pasar: null, bank: null, no_rek: null, nama_rek: null,
-                        profile: profile.toString('hex'), ktp: null, skck: null, available: true, stars: { starsTotal: 0, countTotal: 0, result: 0, stars: [
-                            { star: 1, count: 0 },
-                            { star: 2, count: 0 },
-                            { star: 3, count: 0 },
-                            { star: 4, count: 0 },
-                            { star: 5, count: 0 }
-                        ]}, 
-                        today_order: 0, total_order:  0, income: 0, on_process: [], kotak_saran: []
-                    })
-                    const token = createJWT(now._id);
-                    res.cookie('jwt', token, { httpOnly: true });
-                    return res.status(200).send({
+        const isPhone = /^(^\+62|62|^08)(\d{3,4}-?){2}\d{3,4}$/g.test(parseInt(no_hp))
+        if(!isPhone) {
+            return res.status(400).json(basicResponse({
+                status: res.statusCode,
+                message: "Nomor hp tidak valid!"
+            }))
+        }
+
+        const oneTimePassword = await OneTimePassword.findOne({ no_hp })
+        const randomOTP = randomOtp(6)
+
+        if(oneTimePassword) {
+            // Jika user sudah pernah melakukan request dengan nomor hp
+            if(Date.parse(oneTimePassword.expire_at) > Date.now()) {
+                // Check apabila expire otpnya berakhir
+                // Jika belum expire, kode otp di database dikirim ke user
+                try {
+                    const sendMessage = await axios.get(`${waApi}/api/v1/otp/${no_hp}/send?message=Kode OTP mu Adalah ${oneTimePassword.otp_code}`)
+                
+                    if(sendMessage.status === 200) {
+                        return res.status(202).json(basicResponse({
+                            status: res.statusCode,
+                            message: "Segera verifikasi kode otp anda, akan expire dalam 1 menit"
+                        }))
+                    }
+                } catch (error) {
+                    return res.status(400).json(basicResponse({
                         status: res.statusCode,
-                        code: respons[200],
-                        message: `Login Sukses`,
-                        result: now
-                    })
-                } else {
-                    const token = createJWT(finds._id);
-                    res.cookie('jwt', token, { httpOnly: true });
-                    return res.status(200).send({
-                        status: res.statusCode,
-                        code: respons[200],
-                        message: `Login Sukses`,
-                        result: finds
-                    })
+                        message: "Nomor anda tidak terdaftar di whatsapp!"
+                    }))
                 }
-            } else {
-                return res.status(403).send({
-                    status: res.statusCode,
-                    code: respons.NotMatch,
-                    message: `OTP and no hp not match`
-                })
             }
-        } else {
-            return res.status(406).send({
-                status: res.statusCode,
-                code: respons.InvalidOTP,
-                message: `Invalid OTP or OTP Expired`
-            })
+
+            
+            try {
+                const sendMessage = await axios.get(`${waApi}/api/v1/otp/${no_hp}/send?message=Kode OTP mu Adalah ${randomOTP}`)
+            
+                if(sendMessage.status === 200) {
+                    // Jika kode otp expire akan dibuat kode baru
+                    await OneTimePassword.findOneAndUpdate(
+                        { no_hp }, { otp_code: randomOTP, expire_at: new Date(Date.now() + (1000 * 60)).getTime() }
+                    )
+
+                    return res.status(202).json(basicResponse({
+                        status: res.statusCode,
+                        message: "Segera verifikasi kode otp anda, akan expire dalam 1 menit"
+                    }))
+                }
+            } catch (error) {
+                return res.status(400).json(basicResponse({
+                    status: res.statusCode,
+                    message: "Nomor anda tidak terdaftar di whatsapp!"
+                }))
+            }
         }
 
+        
+        try {
+            const sendMessage = await axios.get(`${waApi}/api/v1/otp/${no_hp}/send?message=Kode OTP mu Adalah ${randomOTP}`)
+        
+            if(sendMessage.status === 200) {
+                // Jika belum pernah melakukan request nomor hp, maka akan dibuat data baru
+                await OneTimePassword.create({ no_hp, otp_code: randomOTP })
+
+                return res.status(202).json(basicResponse({
+                    status: res.statusCode,
+                    message: "Segera verifikasi kode otp anda, akan expire dalam 1 menit"
+                }))
+            }
+        } catch (error) {
+            return res.status(400).json(basicResponse({
+                status: res.statusCode,
+                message: "Nomor anda tidak terdaftar di whatsapp!"
+            }))
+        }
     } catch (error) {
-        console.log(error);
-        return res.status(500).send({status: res.statusCode, code: respons.InternalServerError, message: 'Internal Server Error'});
+        return res.status(500).json(basicResponse({
+            status: res.statusCode,
+            result: error
+        }));
     }
 }
 
-async function submit_data(req, res) {
-    try {
-        const { nama, email, alamat, kota, pasar, bank, no_rek, nama_rek } = req.body;
-        if (!nama || !email || !alamat || !kota || !pasar || !bank || !no_rek || !nama_rek || Object.keys(req.body).length === 0) 
-        return res.status(403).send({
-            status: res.statusCode,
-            code: respons.NeedBody,
-            message: 'input body'
-        })
-        if (req.user) {
-            const { no_hp } = req.user;
-            if (!fs.existsSync(`./db/data/${no_hp}.json`)) {
-                let arr = []
-                fs.writeFileSync(`./db/data/${no_hp}.json`, JSON.stringify(arr));
-            }
+async function verifyOtp(req, res) {
+    const { no_hp, otp_code } = req.body;
 
-            const debeh = JSON.parse(fs.readFileSync(`./db/data/${no_hp}.json`));
-            const ktpPath = `./public/file/wingman/ktp/ktp_${no_hp}.png`
-            const ktp = fs.existsSync(ktpPath) ? fs.readFileSync(ktpPath) : null;
-            if (!ktp) {
-                fs.unlinkSync(`./db/data/${no_hp}.json`);
-                return res.status(404).send({
+    const isPhone = /^(^\+62|62|^08)(\d{3,4}-?){2}\d{3,4}$/g.test(parseInt(no_hp))
+    if(!isPhone) {
+        return res.status(400).json(basicResponse({
+            status: res.statusCode,
+            message: "Nomor hp tidak valid!"
+        }))
+    }
+
+    try {
+        const oneTimePassword = await OneTimePassword.findOne({ no_hp })
+
+        // Check apakah user sudah melakukan request otp
+        if(oneTimePassword) {
+            // Check apakan otp sudah kadaluarsa atau tidak
+            if(Date.parse(oneTimePassword.expire_at) > Date.now()) {
+                // Jika tidak user melanjutkan pengecekan code otp
+                if(otp_code === oneTimePassword.otp_code) {
+                    // Jika otp valid check apakah user telah terdaftar
+                    // Hapus data otp
+                    await oneTimePassword.remove()
+                    const wingman = await Wingman.findOne({ no_hp })
+                    const baseUrl = `${req.protocol}://${req.hostname}`
+                    if(wingman) {
+                        const refreshToken = generateRefreshToken(wingman._id, wingman.no_hp, baseUrl)
+
+                        return res.status(200).json(basicResponse({
+                            status: res.statusCode,
+                            message: 'Varifikasi berhasil!',
+                            result: { wingmanId: wingman._id, refreshToken }
+                        }))
+                    }
+
+                    // Jika belum maka buat user baru
+                    const createNewWingman = await Wingman.create({ type: 'Wingman', no_hp })
+
+                    const refreshToken = generateRefreshToken(createNewWingman._id, createNewWingman.no_hp, baseUrl)
+
+                    return res.status(200).json(basicResponse({
+                        status: res.statusCode,
+                        message: 'Verifikasi berhasil!',
+                        result: { wingmanId: createNewWingman._id, refreshToken }
+                    }))
+                }
+
+                // Jika kadaluarsa user gagal melakukan verifikasi dan harus mengulangi request otp
+                return res.status(400).json(basicResponse({
                     status: res.statusCode,
-                    code: respons.FileNotFound,
-                    message: 'KTP Kosong'
-                })
+                    message: "Kode otp anda tidak sesuai!"
+                }))
             }
-            const skckPath = `./public/file/wingman/skck/skck_${no_hp}.png`;
-            const skck = fs.existsSync(skckPath) ? fs.readFileSync(skckPath) : null;
-            const skckFix = skck ? skck.toString('hex') : null
             
-            if (Array.isArray(debeh) && debeh.length) {
-                debeh[0] = { nama, email: Buffer.from(email, 'utf8').toString('hex'), alamat, kota, pasar, 
-                    bank, no_rek: Buffer.from(no_rek, 'utf8').toString('hex'), nama_rek: Buffer.from(nama_rek, 'utf8').toString('hex'), 
-                    ktp: ktp.toString('hex'), skck: skckFix };
-            } else {
-                debeh.push({ nama, email: Buffer.from(email, 'utf8').toString('hex'), alamat, kota, pasar, 
-                    bank, no_rek: Buffer.from(no_rek, 'utf8').toString('hex'), nama_rek: Buffer.from(nama_rek, 'utf8').toString('hex'), 
-                    ktp: ktp.toString('hex'), skck: skckFix });
-            }
-            fs.writeFileSync(`./db/data/${no_hp}.json`, JSON.stringify(debeh));
-            submitData = true;
-            return res.status(200).send({
+            // Jika kadaluarsa user gagal melakukan verifikasi dan harus mengulangi request otp
+            return res.status(400).json(basicResponse({
                 status: res.statusCode,
-                code: respons[200],
-                message: 'Sukses Submit Data, Selanjutnya preview'
-            })
-        } else {
-            return res.status(401).send({
-                status: res.statusCode,
-                code: respons.NeedLoginWingman,
-                message: 'Login Wingman First!'
-            })
+                message: "Kode otp anda sudah kadaluarsa!"
+            }))
         }
+
+        // Jika user belum pernah melakukan request OTP
+        return res.status(404).json(basicResponse({
+            status: res.statusCode,
+            message: "Anda belum melakukan request OTP!"
+        }))
     } catch (error) {
-        console.log(error);
-        return res.status(500).send({status: res.statusCode, code: respons.InternalServerError, message: 'Internal Server Error'});
+        return res.status(500).json(basicResponse({
+            status: res.statusCode,
+            result: error
+        }));
+    }
+}
+
+async function complateWingmanDetail(req, res) {
+    const { name, email, address, city } = req.body
+    const { wingmanId } = req.params
+
+    if(!isValidObjectId(wingmanId)) {
+        return res.status(400).json(basicResponse({
+            status: res.statusCode,
+            message: "ID wingman tidak valid!"
+        }))
+    }
+
+    try {
+        const wingman = await Wingman.findById(wingmanId)
+
+        if(wingman) {
+            const updateWingmanDetail = await Wingman.findByIdAndUpdate(wingman._id, {
+                $set: { wingmanDetail: { name, email, address, city } }
+            }, { new: true })
+            
+            return res.status(200).json(basicResponse({
+                status: res.statusCode,
+                message: "Detail wingman berhasil di update.",
+                result: updateWingmanDetail
+            }))
+        }
+
+        return res.status(404).json(basicResponse({
+            status: res.statusCode,
+            message: "Wingman tidak ditemukan!"
+        }))
+    } catch (error) {
+        return res.status(500).json(basicResponse({
+            status: res.statusCode,
+            result: error
+        }));
+    }
+}
+
+async function complateWingmanDocument(req, res) {
+    const { bank, no_rek, nama_rek } = req.body
+    const { wingmanId } = req.params
+    const ktp = req.files['ktp']
+    const skck = req.files['skck']
+
+    if(!ktp) {
+        return res.status(422).json(basicResponse({
+            status: res.statusCode,
+            message: "Foto KTP anda wajib diisi."
+        }))
+    }
+    if(!skck) {
+        return res.status(422).json(basicResponse({
+            status: res.statusCode,
+            message: "Foto SKCK anda wajib diisi."
+        }))
+    }
+
+    if(!isValidObjectId(wingmanId)) {
+        return res.status(400).json(basicResponse({
+            status: res.statusCode,
+            message: "ID wingman tidak valid!"
+        }))
+    }
+
+    try {
+        const wingman = await Wingman.findById(wingmanId)
+
+        if(wingman) {
+            const updateWingmanDocument = await Wingman.findByIdAndUpdate(wingman._id, {
+                $set: { wingmanDocument: { bank, no_rek, nama_rek, ktp: ktp[0].filename, skck: skck[0].filename } }
+            }, { new: true })
+            
+            return res.status(200).json(basicResponse({
+                status: res.statusCode,
+                message: "Document wingman berhasil di update.",
+                result: updateWingmanDocument
+            }))
+        }
+
+        return res.status(404).json(basicResponse({
+            status: res.statusCode,
+            message: "Wingman tidak ditemukan!"
+        }))
+    } catch (error) {
+        return res.status(500).json(basicResponse({
+            status: res.statusCode,
+            result: error
+        }));
     }
 }
 
@@ -795,11 +919,13 @@ async function enterPIN(req, res) {
 }
 
 module.exports = {
+    getAccessToken,
     router_wingman,
     data_wingman,
-    send_otp, 
-    login_wingman, 
-    submit_data, 
+    send_otp_wingman, 
+    verifyOtp, 
+    complateWingmanDetail,
+    complateWingmanDocument,
     preview_data,
     regsiter_wingman,
     delete_submit_data,

@@ -1,7 +1,7 @@
 const jwt = require('jsonwebtoken')
 const { basicResponse } = require('../utils/basic-response')
 
-const accessUser = async (req, res, next) => {
+const authAccess = async (req, res, next) => {
   const accessToken = req.headers['x-access-token']
   
   if(!accessToken) {
@@ -34,7 +34,7 @@ const accessUser = async (req, res, next) => {
   }
 }
 
-const refreshUser = async (req, res, next) => {
+const authRefresh = async (req, res, next) => {
   const refreshToken = req.headers['x-refresh-token']
   
   if(!refreshToken) {
@@ -68,6 +68,6 @@ const refreshUser = async (req, res, next) => {
 }
 
 module.exports = {
-  accessUser,
-  refreshUser
+  authAccess,
+  authRefresh
 }
