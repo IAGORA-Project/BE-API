@@ -6,7 +6,7 @@
 
 Setiap endpoint user membutuhkan header x-access-token yang di dapat dari endpoint get-access-token. kecuali proses send otp dan verify otp.
 
-**`URL : ${BaseURL}/api/v1/wingman/wingmanId/get-access-token`**
+**`URL : ${BaseURL}/api/v1/wingman/get-access-token`**
 
 ### Refresh Token
 
@@ -54,10 +54,10 @@ NB Hasil response :
 ```
 
 ### Mendapatkan Access Token
-**`URL : ${BaseURL}/api/v1/wingman/wingmanId/get-access-token`**
+**`URL : ${BaseURL}/api/v1/wingman/get-access-token`**
 ```js
 // AXIOS
-await axios.get(`${baseURL}/api/v1/wingman/621587db64c58b68ca659e0f/get-access-token`, {
+await axios.get(`${baseURL}/api/v1/wingman/get-access-token`, {
   headers: {
       'x-refresh-token': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI2MjBhNDZlNTg1MDVmNzU1M2U4NTZmNDAiLCJub19ocCI6IjYyODIxMTYxMDQwMTYiLCJpc3MiOiJodHRwOi8vaWFnb3JhLmlkIiwiYXVkIjoiaHR0cDovL2lhZ29yYS5pZCIsImlhdCI6MTY0NTQzNTM2MCwiZXhwIjoxNjQ4MDI3MzYwfQ.mF3TkBQzQL6fgWJXCmt3HMK86EMn4maeSgL_HpfWgKw'
   }

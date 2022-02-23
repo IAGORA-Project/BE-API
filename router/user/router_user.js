@@ -18,7 +18,7 @@ router.get('/', async (req, res) => {
 
 /* GET ACCESS TOKEN USER */
 
-router.get('/:userId/get-access-token', authRefresh, controllerUser.getAccessToken)
+router.get('/get-access-token', authRefresh, controllerUser.getAccessToken)
 
 /* DATA USER */
 

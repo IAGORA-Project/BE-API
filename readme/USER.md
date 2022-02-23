@@ -6,7 +6,7 @@
 
 Setiap endpoint user membutuhkan header x-access-token yang di dapat dari endpoint get-access-token. kecuali proses send otp dan verify otp.
 
-**`URL : ${BaseURL}/api/v1/user/userId/get-access-token`**
+**`URL : ${BaseURL}/api/v1/user/get-access-token`**
 
 ### Refresh Token
 
@@ -53,10 +53,10 @@ Hasil response :
 ```
 
 ### Mendapatkan Access Token
-**`URL : ${BaseURL}/api/v1/user/userId/get-access-token`**
+**`URL : ${BaseURL}/api/v1/user/get-access-token`**
 ```js
 // AXIOS
-await axios.get(`${baseURL}/api/v1/user/620d088e027d82d89d344ae0/get-access-token`, {
+await axios.get(`${baseURL}/api/v1/user/get-access-token`, {
   headers: {
       'x-refresh-token': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI2MjBhNDZlNTg1MDVmNzU1M2U4NTZmNDAiLCJub19ocCI6IjYyODIxMTYxMDQwMTYiLCJpc3MiOiJodHRwOi8vaWFnb3JhLmlkIiwiYXVkIjoiaHR0cDovL2lhZ29yYS5pZCIsImlhdCI6MTY0NTQzNTM2MCwiZXhwIjoxNjQ4MDI3MzYwfQ.mF3TkBQzQL6fgWJXCmt3HMK86EMn4maeSgL_HpfWgKw'
   }

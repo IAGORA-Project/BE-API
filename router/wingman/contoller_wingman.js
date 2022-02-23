@@ -22,12 +22,19 @@ const createJWT = id => {
 }
 
 async function getAccessToken(req, res) {
-    const { wingmanId } = req.params
-
-    if(!isValidObjectId(wingmanId)) {
-        return res.status(400).json(basicResponse({
+    const refreshToken = req.headers['x-refresh-token']
+    const decode = jwt.decode(refreshToken.split(' ')[1])
+    const wingmanId = decode.jti
+    
+    if(!decode.type) {
+        return res.status(500).json(basicResponse({
             status: res.statusCode,
-            message: "ID wingman tidak valid!"
+            message: "Token tidak valid."
+        }))
+    } else if(decode.type !== 'wingman') {
+        return res.status(500).json(basicResponse({
+            status: res.statusCode,
+            message: "Token tidak dikenali."
         }))
     }
 
@@ -36,7 +43,7 @@ async function getAccessToken(req, res) {
         const baseUrl = `${req.protocol}://${req.hostname}`
 
         if(wingman) {
-            const accessToken = generateAccessToken(wingman._id, wingman.no_hp, baseUrl)
+            const accessToken = generateAccessToken(wingman._id, wingman.no_hp, 'wingman', baseUrl)
 
             return res.status(200).json(basicResponse({
                 status: res.statusCode,
@@ -232,7 +239,7 @@ async function verifyOtp(req, res) {
                     const wingman = await Wingman.findOne({ no_hp })
                     const baseUrl = `${req.protocol}://${req.hostname}`
                     if(wingman) {
-                        const refreshToken = generateRefreshToken(wingman._id, wingman.no_hp, baseUrl)
+                        const refreshToken = generateRefreshToken(wingman._id, wingman.no_hp, 'wingman', baseUrl)
 
                         return res.status(200).json(basicResponse({
                             status: res.statusCode,

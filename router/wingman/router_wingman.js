@@ -20,7 +20,7 @@ router.get('/', async (req, res) => {
 
 /* DATA WINGMAN */
 
-router.get('/:wingmanId/get-access-token', authRefresh, controllerWingman.getAccessToken)
+router.get('/get-access-token', authRefresh, controllerWingman.getAccessToken)
 
 /* DATA WINGMAN */
 
