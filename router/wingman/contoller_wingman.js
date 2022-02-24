@@ -170,7 +170,7 @@ async function send_otp_wingman(req, res) {
                 if(sendMessage.status === 200) {
                     // Jika kode otp expire akan dibuat kode baru
                     await OneTimePassword.findOneAndUpdate(
-                        { no_hp }, { otp_code: randomOTP, expire_at: new Date(Date.now() + (1000 * 60)).getTime() }
+                        { no_hp: oneTimePassword.no_hp }, { otp_code: randomOTP, expire_at: new Date(Date.now() + (1000 * 60)).getTime() }
                     )
 
                     return res.status(202).json(basicResponse({
@@ -192,7 +192,7 @@ async function send_otp_wingman(req, res) {
         
             if(sendMessage.status === 200) {
                 // Jika belum pernah melakukan request nomor hp, maka akan dibuat data baru
-                await OneTimePassword.create({ no_hp, otp_code: randomOTP })
+                await OneTimePassword.create({ no_hp, otp_code: randomOTP, expire_at: new Date(Date.now() + (1000 * 60)).getTime() })
 
                 return res.status(202).json(basicResponse({
                     status: res.statusCode,

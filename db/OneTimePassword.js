@@ -10,8 +10,7 @@ const oneTimePassword = mongoose.Schema({
         required: true
     },
     expire_at: {
-        type: Date,
-        default: new Date(Date.now() + (1000 * 60)).getTime()
+        type: Date
     }
 }, { timestamps: true });
 module.exports.OneTimePassword = mongoose.model('OneTimePassword', oneTimePassword);
