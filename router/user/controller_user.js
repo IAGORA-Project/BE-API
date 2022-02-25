@@ -240,23 +240,27 @@ async function verifyOtp(req, res) {
                     const baseUrl = `${req.protocol}://${req.hostname}`
                     if(user) {
                         const refreshToken = generateRefreshToken(user._id, user.no_hp, 'user', baseUrl)
-
                         return res.status(200).json(basicResponse({
                             status: res.statusCode,
                             message: 'Varifikasi berhasil!',
-                            result: { userId: user._id, refreshToken }
+                            result: {
+                                isComplateRegister: !user.userDetail.name ? false : true,
+                                refreshToken
+                            }
                         }))
                     }
 
                     // Jika belum maka buat user baru
                     const createNewUser = await User.create({ type: 'User', no_hp })
-
                     const refreshToken = generateRefreshToken(createNewUser._id, createNewUser.no_hp, 'user', baseUrl)
 
                     return res.status(200).json(basicResponse({
                         status: res.statusCode,
                         message: 'Verifikasi berhasil!',
-                        result: { userId: createNewUser._id, refreshToken }
+                        result: {
+                            isComplateRegister: !createNewUser.userDetail.name ? false : true,
+                            refreshToken
+                        }
                     }))
                 }
 
