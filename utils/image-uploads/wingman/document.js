@@ -1,15 +1,28 @@
 const multer = require("multer");
 const { mkdirSync, existsSync } = require('fs')
+const { Wingman } = require('../../../db/Wingman')
+const { basicResponse } = require('../../basic-response')
 
 const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    const WingmanDocumentDIR = `./public/images/wingman/documents/${req.params.wingmanId}`;
-    if(!existsSync(WingmanDocumentDIR)) {
-      mkdirSync(WingmanDocumentDIR)
+  destination: async (req, file, cb) => {
+    const { wingmanId } = req.params
+    const WingmanDocumentDIR = `./public/images/wingman/documents/${wingmanId}`;
 
-      cb(null, WingmanDocumentDIR);
+    const wingman = await Wingman.findById(wingmanId)
+
+    if(wingman) {
+      if(!existsSync(WingmanDocumentDIR)) {
+        mkdirSync(WingmanDocumentDIR)
+  
+        cb(null, WingmanDocumentDIR);
+      } else {
+        cb(null, WingmanDocumentDIR);
+      }
     } else {
-      cb(null, WingmanDocumentDIR);
+      return req.res.status(404).json(basicResponse({
+        status: req.res.statusCode,
+        message: "Wingman not found!"
+      }))
     }
   },
   filename: (req, file, cb) => {
@@ -29,7 +42,7 @@ const wingmanDocumentUpload = multer({
     } else {
       cb(null, false);
       return req.res?.status(422).json(basicResponse({
-        status: res.statusCode,
+        status: req.res.statusCode,
         message: 'Harus berupa gambar (.jpg, .jpeg atau .png)',
       }))
     }

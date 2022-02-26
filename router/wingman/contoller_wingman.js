@@ -244,7 +244,11 @@ async function verifyOtp(req, res) {
                         return res.status(200).json(basicResponse({
                             status: res.statusCode,
                             message: 'Varifikasi berhasil!',
-                            result: { wingmanId: wingman._id, refreshToken }
+                            result: {
+                                wingmanId: wingman._id,
+                                isComplateRegister: !wingman.wingmanDetail.name ? false : true,
+                                refreshToken
+                            }
                         }))
                     }
 
@@ -256,7 +260,11 @@ async function verifyOtp(req, res) {
                     return res.status(200).json(basicResponse({
                         status: res.statusCode,
                         message: 'Verifikasi berhasil!',
-                        result: { wingmanId: createNewWingman._id, refreshToken }
+                        result: {
+                            wingmanId: createNewWingman._id,
+                            isComplateRegister: !createNewWingman.wingmanDetail.name ? false : true,
+                            refreshToken
+                        }
                     }))
                 }
 

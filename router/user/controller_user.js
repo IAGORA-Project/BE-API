@@ -244,6 +244,7 @@ async function verifyOtp(req, res) {
                             status: res.statusCode,
                             message: 'Varifikasi berhasil!',
                             result: {
+                                userId: user._id,
                                 isComplateRegister: !user.userDetail.name ? false : true,
                                 refreshToken
                             }
@@ -258,6 +259,7 @@ async function verifyOtp(req, res) {
                         status: res.statusCode,
                         message: 'Verifikasi berhasil!',
                         result: {
+                            userId: createNewUser._id,
                             isComplateRegister: !createNewUser.userDetail.name ? false : true,
                             refreshToken
                         }
