@@ -294,7 +294,7 @@ async function verifyOtp(req, res) {
 }
 
 async function completeRegistration(req, res) {
-    const { name, email, address } = req.body
+    const { name, email } = req.body
     const { userId } = req.params
 
     if(!isValidObjectId(userId)) {
@@ -310,7 +310,7 @@ async function completeRegistration(req, res) {
         if(user) {
             const updatedUser = await User.findByIdAndUpdate(user._id, {
                 $set: {userDetail: {
-                    name, email, address
+                    name, email
                 }}
             }, { new: true })
 

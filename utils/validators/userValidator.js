@@ -49,9 +49,6 @@ const completeRegisterValidator = [
   check('email')
     .isEmail()
     .withMessage("Email anda wajib diisi dengan email yang valid."),
-  check('address')
-    .notEmpty()
-    .withMessage("Alamat lengkap anda wajib diisi."),
   (req, res, next) => {
     const errors = validationResult(req)
 
