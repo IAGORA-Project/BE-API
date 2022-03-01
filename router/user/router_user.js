@@ -1,6 +1,7 @@
 const express = require('express');
 const { User } = require('../../db/User');
 const { authRefresh, authAccess } = require('../../middlewares/auth-middleware');
+const { userUpload } = require('../../utils/image-uploads/user');
 const { sendOtpValidator, verifyOtpValidator, completeRegisterValidator } = require('../../utils/validators/userValidator');
 const { verifyToken, verifJWT } = require('../token');
 const router = express.Router();
@@ -22,7 +23,11 @@ router.get('/get-access-token', authRefresh, controllerUser.getAccessToken)
 
 /* DATA USER */
 
-router.get('/user-data', verifyToken, verifJWT, controllerUser.data_user)
+router.get('/get-data', authAccess, controllerUser.getUserData)
+
+/* UPDATE DATA USER */
+
+router.put('/update-data', authAccess, userUpload.single('avatar'), controllerUser.updateUserData)
 
 /* SEND OTP USER */
 
@@ -35,10 +40,6 @@ router.post('/verify-otp', verifyOtpValidator, controllerUser.verifyOtp);
 /* CHANGE DATA USER*/
 
 router.put('/:userId/complete-registration', authAccess, completeRegisterValidator, controllerUser.completeRegistration);
-
-/* LOGOUT USER*/
-
-router.get('/logout-user', verifyToken, verifJWT, controllerUser.logout_user);
 
 /* DELETE USER*/
 

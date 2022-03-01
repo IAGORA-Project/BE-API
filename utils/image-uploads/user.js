@@ -1,15 +1,18 @@
 const multer = require("multer");
-const path = require('path')
 const { mkdirSync, existsSync } = require('fs')
 
-const UserDIR = path.join(__dirname, '/public/images/user');
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
+    const UserDIR = './public/images/user';
+
     if(!existsSync(UserDIR)) {
       mkdirSync(UserDIR)
+
+      cb(null, UserDIR);
+    } else {
+      cb(null, UserDIR);
     }
-    cb(null, UserDIR);
   },
   filename: (req, file, cb) => {
     const random = new Date().getTime()

@@ -1,6 +1,5 @@
 // const passport = require('passport');
 const jwt = require('jsonwebtoken');
-const fs = require('fs-extra');
 const { default: axios } = require("axios");
 
 const { OneTimePassword } = require("../../db/OneTimePassword");
@@ -10,14 +9,6 @@ const { respons, waApi } = require('../../lib/setting');
 const { generateRefreshToken, generateAccessToken } = require('../../utils/authentication');
 const { basicResponse } = require('../../utils/basic-response');
 const { isValidObjectId } = require('mongoose')
-
-const maxAge = Math.floor(Date.now() / 1000) + (60 * 60)
-
-const createJWT = id => {
-    return jwt.sign({ id }, 'created room', {
-        expiresIn: '1h'
-    })
-}
 
 async function getAccessToken(req, res) {
     const refreshToken = req.headers['x-refresh-token']
@@ -62,67 +53,91 @@ async function getAccessToken(req, res) {
     }
 }
 
-// async function router_user(req, res) {
-//     try {
-//         // if (!req.isAuthenticated()) {
-//         if (!req.isAuthenticated) {
-//             return res.status(403).send({
-//                 status: 403,
-//                 message: 'Please login User to continue'
-//             })
-//         } else {
-//             console.log('req.user: ', req.user)
-//             let { nama } = req.user;
-//             if (nama == null) {
-//                 return res.status(201).send({
-//                     status: 201,
-//                     regis: false,
-//                     message: 'Login User Berhasil dan Kamu belum registrasi'
-//                 })
-//             } else {
-//                 return res.status(200).send({
-//                     status: 200,
-//                     regis: true,
-//                     message: 'Login User Sukses dan kamu sudah terdaftar di db'
-//                 })
-//             }
-//         }
+async function getUserData(req, res) {
+    const accessToken = req.headers['x-access-token']
+    const decode = jwt.decode(accessToken.split(' ')[1])
+    const userId = decode.jti
 
-//     } catch (error) {
-//         console.log(error);
-//         return res.status(500).send({status: res.statusCode, code: respons.InternalServerError, message: 'Internal Server Error'});
-//     }
-// }
-
-async function data_user(req, res) {
     try {
-        if (req.user) {
-            const data = await User.findOne({ no_hp: req.user.no_hp });
-            if (data) {
-                return res.status(200).send({
-                    status: res.statusCode,
-                    code: respons[200],
-                    message: `Data ${req.user.no_hp} Ditemukan`,
-                    result: data
-                })
-            } else {
-                return res.status(404).send({
-                    status: res.statusCode,
-                    code: respons.UserNotFound,
-                    message: `Data ${req.user.no_hp} Tidak Ditemukan`,
-                })
-            }
-        } else {
-            return res.status(401).send({
+        const user = await User.findById(userId)
+
+        if(user) {
+            return res.status(200).json(basicResponse({
                 status: res.statusCode,
-                code: respons.NeedLoginUser,
-                message: 'Login User First!'
-            })
+                message: "Success!",
+                result: user
+            }))
         }
 
+        return res.status(404).json(basicResponse({
+            status: res.statusCode,
+            message: "User not found!"
+        }))
     } catch (error) {
-        console.log(error);
-        return res.status(500).send({status: res.statusCode, code: respons.InternalServerError, message: 'Internal Server Error'});
+        return res.status(500).json(basicResponse({
+            status: res.statusCode,
+            result: error
+        }));
+    }
+}
+
+async function updateUserData(req, res) {
+    const { name, email, address } = req.body
+    const avatar = req.file
+
+    const isEmail = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(email)
+
+    if(email) {
+        if(!isEmail) {
+            return res.status(400).json(basicResponse({
+                status: res.statusCode,
+                message: "Email tidak valid!"
+            }))
+        }
+    }
+
+    const accessToken = req.headers['x-access-token']
+    const decode = jwt.decode(accessToken.split(' ')[1])
+    const userId = decode.jti
+
+    try {
+        const user = await User.findById(userId)
+
+        if(user) {
+            const oldUserData = {
+                name: user.userDetail.name,
+                email: user.userDetail.email,
+                address: user.userDetail.address,
+                avatar: user.userDetail.avatar
+            }
+
+            const updateUser = await User.findByIdAndUpdate(user._id, {
+                $set: {
+                    userDetail: {
+                        name: name ? name : oldUserData.name,
+                        email: email ? email : oldUserData.email,
+                        address: address ? address : oldUserData.address,
+                        avatar: avatar ? avatar.filename : oldUserData.avatar
+                    }
+                }
+            }, { new: true })
+
+            return res.status(200).json(basicResponse({
+                status: res.statusCode,
+                message: "Success!",
+                result: updateUser
+            }))
+        }
+
+        return res.status(404).json(basicResponse({
+            status: res.statusCode,
+            message: "User not found!"
+        }))
+    } catch (error) {
+        return res.status(500).json(basicResponse({
+            status: res.statusCode,
+            result: error
+        }));
     }
 }
 
@@ -333,31 +348,6 @@ async function completeRegistration(req, res) {
     }
 }
 
-async function logout_user(req, res) {
-    try {
-        if (req.user) {
-            let cookis = req.cookies.jwt;
-            res.cookie('jwt', '', { maxAge: 1 });
-            return res.status(200).send({
-                status: res.statusCode,
-                code: respons[200],
-                message: `Logout User ${req.user.no_hp} Sukses`,
-                result: { cookie_before: cookis }
-            })
-        } else {
-            return res.status(401).send({
-                status: res.statusCode,
-                code: respons.NeedLoginUser,
-                message: 'Login User First!'
-            })
-        }
-
-    } catch (error) {
-        console.log(error);
-        return res.status(500).send({status: res.statusCode, code: respons.InternalServerError, message: 'Internal Server Error'});
-    }
-}
-
 async function delete_user(req, res) {
     try {
         let { no_hp } = req.body;
@@ -479,12 +469,11 @@ async function enterPin(req, res) {
 
 module.exports = {
     getAccessToken,
-    data_user,
+    getUserData,
+    updateUserData,
     send_otp_user,
     verifyOtp,
-    // router_user
     completeRegistration,
-    logout_user,
     delete_user,
     delete_all_user,
     input_Pin,

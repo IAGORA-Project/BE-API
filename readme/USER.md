@@ -108,3 +108,88 @@ await axios.put(`${baseURL}/api/v1/user/6212f14598faa8e6e82d28de/complete-regist
     }
 }
 ```
+
+# Manage USER Data
+
+**<details><summary>List Endpoint</summary>**
+### **1. Get User Data**
+Endpoint get user data membutuhkan header x-access-token yang di dapat dari endpoint get-access-token.
+
+**`URL : ${BaseURL}/api/v1/user/get-data`**
+```js
+// AXIOS
+await axios.get(`${baseURL}/api/v1/user/get-data`, {
+  headers: {
+      'x-access-token': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI2MjEyZjE0NTk4ZmFhOGU2ZTgyZDI4ZGUiLCJub19ocCI6NjI4MjExNjEwNDAxNiwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdCIsImF1ZCI6Imh0dHA6Ly9sb2NhbGhvc3QiLCJpYXQiOjE2NDU0MzU4NDgsImV4cCI6MTY0NTUyMjI0OH0.yMha3e80dQDPlvw_2Ou6hA3XyNAcBjlZzEF_meo42l8'
+  }
+})
+
+// Contoh response
+{
+    "status": 200,
+    "message": "Success!",
+    "result": {
+        "userDetail": {
+            "name": "Syarif",
+            "email": "test@test.com",
+            "address": "jl."
+        },
+        "_id": "6218bb4d03faab15554bb78b",
+        "type": "User",
+        "no_hp": 6282116104016,
+        "transaction": [],
+        "createdAt": "2022-02-25T11:19:41.546Z",
+        "updatedAt": "2022-02-25T11:20:15.707Z",
+        "__v": 0
+    }
+}
+```
+### **1. Update User Data**
+Endpoint update user data membutuhkan header x-access-token yang di dapat dari endpoint get-access-token.
+
+**`URL : ${BaseURL}/api/v1/user/update-data`**
+```js
+// Body dari setiap endpoint bersifat opsional, bisa hanya satu data atau lebih
+// Contohnya isi body hanya satu data :
+const data = {
+    name: "Moh. Sarifudin"
+}
+// Contoh dua data :
+const data = {
+    name: "Moh. Sarifudin",
+    email: "test@test.com"
+}
+// Contoh upload avatar
+const formData = new FormData()
+formData.append('avatar', avatarImage)
+
+
+// AXIOS
+await axios.put(`${baseURL}/api/v1/user/update-data`, data | formData , {
+  headers: {
+      'x-access-token': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI2MjEyZjE0NTk4ZmFhOGU2ZTgyZDI4ZGUiLCJub19ocCI6NjI4MjExNjEwNDAxNiwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdCIsImF1ZCI6Imh0dHA6Ly9sb2NhbGhvc3QiLCJpYXQiOjE2NDU0MzU4NDgsImV4cCI6MTY0NTUyMjI0OH0.yMha3e80dQDPlvw_2Ou6hA3XyNAcBjlZzEF_meo42l8'
+  }
+})
+
+// Contoh response
+{
+    "status": 200,
+    "message": "Success!",
+    "result": {
+        "userDetail": {
+            "name": "Moh. Sarifudin",
+            "email": "syarif93@gmail.com",
+            "address": "jl. aja dulu",
+            "avatar": "1646098312627.jpg"
+        },
+        "_id": "6218bb4d03faab15554bb78b",
+        "type": "User",
+        "no_hp": 6282116104016,
+        "transaction": [],
+        "createdAt": "2022-02-25T11:19:41.546Z",
+        "updatedAt": "2022-03-01T01:31:52.669Z",
+        "__v": 0
+    }
+}
+```
+</details>
