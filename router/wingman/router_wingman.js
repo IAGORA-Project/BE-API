@@ -3,11 +3,20 @@ const router = express.Router();
 const path = require('path');
 
 const controllerWingman = require('./contoller_wingman');
+const WingmanRequestController = require('./wingman_request_controller')
 const { verifyToken, verifJWT } = require('../token');
 const { Wingman } = require('../../db/Wingman');
-const { sendOtpValidator, verifyOtpValidator, completeWingmanDetailValidator, completeWingmanDocumentValidator } = require('../../utils/validators/wingmanValidator');
+const {
+    sendOtpValidator,
+    verifyOtpValidator,
+    completeWingmanDetailValidator,
+    completeWingmanDocumentValidator,
+    requestNewProductValidator,
+    requestNewMarketValidator
+} = require('../../utils/validators/wingmanValidator');
 const { authAccess, authRefresh } = require('../../middlewares/auth-middleware');
 const { wingmanDocumentUpload } = require('../../utils/image-uploads/wingman/document');
+const { productUpload } = require('../../utils/image-uploads/product');
 
 // router.get('/', verifJWT, controllerWingman.router_wingman);
 
@@ -100,5 +109,11 @@ router.post('/input-pin', verifyToken, verifJWT, controllerWingman.input_Pin);
 /* PIN WINGMAN */
 
 router.post('/enter-pin', verifyToken, controllerWingman.enterPIN);
+
+// Wingman request new product
+router.post('/request-new-product', authAccess, productUpload.single('product_image'), requestNewProductValidator, WingmanRequestController.requestNewProduct)
+
+// Wingman request new market
+router.post('/request-new-market', authAccess, requestNewMarketValidator, WingmanRequestController.requestNewMarket)
 
 module.exports = router

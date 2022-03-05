@@ -1,10 +1,10 @@
 const multer = require("multer");
 const { existsSync, mkdirSync } = require('fs')
 
-const productDir = './public/images/products';
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
+    const productDir = './public/images/products';
     if(!existsSync(productDir)) {
       mkdirSync(productDir)
       cb(null, productDir);

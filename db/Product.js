@@ -3,8 +3,7 @@ const mongoose = require('mongoose');
 const Product = mongoose.Schema({
     product_name: { 
         type: String,
-        required: true,
-        unique: true
+        required: true
     },
     product_category: { 
         type: String,
@@ -27,5 +26,13 @@ const Product = mongoose.Schema({
         type: String,
         required: true
     },
+    market: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'market'
+    },
+    isAccept: {
+        type: Boolean,
+        default: true
+    }
 }, { timestamps: true });
 module.exports.Product = mongoose.model('product', Product);

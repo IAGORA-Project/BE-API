@@ -26,6 +26,9 @@ const createProductValidator = [
   check('product_uom')
     .notEmpty()
     .withMessage("UOM produk wajib diisi."),
+  check('marketId')
+    .isMongoId()
+    .withMessage("ID market wajib diisi."),
   (req, res, next) => {
     const errors = validationResult(req)
 
