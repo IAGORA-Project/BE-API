@@ -2,7 +2,7 @@
 
 #### ***Base URL : http://api.iagora.id***
 
-### Menampilkan Satu Pasar beserta productnya
+### Menambahkan product ke keranjang
 **`URL : ${BaseURL}/api/v1/cart/user/:userId/product/:productId/add`**
 ```js
 // AXIOS
