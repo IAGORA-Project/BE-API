@@ -2,41 +2,20 @@ const express = require('express');
 const router = express.Router();
 
 const controllerProduct = require('./controller_product')
-
-const { verifyToken, verifJWT } = require('../token');
-const { Product } = require('../../db/Product');
 const { createProductValidator } = require('../../utils/validators/prodoctValidator');
 const { productUpload } = require('../../utils/image-uploads/product');
-
-router.get('/', async (req, res) => {
-    const data = await Product.find({});
-    res.render('ejs/product', {
-        result: data
-    })
-})
+const { authAccess } = require('../../middlewares/auth-middleware');
 
 /* CREATE PRODUCT */
 
-router.post('/create-product', productUpload.single('product_image'), createProductValidator, controllerProduct.create_product);
+router.post('/create-product', productUpload.single('product_image'), createProductValidator, controllerProduct.store);
 
 /* CREATE PRODUCT */
 
-router.get('/read-one-product/:ids', verifyToken, controllerProduct.product_one);
+router.get('/get-all', controllerProduct.getAll);
 
 /* CREATE PRODUCT */
 
-router.get('/read-all-product', verifyToken, controllerProduct.product_all);
-
-/* CREATE PRODUCT */
-
-router.put('/update-product/:ids', verifyToken, productUpload.single('product_image'), controllerProduct.product_update);
-
-/* CREATE PRODUCT */
-
-router.delete('/delete-one-product/:ids', verifyToken, controllerProduct.delete_one_product);
-
-/* CREATE PRODUCT */
-
-router.delete('/delete-all-product', verifyToken, controllerProduct.delete_all_product);
+router.get('/:productId/get', controllerProduct.getOne);
 
 module.exports = router

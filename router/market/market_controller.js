@@ -4,9 +4,8 @@ const { City } = require('../../db/City')
 
 const getAll = async (req, res) => {
   try {
-    const markets = await Market.find()
+    const markets = await Market.find().where({ isAccept: true })
 
-    console.log(markets);
     return res.status(200).json(basicResponse({
       status: res.statusCode,
       message: "Success",
@@ -24,7 +23,14 @@ const getOne = async (req, res) => {
   const { marketId } = req.params
 
   try {
-    const market = await Market.findById(marketId).populate('products')
+    const market = await Market.findById(marketId)
+      .where({ isAccept: true })
+      .populate({
+        path: 'products',
+        match: {
+          isAccept: true
+        }
+      })
 
     if(market) {
       return res.status(200).json(basicResponse({
