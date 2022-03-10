@@ -42,7 +42,10 @@ const Wingman = mongoose.Schema({
         email: String,
         address: String,
         city: String,
-        avatar: String,
+        avatar: {
+            type: String,
+            default: null
+        },
     },
     wingmanDocument: {
         ktp: String,
