@@ -43,8 +43,7 @@ const Wingman = mongoose.Schema({
         address: String,
         city: String,
         avatar: {
-            type: String,
-            default: null
+            type: String
         },
     },
     wingmanDocument: {

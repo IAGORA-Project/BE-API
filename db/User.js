@@ -26,7 +26,6 @@ const Users = mongoose.Schema({
         },
         avatar: {
             type: String,
-            default: null
         },
         email: {
             type: String,

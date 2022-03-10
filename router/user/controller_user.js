@@ -321,11 +321,12 @@ async function completeRegistration(req, res) {
     
     try {
         const user = await User.findById(userId)
+        const baseUrl = `${req.protocol}://${req.hostname}:${process.env.NODE_ENV === 'development' ? 5050 : ''}`
 
         if(user) {
             const updatedUser = await User.findByIdAndUpdate(user._id, {
                 $set: {userDetail: {
-                    name, email
+                    name, email, avatar: `${baseUrl}/image/user/default.png`
                 }}
             }, { new: true })
 
