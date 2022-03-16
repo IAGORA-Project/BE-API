@@ -31,10 +31,6 @@ router.get('/', async (req, res) => {
 
 router.get('/get-access-token', authRefresh, controllerWingman.getAccessToken)
 
-/* DATA WINGMAN */
-
-router.get('/wingman-data', verifyToken, verifJWT, controllerWingman.data_wingman)
-
 /* SEND OTP */
 
 router.post('/send-otp-wingman', sendOtpValidator, controllerWingman.send_otp_wingman);

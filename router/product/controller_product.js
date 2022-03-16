@@ -1,34 +1,58 @@
+const { Market } = require("../../db/Market");
 const { Product } = require("../../db/Product");
 const { basicResponse } = require("../../utils/basic-response");
 
 async function store(req, res) {
-    try {
-        const { product_name, product_category, product_grade, product_price, product_uom } = req.body;
-        const product_image = req.file
+    const {
+        product_name,
+        product_category,
+        product_grade,
+        product_price,
+        product_uom,
+        marketId
+    } = req.body
+    const product_image = req.file
 
-        if(!product_image) {
-            return res.status(422).json(basicResponse(res.statusCode, 'Gambar produk wajib diisi.'))
+    if(!product_image) {
+        return res.status(422).json(basicResponse({
+            status: res.statusCode,
+            message: 'Gambar produk wajib diisi.'
+        }))
+    }
+
+    try {
+        const market = await Market.findById(marketId)
+        if(market) {
+            const baseUrl = `${req.protocol}://${req.hostname}${process.env.NODE_ENV === 'development' ? ':' + 5050 : ''}`
+            const product = await Product.create({
+                product_name,
+                product_category,
+                product_grade,
+                product_price,
+                product_uom,
+                market: market._id,
+                product_image: `${baseUrl}/image/product/${product_image.filename}`,
+            })
+
+            market.products.push(product)
+            await market.save()
+
+            return res.status(201).json(basicResponse({
+                status: res.statusCode,
+                message: "Success.",
+                result: product
+            }))
         }
 
-        const create = await Product.create({ 
-            product_name, 
-            product_category, 
-            product_grade, 
-            product_image: product_image.filename, 
-            product_price,
-            product_uom
-        });
-        return res.status(201).json(basicResponse({
+        return res.status(404).json(basicResponse({
             status: res.statusCode,
-            message: 'Produk berhasil ditambahkan.',
-            result: create
+            message: "Pasar tidak ditemukan."
         }))
-
     } catch (error) {
         return res.status(500).json(basicResponse({
             status: res.statusCode,
             result: error
-        })); 
+        }))
     }
 }
 

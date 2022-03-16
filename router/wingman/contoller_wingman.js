@@ -64,68 +64,6 @@ async function getAccessToken(req, res) {
     }
 }
 
-async function router_wingman(req, res) {
-    try {
-        if (!req.isAuthenticated) {
-            return res.status(403).send({
-                status: 403,
-                message: 'Please login Wingman to continue'
-            })
-        } else {
-            console.log('req.user: ', req.user)
-            let { nama } = req.user;
-            if (nama == null) {
-                return res.status(201).send({
-                    status: 201,
-                    regis: false,
-                    message: 'Login Wingman Berhasil dan Kamu belum registrasi'
-                })
-            } else {
-                return res.status(200).send({
-                    status: 200,
-                    regis: true,
-                    message: 'Login Wingman Sukses dan kamu sudah terdaftar di db'
-                })
-            }
-        }
-    } catch (error) {
-        console.log(error);
-        return res.status(500).send({status: res.statusCode, code: respons.InternalServerError, message: 'Internal Server Error'});
-    }
-}
-
-async function data_wingman(req, res) {
-    try {
-        if (req.user) {
-            const data = await Wingman.findOne({ no_hp: req.user.no_hp });
-            if (data) {
-                return res.status(200).send({
-                    status: res.statusCode,
-                    code: respons[200],
-                    message: `Data ${req.user.no_hp} Ditemukan`,
-                    result: data
-                })
-            } else {
-                return res.status(404).send({
-                    status: res.statusCode,
-                    code: respons.WingmanNotFound,
-                    message: `Data ${req.user.no_hp} Tidak Ditemukan`
-                })
-            }
-        } else {
-            return res.status(401).send({
-                status: res.statusCode,
-                code: respons.NeedLoginWingman,
-                message: 'Login Wingman First!'
-            })
-        }
-
-    } catch (error) {
-        console.log(error);
-        return res.status(500).send({status: res.statusCode, code: respons.InternalServerError, message: 'Internal Server Error'});
-    }
-}
-
 async function send_otp_wingman(req, res) {
     try {
         let { no_hp } = req.body;
@@ -255,7 +193,7 @@ async function verifyOtp(req, res) {
                     // Jika belum maka buat user baru
                     const createNewWingman = await Wingman.create({ type: 'Wingman', no_hp })
 
-                    const refreshToken = generateRefreshToken(createNewWingman._id, createNewWingman.no_hp, baseUrl)
+                    const refreshToken = generateRefreshToken(createNewWingman._id, createNewWingman.no_hp, 'wingman', baseUrl)
 
                     return res.status(200).json(basicResponse({
                         status: res.statusCode,
@@ -935,8 +873,6 @@ async function enterPIN(req, res) {
 
 module.exports = {
     getAccessToken,
-    router_wingman,
-    data_wingman,
     send_otp_wingman, 
     verifyOtp, 
     complateWingmanDetail,
