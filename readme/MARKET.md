@@ -3,10 +3,12 @@
 #### ***Base URL : http://api.iagora.id***
 
 ### Menampilkan Satu Pasar beserta productnya
-**`URL : ${BaseURL}/api/v1/market/marketId/get`**
+**`URL : ${BaseURL}/api/v1/market/marketId/get?categoryId=6239ad12a34d3b82f4fd2dd9`**
+Endpoint menampilkan data pasar beserta produknya membutuhkan parameter categoryId, jika parameternya kosong atau tidak terisi maka akan ditampilkan semua data produk yang berada di pasar tersebut. Jika categoryId terisi dengan ID kategori maka data produk yang di tampilkan akan terfilter berdasarkan kategori produknya.
+
 ```js
 // AXIOS
-await axios.get(`${baseURL}/api/v1/market/622342ee9ec09bf428b4dbcb/get`)
+await axios.get(`${baseURL}/api/v1/market/622342ee9ec09bf428b4dbcb/get?categoryId=6239ad12a34d3b82f4fd2dd9`)
 
 // Contoh response
 {
@@ -19,21 +21,21 @@ await axios.get(`${baseURL}/api/v1/market/622342ee9ec09bf428b4dbcb/get`)
         "city": "6222f56b6d52dbb0b86d85c9",
         "isAccept": true,
         "createdAt": "2022-03-05T11:01:02.892Z",
-        "updatedAt": "2022-03-05T12:56:15.374Z",
-        "__v": 2,
+        "updatedAt": "2022-03-22T11:37:21.009Z",
+        "__v": 7,
         "products": [
             {
-                "_id": "62235def9e814002330e32b1",
-                "product_name": "Pisang",
-                "product_category": "Buah",
+                "_id": "6239b3d1e05f770c37927329",
+                "product_name": "Semangka",
+                "product_category": "6239ad12a34d3b82f4fd2dd9",
                 "product_grade": "A",
-                "product_image": "1646484975275.jpg",
-                "product_price": "15000",
-                "product_uom": "/sisir",
+                "product_image": "http://localhost:5050/image/product/1647948753382.jpg",
+                "product_price": "8000",
+                "product_uom": "/kg",
                 "market": "622342ee9ec09bf428b4dbcb",
                 "isAccept": true,
-                "createdAt": "2022-03-05T12:56:15.367Z",
-                "updatedAt": "2022-03-05T12:56:15.367Z",
+                "createdAt": "2022-03-22T11:32:33.414Z",
+                "updatedAt": "2022-03-22T11:32:33.414Z",
                 "__v": 0
             }
         ]

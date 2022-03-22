@@ -6,7 +6,8 @@ const Product = mongoose.Schema({
         required: true
     },
     product_category: { 
-        type: String,
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'productCategory',
         required: true
     },
     product_grade: { 

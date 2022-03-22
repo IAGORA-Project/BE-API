@@ -83,3 +83,32 @@ await axios.get(`${baseURL}/api/v1/product/get-all`)
     ]
 }
 ```
+
+# ENDPOINT KATEGORI PRODUK
+
+**<details><summary>List Endpoint</summary>**
+### **1. Menampilkan semua kategori produk**
+
+**`URL : ${BaseURL}/api/v1/product-category/get-all`**
+```js
+// AXIOS
+
+await axios.get(`${baseURL}/api/v1/product-category/get-all`)
+
+// Contoh response
+{
+    "status": 200,
+    "message": "Success",
+    "result": [
+        {
+            "_id": "6239ad12a34d3b82f4fd2dd9",
+            "name": "Buah"
+        },
+        {
+            "_id": "6239b4bfe05f770c3792732f",
+            "name": "Sayur"
+        }
+    ]
+}
+```
+</details>

@@ -1,5 +1,6 @@
 const { check, validationResult } = require('express-validator')
 const { Product } = require('../../db/Product')
+const { ProductCategory } = require('../../db/ProductCategory')
 const { basicResponse } = require('../basic-response')
 
 const createProductValidator = [
@@ -14,9 +15,9 @@ const createProductValidator = [
         }
       })
     }),
-  check('product_category')
-    .notEmpty()
-    .withMessage("Kategori produk wajib diisi."),
+  check('product_category_id')
+    .isMongoId()
+    .withMessage("Kategori produk wajib diisi dan harus ID yang valid."),
   check('product_grade')
     .isIn(['A', 'B', 'C'])
     .withMessage("Masukkan grade A, B, atau C."),
@@ -44,6 +45,34 @@ const createProductValidator = [
   }
 ]
 
+const createProductCategoryValidator = [
+  check('name')
+    .notEmpty()
+    .withMessage("Nama kategori wajib diisi.")
+    .custom(value => {
+      const name = ProductCategory.find({ name: value })
+      return name.exec().then(productCategories => {
+        if(productCategories.length > 0) {
+          return Promise.reject('Nama kategory tidak boleh sama.')
+        }
+      })
+    }),
+  (req, res, next) => {
+    const errors = validationResult(req)
+
+    if(!errors.isEmpty()) {
+      return res.status(422).json(basicResponse({
+        status: res.statusCode,
+        message: 'Validation Errors!',
+        result: errors.array()
+      }))
+    }
+
+    next()
+  }
+]
+
 module.exports = {
-  createProductValidator
+  createProductValidator,
+  createProductCategoryValidator
 }

@@ -1,11 +1,12 @@
 const { Market } = require("../../db/Market");
 const { Product } = require("../../db/Product");
+const { ProductCategory } = require("../../db/ProductCategory");
 const { basicResponse } = require("../../utils/basic-response");
 
 async function store(req, res) {
     const {
         product_name,
-        product_category,
+        product_category_id,
         product_grade,
         product_price,
         product_uom,
@@ -23,24 +24,36 @@ async function store(req, res) {
     try {
         const market = await Market.findById(marketId)
         if(market) {
-            const baseUrl = `${req.protocol}://${req.hostname}${process.env.NODE_ENV === 'development' ? ':' + 5050 : ''}`
-            const product = await Product.create({
-                product_name,
-                product_category,
-                product_grade,
-                product_price,
-                product_uom,
-                market: market._id,
-                product_image: `${baseUrl}/image/product/${product_image.filename}`,
-            })
+            const productCategory = await ProductCategory.findById(product_category_id)
 
-            market.products.push(product)
-            await market.save()
+            if(productCategory) {
+                const baseUrl = `${req.protocol}://${req.hostname}${process.env.NODE_ENV === 'development' ? ':' + 5050 : ''}`
+                const product = await Product.create({
+                    product_name,
+                    product_category: product_category_id,
+                    product_grade,
+                    product_price,
+                    product_uom,
+                    market: market._id,
+                    product_image: `${baseUrl}/image/product/${product_image.filename}`,
+                })
 
-            return res.status(201).json(basicResponse({
+                market.products.push(product)
+                await market.save()
+
+                productCategory.products.push(product)
+                await productCategory.save()
+
+                return res.status(201).json(basicResponse({
+                    status: res.statusCode,
+                    message: "Success.",
+                    result: product
+                }))
+            }
+
+            return res.status(404).json(basicResponse({
                 status: res.statusCode,
-                message: "Success.",
-                result: product
+                message: "Kategory product tidak ditemukan."
             }))
         }
 
