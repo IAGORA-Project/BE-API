@@ -10,9 +10,9 @@ const Product = mongoose.Schema({
         ref: 'productCategory',
         required: true
     },
-    product_grade: { 
-        type: String,
-        enum : ['A','B', 'C'],
+    product_grade: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'productGrade',
         required: true
     },
     product_image: { 
@@ -20,7 +20,7 @@ const Product = mongoose.Schema({
         required: true
     },
     product_price: { 
-        type: String,
+        type: Number,
         required: true
     },
     product_uom: { 

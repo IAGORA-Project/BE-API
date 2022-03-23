@@ -89,7 +89,7 @@ await axios.get(`${baseURL}/api/v1/product/get-all`)
 **<details><summary>List Endpoint</summary>**
 ### **1. Menampilkan semua kategori produk**
 
-**`URL : ${BaseURL}/api/v1/product-category/get-all`**
+**`URL : ${BaseURL}/api/v1/product/category/get-all`**
 ```js
 // AXIOS
 

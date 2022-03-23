@@ -7,7 +7,7 @@ async function store(req, res) {
     const {
         product_name,
         product_category_id,
-        product_grade,
+        product_grade_id,
         product_price,
         product_uom,
         marketId
@@ -31,7 +31,7 @@ async function store(req, res) {
                 const product = await Product.create({
                     product_name,
                     product_category: product_category_id,
-                    product_grade,
+                    product_grade: product_grade_id,
                     product_price,
                     product_uom,
                     market: market._id,

@@ -25,7 +25,6 @@ const transactionWingman = require('./router/transaction/wingman/router_wm_trans
 const cartRoute = require('./router/transaction/user/cartRoute')
 const cityRoute = require('./router/city/city_routes')
 const marketRoute = require('./router/market/market_routes')
-const productCategoryRoute = require('./router/product/product_category_routes')
 
 const { default: axios } = require('axios');
 const path = require('path');
@@ -159,7 +158,6 @@ app.use('/api/v1/transaction/wingman', transactionWingman);
 app.use('/api/v1/cart', cartRoute);
 app.use('/api/v1/city', cityRoute);
 app.use('/api/v1/market', marketRoute);
-app.use('/api/v1/product-category', productCategoryRoute);
 
 app.get('/tess', async(req, res) => {
   const get = await axios.get(`https://shopee.co.id/api/v2/search_items/?by=relevancy&keyword=wortel&limit=10&newest=0&order=desc&page_type=search&version=2`)

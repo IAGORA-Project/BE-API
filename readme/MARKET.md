@@ -4,6 +4,7 @@
 
 ### Menampilkan Satu Pasar beserta productnya
 **`URL : ${BaseURL}/api/v1/market/marketId/get?categoryId=6239ad12a34d3b82f4fd2dd9`**
+
 Endpoint menampilkan data pasar beserta produknya membutuhkan parameter categoryId, jika parameternya kosong atau tidak terisi maka akan ditampilkan semua data produk yang berada di pasar tersebut. Jika categoryId terisi dengan ID kategori maka data produk yang di tampilkan akan terfilter berdasarkan kategori produknya.
 
 ```js
