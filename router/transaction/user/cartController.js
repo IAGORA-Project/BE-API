@@ -338,7 +338,8 @@ const getUserCart = async (req, res) => {
 
       return res.status(404).json(basicResponse({
         status: res.statusCode,
-        message: 'Cart anda masih kosong.'
+        message: 'Cart anda masih kosong.',
+        result: {}
       }))
     }
 
