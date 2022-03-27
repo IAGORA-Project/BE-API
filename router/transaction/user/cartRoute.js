@@ -4,7 +4,7 @@ const cartController = require('./cartController')
 
 const router = require('express').Router()
 
-router.post('/user/:userId/product/:productId/add', authAccess, cartController.addToCart)
+router.post('/user/:userId/product/:productId/add', authAccess, updateQuantityValidator, cartController.addToCart)
 router.put('/user/:userId/product/:productId/update-quantity', authAccess, updateQuantityValidator, cartController.updateQuantity)
 router.delete('/user/:userId/product/:productId/delete-one-product', authAccess, cartController.deleteOneProductCart)
 router.delete('/user/:userId/delete-all', authAccess, cartController.deleteAllCart)

@@ -6,7 +6,10 @@
 **`URL : ${BaseURL}/api/v1/cart/user/:userId/product/:productId/add`**
 ```js
 // AXIOS
-await axios.post(`${baseURL}/api/v1/cart/user/6218bb4d03faab15554bb78b/product/62235def9e814002330e32b1/add`, {}, {
+const body = {
+    "quantity": 0.5
+}
+await axios.post(`${baseURL}/api/v1/cart/user/6218bb4d03faab15554bb78b/product/62235def9e814002330e32b1/add`, body, {
   headers: {
       'x-access-token': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI2MjEyZjE0NTk4ZmFhOGU2ZTgyZDI4ZGUiLCJub19ocCI6NjI4MjExNjEwNDAxNiwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdCIsImF1ZCI6Imh0dHA6Ly9sb2NhbGhvc3QiLCJpYXQiOjE2NDU0MzU4NDgsImV4cCI6MTY0NTUyMjI0OH0.yMha3e80dQDPlvw_2Ou6hA3XyNAcBjlZzEF_meo42l8'
   }
@@ -15,27 +18,11 @@ await axios.post(`${baseURL}/api/v1/cart/user/6218bb4d03faab15554bb78b/product/6
 // Contoh response
 {
     "status": 200,
-    "message": "Cart id: 623aafa8874bafa4efa0f154 updated",
+    "message": "Cart id: 6240f896bf3d2b67f8190599 updated",
     "result": {
-        "_id": "623aafa8874bafa4efa0f154",
+        "_id": "6240f896bf3d2b67f8190599",
         "user": "6218bb4d03faab15554bb78b",
         "products": [
-            {
-                "productDetail": {
-                    "_id": "6239b4f1e05f770c37927334",
-                    "product_name": "Terong",
-                    "product_grade": {
-                        "_id": "623a5ee1e6342137aa5333a0",
-                        "grade": "B",
-                        "charge": 500
-                    },
-                    "product_image": "http://localhost:5050/image/product/1647949040996.jpg",
-                    "product_price": 10000,
-                    "product_uom": "/kg"
-                },
-                "quantity": 1,
-                "subTotal": 10500
-            },
             {
                 "productDetail": {
                     "_id": "6239b3d1e05f770c37927329",
@@ -43,20 +30,39 @@ await axios.post(`${baseURL}/api/v1/cart/user/6218bb4d03faab15554bb78b/product/6
                     "product_grade": {
                         "_id": "623a5ebde6342137aa53339d",
                         "grade": "A",
-                        "charge": 1000
+                        "fee": 1000
                     },
                     "product_image": "http://localhost:5050/image/product/1647948753382.jpg",
                     "product_price": 8000,
                     "product_uom": "/kg"
                 },
                 "quantity": 1,
-                "subTotal": 9000
+                "subTotal": 8000,
+                "handlingFee": 1000
+            },
+            {
+                "productDetail": {
+                    "_id": "6239b4f1e05f770c37927334",
+                    "product_name": "Terong",
+                    "product_grade": {
+                        "_id": "623a5ee1e6342137aa5333a0",
+                        "grade": "B",
+                        "fee": 500
+                    },
+                    "product_image": "http://localhost:5050/image/product/1647949040996.jpg",
+                    "product_price": 10000,
+                    "product_uom": "/kg"
+                },
+                "quantity": 0.5,
+                "subTotal": 5000,
+                "handlingFee": 250
             }
         ],
-        "total": 19500,
-        "createdAt": "2022-03-23T05:27:04.325Z",
-        "updatedAt": "2022-03-23T05:50:49.726Z",
-        "__v": 4
+        "total": 13000,
+        "totalHandlingFee": 1250,
+        "createdAt": "2022-03-27T23:51:50.231Z",
+        "updatedAt": "2022-03-27T23:52:22.817Z",
+        "__v": 1
     }
 }
 ```
@@ -65,11 +71,11 @@ await axios.post(`${baseURL}/api/v1/cart/user/6218bb4d03faab15554bb78b/product/6
 **`URL : ${BaseURL}/api/v1/cart/user/:userId/product/:productId/update-quantity`**
 ```js
 // AXIOS
-const data = {
+const body = {
     "quantity": 4
 }
 
-await axios.put(`${baseURL}/api/v1/cart/user/6218bb4d03faab15554bb78b/product/62235def9e814002330e32b1/update-quantity`, data, {
+await axios.put(`${baseURL}/api/v1/cart/user/6218bb4d03faab15554bb78b/product/62235def9e814002330e32b1/update-quantity`, body, {
   headers: {
       'x-access-token': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI2MjEyZjE0NTk4ZmFhOGU2ZTgyZDI4ZGUiLCJub19ocCI6NjI4MjExNjEwNDAxNiwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdCIsImF1ZCI6Imh0dHA6Ly9sb2NhbGhvc3QiLCJpYXQiOjE2NDU0MzU4NDgsImV4cCI6MTY0NTUyMjI0OH0.yMha3e80dQDPlvw_2Ou6hA3XyNAcBjlZzEF_meo42l8'
   }
@@ -78,48 +84,49 @@ await axios.put(`${baseURL}/api/v1/cart/user/6218bb4d03faab15554bb78b/product/62
 // Contoh response
 {
     "status": 200,
-    "message": "Cart id: 623aafa8874bafa4efa0f154 updated",
+    "message": "Cart id: 6240f896bf3d2b67f8190599 updated",
     "result": {
-        "_id": "623aafa8874bafa4efa0f154",
+        "_id": "6240f896bf3d2b67f8190599",
         "user": "6218bb4d03faab15554bb78b",
         "products": [
-            {
-                "productDetail": {
-                    "_id": "6239b4f1e05f770c37927334",
-                    "product_name": "Terong",
-                    "product_grade": {
-                        "_id": "623a5ee1e6342137aa5333a0",
-                        "grade": "B",
-                        "charge": 500
-                    },
-                    "product_image": "http://localhost:5050/image/product/1647949040996.jpg",
-                    "product_price": 10000,
-                    "product_uom": "/kg"
-                },
-                "quantity": 4,
-                "subTotal": 42000
-            },
             {
                 "productDetail": {
                     "_id": "6239b3d1e05f770c37927329",
                     "product_name": "Semangka",
                     "product_grade": {
                         "_id": "623a5ebde6342137aa53339d",
-                        "grade": "A",
-                        "charge": 1000
+                        "grade": "A"
                     },
                     "product_image": "http://localhost:5050/image/product/1647948753382.jpg",
                     "product_price": 8000,
                     "product_uom": "/kg"
                 },
                 "quantity": 1,
-                "subTotal": 9000
+                "subTotal": 8000,
+                "handlingFee": 1000
+            },
+            {
+                "productDetail": {
+                    "_id": "6239b4f1e05f770c37927334",
+                    "product_name": "Terong",
+                    "product_grade": {
+                        "_id": "623a5ee1e6342137aa5333a0",
+                        "grade": "B"
+                    },
+                    "product_image": "http://localhost:5050/image/product/1647949040996.jpg",
+                    "product_price": 10000,
+                    "product_uom": "/kg"
+                },
+                "quantity": 4,
+                "subTotal": 40000,
+                "handlingFee": 2000
             }
         ],
-        "total": 51000,
-        "createdAt": "2022-03-23T05:27:04.325Z",
-        "updatedAt": "2022-03-23T05:51:51.639Z",
-        "__v": 4
+        "total": 48000,
+        "totalHandlingFee": 3000,
+        "createdAt": "2022-03-27T23:51:50.231Z",
+        "updatedAt": "2022-03-27T23:56:12.139Z",
+        "__v": 1
     }
 }
 ```
@@ -138,9 +145,9 @@ await axios.delete(`${baseURL}/api/v1/cart/user/6218bb4d03faab15554bb78b/product
 // Contoh response
 {
     "status": 200,
-    "message": "Cart id: 623aafa8874bafa4efa0f154 updated",
+    "message": "Cart id: 6240f896bf3d2b67f8190599 updated",
     "result": {
-        "_id": "623aafa8874bafa4efa0f154",
+        "_id": "6240f896bf3d2b67f8190599",
         "user": "6218bb4d03faab15554bb78b",
         "products": [
             {
@@ -149,21 +156,22 @@ await axios.delete(`${baseURL}/api/v1/cart/user/6218bb4d03faab15554bb78b/product
                     "product_name": "Semangka",
                     "product_grade": {
                         "_id": "623a5ebde6342137aa53339d",
-                        "grade": "A",
-                        "charge": 1000
+                        "grade": "A"
                     },
                     "product_image": "http://localhost:5050/image/product/1647948753382.jpg",
                     "product_price": 8000,
                     "product_uom": "/kg"
                 },
                 "quantity": 1,
-                "subTotal": 9000
+                "subTotal": 8000,
+                "handlingFee": 1000
             }
         ],
-        "total": 9000,
-        "createdAt": "2022-03-23T05:27:04.325Z",
-        "updatedAt": "2022-03-23T05:52:34.248Z",
-        "__v": 4
+        "total": 8000,
+        "totalHandlingFee": 1000,
+        "createdAt": "2022-03-27T23:51:50.231Z",
+        "updatedAt": "2022-03-27T23:57:33.692Z",
+        "__v": 1
     }
 }
 ```
@@ -182,16 +190,8 @@ await axios.delete(`${baseURL}/api/v1/cart/user/6218bb4d03faab15554bb78b/delete-
 // Contoh response
 {
     "status": 202,
-    "message": "Cart id: 623aafa8874bafa4efa0f154 berhasil dihapus.",
-    "result": {
-        "_id": "623aafa8874bafa4efa0f154",
-        "user": "6218bb4d03faab15554bb78b",
-        "products": [],
-        "total": 0,
-        "createdAt": "2022-03-23T05:27:04.325Z",
-        "updatedAt": "2022-03-23T05:53:34.235Z",
-        "__v": 5
-    }
+    "message": "Cart id: 6240f896bf3d2b67f8190599 berhasil dihapus.",
+    "result": null
 }
 ```
 
@@ -209,11 +209,28 @@ await axios.get(`${baseURL}/api/v1/cart/user/6218bb4d03faab15554bb78b/get`, {
 // Contoh response
 {
     "status": 200,
-    "message": "Moh Sarifudin carts",
+    "message": "Cart id: 6240f896bf3d2b67f8190599 updated",
     "result": {
-        "_id": "623aafa8874bafa4efa0f154",
+        "_id": "6240f896bf3d2b67f8190599",
         "user": "6218bb4d03faab15554bb78b",
         "products": [
+            {
+                "productDetail": {
+                    "_id": "6239b3d1e05f770c37927329",
+                    "product_name": "Semangka",
+                    "product_grade": {
+                        "_id": "623a5ebde6342137aa53339d",
+                        "grade": "A",
+                        "fee": 1000
+                    },
+                    "product_image": "http://localhost:5050/image/product/1647948753382.jpg",
+                    "product_price": 8000,
+                    "product_uom": "/kg"
+                },
+                "quantity": 1,
+                "subTotal": 8000,
+                "handlingFee": 1000
+            },
             {
                 "productDetail": {
                     "_id": "6239b4f1e05f770c37927334",
@@ -221,20 +238,22 @@ await axios.get(`${baseURL}/api/v1/cart/user/6218bb4d03faab15554bb78b/get`, {
                     "product_grade": {
                         "_id": "623a5ee1e6342137aa5333a0",
                         "grade": "B",
-                        "charge": 500
+                        "fee": 500
                     },
                     "product_image": "http://localhost:5050/image/product/1647949040996.jpg",
                     "product_price": 10000,
                     "product_uom": "/kg"
                 },
-                "quantity": 1,
-                "subTotal": 10500
+                "quantity": 0.5,
+                "subTotal": 5000,
+                "handlingFee": 250
             }
         ],
-        "total": 10500,
-        "createdAt": "2022-03-23T05:27:04.325Z",
-        "updatedAt": "2022-03-23T05:37:27.181Z",
-        "__v": 3
+        "total": 13000,
+        "totalHandlingFee": 1250,
+        "createdAt": "2022-03-27T23:51:50.231Z",
+        "updatedAt": "2022-03-27T23:52:22.817Z",
+        "__v": 1
     }
 }
 ```

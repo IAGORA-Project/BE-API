@@ -13,9 +13,11 @@ const Cart = mongoose.Schema({
       },
       quantity: Number,
       subTotal: Number,
+      handlingFee: Number,
       _id: false
     }
   ],
-  total: Number
+  total: Number,
+  totalHandlingFee: Number
 }, { timestamps: true });
 module.exports.Cart = mongoose.model('cart', Cart);
