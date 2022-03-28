@@ -49,7 +49,7 @@ const addToCart = async (req, res) => {
           } else {
             cart.products.push({
               productDetail: product._id,
-              quantity: 1,
+              quantity,
               subTotal: product.product_price,
               handlingFee: product.product_grade.fee
             })
