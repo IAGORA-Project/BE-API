@@ -50,8 +50,8 @@ const addToCart = async (req, res) => {
             cart.products.push({
               productDetail: product._id,
               quantity,
-              subTotal: product.product_price,
-              handlingFee: product.product_grade.fee
+              subTotal: product.product_price * quantity,
+              handlingFee: product.product_grade.fee * quantity
             })
             let countTotal = 0
             let countTotalHandlingFee = 0
@@ -247,7 +247,8 @@ const deleteOneProductCart = async (req, res) => {
 
               return res.status(202).json(basicResponse({
                 status: res.statusCode,
-                message: "Cart telah dikosongkan."
+                message: "Cart telah dikosongkan.",
+                result: {}
               }))
             }
 
@@ -317,7 +318,8 @@ const deleteAllCart = async (req, res) => {
 
         return res.status(202).json(basicResponse({
           status: res.statusCode,
-          message: `Cart id: ${cart._id} berhasil dihapus.`
+          message: `Cart id: ${cart._id} berhasil dihapus.`,
+          result: {}
         }))
       }
 
