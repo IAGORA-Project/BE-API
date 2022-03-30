@@ -86,13 +86,13 @@ const addToCart = async (req, res) => {
           products: [
             {
               productDetail: product._id,
-              quantity: 1,
-              subTotal: product.product_price,
-              handlingFee: product.product_grade.fee
+              quantity,
+              subTotal: product.product_price * quantity,
+              handlingFee: product.product_grade.fee * quantity
             }
           ],
-          total: product.product_price,
-          totalHandlingFee: product.product_grade.fee
+          total: product.product_price * quantity,
+          totalHandlingFee: product.product_grade.fee * quantity
         })
         await createCart.save()
 
