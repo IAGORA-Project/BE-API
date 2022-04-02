@@ -20,7 +20,7 @@ const chatRouter = require('./lib/chat/router/router_chat');
 const productRouter = require('./router/product/router_product');
 const tokenRouter = require('./router/token');
 const adminRouter = require('./router/admin/router_admin');
-const transactionUser = require('./router/transaction/user/router_user_transaction')
+const userTransactionRoute = require('./router/transaction/user/transactionRoute')
 const transactionWingman = require('./router/transaction/wingman/router_wm_transaction')
 const cartRoute = require('./router/transaction/user/cartRoute')
 const cityRoute = require('./router/city/city_routes')
@@ -153,7 +153,7 @@ app.use('/api/v1/chat', chatRouter);
 app.use('/api/v1/auth', tokenRouter);
 app.use('/api/v1/product', productRouter);
 app.use('/api/v1/admin', adminRouter);
-app.use('/api/v1/transaction/user', transactionUser);
+app.use('/api/v1/transaction/user', userTransactionRoute);
 app.use('/api/v1/transaction/wingman', transactionWingman);
 app.use('/api/v1/cart', cartRoute);
 app.use('/api/v1/city', cityRoute);

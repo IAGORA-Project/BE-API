@@ -2,6 +2,7 @@ const { Cart } = require("../../../db/Cart")
 const { Product } = require("../../../db/Product")
 const { User } = require("../../../db/User")
 const { basicResponse } = require("../../../utils/basic-response")
+const { Checkout } = require('../../../db/Checkout')
 
 const addToCart = async (req, res) => {
   const { quantity } = req.body
@@ -21,6 +22,15 @@ const addToCart = async (req, res) => {
       const product = await Product.findById(productId).populate('product_grade')
       
       if(product) {
+        const checkout = await Checkout.findOne({ user: user._id })
+
+        if(checkout) {
+          return res.status(400).json(basicResponse({
+            status: res.statusCode,
+            message: "Anda tidak dapat menambahkan cart, masih ada proses checkout yang belum diselesaikan. Selesaikan terlebih dahulu atau batalkan prosesnya."
+          }))
+        }
+
         const cart = await Cart.findOne({ user: user._id }).populate({
           path: 'products.productDetail',
           populate: 'product_grade'
