@@ -7,9 +7,17 @@
 ```js
 // AXIOS
 const body = {
-    "tip": 1000,
-    "recipientAddress": "Jl. dulu",
-    "shippingCost": 8000
+    "tip": 7000,
+    "notes": [
+        {
+            "productId": "6239b4f1e05f770c37927334",
+            "note": "Test note terong update."
+        },
+        {
+            "productId": "6239b3d1e05f770c37927329",
+            "note": "Test note semangka update."
+        }
+    ]
 }
 await axios.post(`${baseURL}/api/v1/transaction/user/6218bb4d03faab15554bb78b/checkout`, body, {
   headers: {
@@ -25,18 +33,22 @@ await axios.post(`${baseURL}/api/v1/transaction/user/6218bb4d03faab15554bb78b/ch
         "user": "6218bb4d03faab15554bb78b",
         "products": [
             {
+                "productDetail": "6239b4f1e05f770c37927334",
+                "subTotal": 10000,
+                "note": "Test note terong update."
+            },
+            {
                 "productDetail": "6239b3d1e05f770c37927329",
-                "subTotal": 8000
+                "subTotal": 8000,
+                "note": "Test note semangka update."
             }
         ],
-        "recipientAddress": "Jl. dulu",
-        "tip": 1000,
-        "total": 8000,
-        "shippingCost": 8000,
-        "totalHandlingFee": 1000,
-        "_id": "6247fc68ea39dcd749b09d89",
-        "createdAt": "2022-04-02T07:34:00.919Z",
-        "updatedAt": "2022-04-02T07:34:00.919Z",
+        "tip": 7000,
+        "total": 18000,
+        "totalHandlingFee": 1500,
+        "_id": "624e482d008eb19a96cd107e",
+        "createdAt": "2022-04-07T02:10:53.551Z",
+        "updatedAt": "2022-04-07T02:10:53.551Z",
         "__v": 0
     }
 }

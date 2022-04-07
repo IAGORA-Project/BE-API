@@ -6,14 +6,9 @@ const checkoutValidator = [
     .trim()
     .notEmpty()
     .withMessage("Tip harus diisi."),
-  check('recipientAddress')
-    .trim()
-    .notEmpty()
-    .withMessage("Alamat penerima harus diisi."),
-  check('shippingCost')
-    .trim()
-    .notEmpty()
-    .withMessage("Biaya pengiriman harus diisi."),
+  check('notes')
+    .isArray()
+    .withMessage("Notes harus diisi dan harus berupa array."),
   (req, res, next) => {
     const errors = validationResult(req)
 

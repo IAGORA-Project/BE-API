@@ -48,6 +48,10 @@ const getOne = async (req, res) => {
         path: 'products',
         match: {
           isAccept: true
+        },
+        populate: {
+          path: 'product_category',
+          select: 'name _id'
         }
       })
 

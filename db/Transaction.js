@@ -1,9 +1,13 @@
 const mongoose = require('mongoose');
 
-const Cart = mongoose.Schema({
+const Transaction = mongoose.Schema({
   user: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "user"
+  },
+  wingman: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "wingman"
   },
   products: [
     {
@@ -11,14 +15,11 @@ const Cart = mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'product'
       },
-      quantity: Number,
       subTotal: Number,
-      handlingFee: Number,
       note: String,
       _id: false
     }
   ],
-  total: Number,
-  totalHandlingFee: Number
+  grandTotal: Number
 }, { timestamps: true });
-module.exports.Cart = mongoose.model('cart', Cart);
+module.exports.Transaction = mongoose.model('transaction', Transaction);

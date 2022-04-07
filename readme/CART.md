@@ -7,7 +7,8 @@
 ```js
 // AXIOS
 const body = {
-    "quantity": 0.5
+    "quantity": 1,
+    "note": "Test note semangka."
 }
 await axios.post(`${baseURL}/api/v1/cart/user/6218bb4d03faab15554bb78b/product/62235def9e814002330e32b1/add`, body, {
   headers: {
@@ -18,11 +19,29 @@ await axios.post(`${baseURL}/api/v1/cart/user/6218bb4d03faab15554bb78b/product/6
 // Contoh response
 {
     "status": 200,
-    "message": "Cart id: 6240f896bf3d2b67f8190599 updated",
+    "message": "Cart id: 624e45c4472171a1a5e2a254 updated",
     "result": {
-        "_id": "6240f896bf3d2b67f8190599",
+        "_id": "624e45c4472171a1a5e2a254",
         "user": "6218bb4d03faab15554bb78b",
         "products": [
+            {
+                "productDetail": {
+                    "_id": "6239b4f1e05f770c37927334",
+                    "product_name": "Terong",
+                    "product_grade": {
+                        "_id": "623a5ee1e6342137aa5333a0",
+                        "grade": "B",
+                        "fee": 500
+                    },
+                    "product_image": "http://localhost:5050/image/product/1647949040996.jpg",
+                    "product_price": 10000,
+                    "product_uom": "/kg"
+                },
+                "quantity": 1,
+                "subTotal": 10000,
+                "handlingFee": 500,
+                "note": "Test note terong."
+            },
             {
                 "productDetail": {
                     "_id": "6239b3d1e05f770c37927329",
@@ -38,30 +57,14 @@ await axios.post(`${baseURL}/api/v1/cart/user/6218bb4d03faab15554bb78b/product/6
                 },
                 "quantity": 1,
                 "subTotal": 8000,
-                "handlingFee": 1000
-            },
-            {
-                "productDetail": {
-                    "_id": "6239b4f1e05f770c37927334",
-                    "product_name": "Terong",
-                    "product_grade": {
-                        "_id": "623a5ee1e6342137aa5333a0",
-                        "grade": "B",
-                        "fee": 500
-                    },
-                    "product_image": "http://localhost:5050/image/product/1647949040996.jpg",
-                    "product_price": 10000,
-                    "product_uom": "/kg"
-                },
-                "quantity": 0.5,
-                "subTotal": 5000,
-                "handlingFee": 250
+                "handlingFee": 1000,
+                "note": "Test note semangka."
             }
         ],
-        "total": 13000,
-        "totalHandlingFee": 1250,
-        "createdAt": "2022-03-27T23:51:50.231Z",
-        "updatedAt": "2022-03-27T23:52:22.817Z",
+        "total": 18000,
+        "totalHandlingFee": 1500,
+        "createdAt": "2022-04-07T02:00:36.991Z",
+        "updatedAt": "2022-04-07T02:02:07.172Z",
         "__v": 1
     }
 }

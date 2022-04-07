@@ -5,7 +5,7 @@ const { basicResponse } = require("../../../utils/basic-response")
 const { Checkout } = require('../../../db/Checkout')
 
 const addToCart = async (req, res) => {
-  const { quantity } = req.body
+  const { quantity, note } = req.body
   const { userId, productId } = req.params
 
   if(quantity <= 0) {
@@ -43,6 +43,7 @@ const addToCart = async (req, res) => {
             filterProduct.quantity = quantity
             filterProduct.subTotal = filterProduct.quantity * filterProduct.productDetail.product_price
             filterProduct.handlingFee = filterProduct.quantity * filterProduct.productDetail.product_grade.fee
+            filterProduct.note = note ? note : ""
             
             const productsIndex = products.findIndex(p => p.productDetail._id.toString() === filterProduct.productDetail._id.toString())
             
@@ -61,7 +62,8 @@ const addToCart = async (req, res) => {
               productDetail: product._id,
               quantity,
               subTotal: product.product_price * quantity,
-              handlingFee: product.product_grade.fee * quantity
+              handlingFee: product.product_grade.fee * quantity,
+              note: note ? note : ""
             })
             let countTotal = 0
             let countTotalHandlingFee = 0
@@ -98,7 +100,8 @@ const addToCart = async (req, res) => {
               productDetail: product._id,
               quantity,
               subTotal: product.product_price * quantity,
-              handlingFee: product.product_grade.fee * quantity
+              handlingFee: product.product_grade.fee * quantity,
+              note: note ? note : ""
             }
           ],
           total: product.product_price * quantity,

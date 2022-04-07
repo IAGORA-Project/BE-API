@@ -12,13 +12,12 @@ const Checkout = mongoose.Schema({
         ref: 'product'
       },
       subTotal: Number,
+      note: String,
       _id: false
     }
   ],
-  recipientAddress: String,
   tip: Number,
   total: Number,
-  shippingCost: Number,
   totalHandlingFee: Number
 }, { timestamps: true });
 module.exports.Checkout = mongoose.model('checkout', Checkout);
