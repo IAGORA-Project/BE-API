@@ -6,9 +6,30 @@ const checkoutValidator = [
     .trim()
     .notEmpty()
     .withMessage("Tip harus diisi."),
-  check('notes')
-    .isArray()
-    .withMessage("Notes harus diisi dan harus berupa array."),
+  (req, res, next) => {
+    const errors = validationResult(req)
+
+    if(!errors.isEmpty()) {
+      return res.status(422).json(basicResponse({
+        status: res.statusCode,
+        message: 'Validation Errors',
+        result: errors.array()
+      }))
+    }
+
+    next()
+  }
+]
+
+const storeTransaction = [
+  check('recipientAddress')
+    .trim()
+    .notEmpty()
+    .withMessage("Alamat penerima harus diisi."),
+  check('shippingCosts')
+    .trim()
+    .notEmpty()
+    .withMessage("Biaya pengiriman harus diisi."),
   (req, res, next) => {
     const errors = validationResult(req)
 
@@ -25,5 +46,6 @@ const checkoutValidator = [
 ]
 
 module.exports = {
-  checkoutValidator
+  checkoutValidator,
+  storeTransaction
 }

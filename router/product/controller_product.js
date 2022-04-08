@@ -73,7 +73,13 @@ async function getOne(req, res) {
     const { productId } = req.params
 
     try {
-        const product = await Product.findById(productId).populate('market').where({ isAccept: true })
+        const product = await Product.findById(productId).populate({
+            path: 'market',
+            select: '_id name address'
+        }).populate({
+            path: 'product_category',
+            select: '_id name'
+        }).where({ isAccept: true })
 
         if(product) {
             return res.status(200).json(basicResponse({

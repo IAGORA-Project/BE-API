@@ -3,9 +3,10 @@ const { Cart } = require("../../../db/Cart");
 const { basicResponse } = require('../../../utils/basic-response')
 const { isValidObjectId } = require('mongoose');
 const { Checkout } = require("../../../db/Checkout");
+const { Transaction } = require("../../../db/Transaction");
 
 const checkout = async (req, res) => {
-    const { tip, notes } = req.body
+    const { tip } = req.body
     const { userId } = req.params
 
     if(!isValidObjectId(userId)) {
@@ -23,16 +24,6 @@ const checkout = async (req, res) => {
         
             if(cart) {
                 let products = cart.products
-
-                if(notes.length > 0) {
-                    notes.map(note => {
-                        cart.products.map((product, index) => {
-                            if(note.productId === product.productDetail.toString()) {
-                                Object.assign(products[index], { note: note.note })
-                            }
-                        })
-                    })
-                }
                 
                 const newCheckout = new Checkout({
                     user: cart.user,
@@ -129,10 +120,61 @@ const cancelCheckout = async (req, res) => {
     }
 }
 
+const transaction = async (req, res) => {
+    const { recipientAddress, shippingCosts } = req.body
+    const { userId } = req.params
+
+    if(!isValidObjectId(userId)) {
+        return res.status(400).json(basicResponse({
+            status: res.statusCode,
+            message: "ID user tidak valid."
+        }))
+    }
+
+    try {
+        const user = await User.findById(userId)
+
+        if(user) {
+            const checkout = await Checkout.findOne({ user: user._id })
+
+            if(checkout) {
+                const transaction = new Transaction({
+                    user: user._id,
+                    products: checkout.products,
+                    tip: checkout.tip,
+                    shippingCosts,
+                    total: checkout.total,
+                    totalHandlingFee: checkout.totalHandlingFee,
+                    recipientAddress,
+                    paidDate: null
+                })
+                await transaction.save()
+
+                return res.json({ transaction })
+            }
+
+            return res.status(404).json(basicResponse({
+                status: res.statusCode,
+                message: "Anda belum melakukan checkout."
+            }))
+        }
+
+        return res.status(404).json(basicResponse({
+            status: res.statusCode,
+            message: "User tidak ditemukan."
+        }))
+    } catch (error) {
+        return res.status(500).json(basicResponse({
+            status: res.statusCode,
+            result: error
+        }))
+    }
+}
 
 
 module.exports = {
     checkout,
     getCheckout,
-    cancelCheckout
+    cancelCheckout,
+    transaction
 }
