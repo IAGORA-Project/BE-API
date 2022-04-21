@@ -28,6 +28,10 @@ const Transaction = mongoose.Schema({
   paidDate: {
     type: Date,
     default: undefined
+  },
+  completed: {
+    type: Boolean,
+    default: false
   }
 }, { timestamps: true });
 module.exports.Transaction = mongoose.model('transaction', Transaction);

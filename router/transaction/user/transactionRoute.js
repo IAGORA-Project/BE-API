@@ -6,7 +6,7 @@ const router = express.Router();
 const userTransactionController = require('./transactionController');
 
 // CheckOut Routes
-router.post('/:userId/checkout', authAccess, checkoutValidator, userTransactionController.checkout);
+router.post('/:userId/checkout', authAccess, userTransactionController.checkout);
 router.get('/:userId/checkout', authAccess, userTransactionController.getCheckout);
 router.delete('/:userId/checkout/cancel', authAccess, userTransactionController.cancelCheckout);
 

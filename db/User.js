@@ -17,22 +17,12 @@ const Users = mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'cart'
     },
-    transaction: {
-        type: Array
-    },
     userDetail: {
-        name: { 
-            type: String,
-        },
-        avatar: {
-            type: String,
-        },
-        email: {
-            type: String,
-        },
-        address: { 
-            type: String,
-        },
+        name: String,
+        avatar: String,
+        email: String,
+        address: String,
+        addressHistories: [String],
         _id: false
     }
 }, { timestamps: true });

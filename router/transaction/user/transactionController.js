@@ -71,7 +71,13 @@ const getCheckout = async (req, res) => {
     }
 
     try {
-        const checkout = await Checkout.findOne({ user: userId })
+        const checkout = await Checkout.findOne({ user: userId }).populate({
+            path: 'user',
+            select: '_id no_hp userDetail'
+        }).populate({
+            path: 'products.productDetail',
+            select: '_id product_name',
+        })
 
         if(checkout) {
             return res.status(200).json(basicResponse({
@@ -150,7 +156,20 @@ const transaction = async (req, res) => {
                 })
                 await transaction.save()
 
-                return res.json({ transaction })
+                const addressHistory = user.userDetail.addressHistories.find(addressHistory => addressHistory === transaction.recipientAddress)
+
+                if(!addressHistory) {
+                    user.userDetail.addressHistories.push(transaction.recipientAddress)
+                    await user.save()
+                }
+                
+                await checkout.remove()
+
+                return res.status(201).json(basicResponse({
+                    status: res.statusCode,
+                    message: "Success",
+                    result: transaction
+                }))
             }
 
             return res.status(404).json(basicResponse({
