@@ -28,7 +28,7 @@ const checkout = async (req, res) => {
                 const newCheckout = new Checkout({
                     user: cart.user,
                     products,
-                    tip,
+                    tip: tip ? tip : 0,
                     total: cart.total,
                     totalHandlingFee: cart.totalHandlingFee
                 })
@@ -127,7 +127,7 @@ const cancelCheckout = async (req, res) => {
 }
 
 const transaction = async (req, res) => {
-    const { recipientAddress, shippingCosts } = req.body
+    const { recipientAddress, shippingCosts, paymentMethod } = req.body
     const { userId } = req.params
 
     if(!isValidObjectId(userId)) {
@@ -152,7 +152,8 @@ const transaction = async (req, res) => {
                     total: checkout.total,
                     totalHandlingFee: checkout.totalHandlingFee,
                     recipientAddress,
-                    paidDate: null
+                    paidDate: null,
+                    paymentMethod
                 })
                 await transaction.save()
 

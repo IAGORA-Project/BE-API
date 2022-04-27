@@ -10,6 +10,10 @@ const storeTransaction = [
     .trim()
     .notEmpty()
     .withMessage("Biaya pengiriman harus diisi."),
+  check('paymentMethod')
+    .trim()
+    .notEmpty()
+    .withMessage("Metode pembayaran harus diisi."),
   (req, res, next) => {
     const errors = validationResult(req)
 

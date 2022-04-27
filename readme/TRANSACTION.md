@@ -8,7 +8,8 @@
 // AXIOS
 const body = {
     "recipientAddress": "Jl. aja dulu",
-    "shippingCosts": 4000
+    "shippingCosts": 4000,
+    "paymentMethod": "BNI Transfer"
 }
 
 await axios.post(`${baseURL}/api/v1/transaction/user/625a5a9ee4b126105f064fbb`, body, {
@@ -30,15 +31,18 @@ await axios.post(`${baseURL}/api/v1/transaction/user/625a5a9ee4b126105f064fbb`, 
                 "note": ""
             }
         ],
+        "payment": {
+            "paid": false
+        },
+        "paymentMethod": "BNI Transfer",
+        "tip": 0,
         "shippingCosts": 4000,
         "total": 15000,
         "totalHandlingFee": 750,
         "recipientAddress": "Jl. aja dulu",
-        "paidDate": null,
-        "completed": false,
-        "_id": "62614af86db1629be0b835e1",
-        "createdAt": "2022-04-21T12:15:52.428Z",
-        "updatedAt": "2022-04-21T12:15:52.428Z",
+        "_id": "6268e58d632740bf55b81c78",
+        "createdAt": "2022-04-27T06:41:17.985Z",
+        "updatedAt": "2022-04-27T06:41:17.985Z",
         "__v": 0
     }
 }

@@ -20,18 +20,18 @@ const Transaction = mongoose.Schema({
       _id: false
     }
   ],
+  payment: {
+    paid: {
+      type: Boolean,
+      default: false
+    },
+    paidDate: Date,
+  },
+  paymentMethod: String,
   tip: Number,
   shippingCosts: Number,
   total: Number,
   totalHandlingFee: Number,
   recipientAddress: String,
-  paidDate: {
-    type: Date,
-    default: undefined
-  },
-  completed: {
-    type: Boolean,
-    default: false
-  }
 }, { timestamps: true });
 module.exports.Transaction = mongoose.model('transaction', Transaction);
