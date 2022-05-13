@@ -1,5 +1,7 @@
 const { City } = require("../../db/City")
 const { Market } = require("../../db/Market")
+const { ProductCategory } = require("../../db/ProductCategory")
+const { ProductGrade } = require("../../db/ProductGrade")
 const { Product } = require("../../db/Product")
 const { basicResponse } = require("../../utils/basic-response")
 
@@ -23,11 +25,13 @@ const requestNewProduct = async (req, res) => {
 
   try {
     const market = await Market.findById(marketId)
+    const category = await ProductCategory.findOne({name: product_category})
+    const grade = await ProductGrade.findOne({grade: product_grade})
     if(market) {
       const product = await Product.create({
         product_name,
-        product_category,
-        product_grade,
+        product_category: category._id,
+        product_grade: grade._id,
         product_price,
         product_uom,
         market: market._id,
