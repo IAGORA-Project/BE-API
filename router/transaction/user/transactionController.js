@@ -127,7 +127,7 @@ const cancelCheckout = async (req, res) => {
 }
 
 const transaction = async (req, res) => {
-    const { recipientAddress, shippingCosts, paymentMethod } = req.body
+    const { shippingCosts, paymentMethod } = req.body
     const { userId } = req.params
 
     if(!isValidObjectId(userId)) {
@@ -157,12 +157,13 @@ const transaction = async (req, res) => {
                 })
                 await transaction.save()
 
-                const addressHistory = user.userDetail.addressHistories.find(addressHistory => addressHistory === transaction.recipientAddress)
+                // Old address Hitory
+                // const addressHistory = user.userDetail.addressHistories.find(addressHistory => addressHistory === transaction.recipientAddress)
 
-                if(!addressHistory) {
-                    user.userDetail.addressHistories.push(transaction.recipientAddress)
-                    await user.save()
-                }
+                // if(!addressHistory) {
+                //     user.userDetail.addressHistories.push(transaction.recipientAddress)
+                //     await user.save()
+                // }
                 
                 await checkout.remove()
 

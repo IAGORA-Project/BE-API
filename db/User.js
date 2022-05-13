@@ -22,7 +22,15 @@ const Users = mongoose.Schema({
         avatar: String,
         email: String,
         address: String,
-        addressHistories: [String],
+        addressHistories: [{
+            recipientName: String,
+            addressName: String,
+            fullAddress: String,
+            addressDetails: String,
+            phoneNumber: String,
+            longitude: Number,
+            latitude: Number
+        }],
         _id: false
     }
 }, { timestamps: true });
