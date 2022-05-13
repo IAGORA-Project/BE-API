@@ -41,4 +41,12 @@ router.post('/verify-otp', verifyOtpValidator, controllerUser.verifyOtp);
 
 router.put('/:userId/complete-registration', authAccess, completeRegisterValidator, controllerUser.completeRegistration);
 
+/* Add Address */
+
+router.put('/add-address', authAccess, controllerUser.addAddress);
+
+/* Delete Address */
+
+router.delete('/delete-address', authAccess, controllerUser.deleteAddress);
+
 module.exports = router
