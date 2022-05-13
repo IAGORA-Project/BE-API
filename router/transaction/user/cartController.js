@@ -42,7 +42,7 @@ const addToCart = async (req, res) => {
           if(filterProduct) {
             filterProduct.quantity = quantity
             filterProduct.subTotal = filterProduct.quantity * filterProduct.productDetail.product_price
-            filterProduct.handlingFee = filterProduct.quantity * filterProduct.productDetail.product_grade.fee
+            filterProduct.handlingFee = filterProduct.quantity * filterProduct.productDetail.product_grade.charge
             filterProduct.note = note ? note : ""
             
             const productsIndex = products.findIndex(p => p.productDetail._id.toString() === filterProduct.productDetail._id.toString())
@@ -62,7 +62,7 @@ const addToCart = async (req, res) => {
               productDetail: product._id,
               quantity,
               subTotal: product.product_price * quantity,
-              handlingFee: product.product_grade.fee * quantity,
+              handlingFee: product.product_grade.charge * quantity,
               note: note ? note : ""
             })
             let countTotal = 0
@@ -100,12 +100,12 @@ const addToCart = async (req, res) => {
               productDetail: product._id,
               quantity,
               subTotal: product.product_price * quantity,
-              handlingFee: product.product_grade.fee * quantity,
+              handlingFee: product.product_grade.charge * quantity,
               note: note ? note : ""
             }
           ],
           total: product.product_price * quantity,
-          totalHandlingFee: product.product_grade.fee * quantity
+          totalHandlingFee: product.product_grade.charge * quantity
         })
         await createCart.save()
 
@@ -122,7 +122,7 @@ const addToCart = async (req, res) => {
             select: '-market -isAccept -createdAt -updatedAt -__v -product_category',
             populate: {
               path: 'product_grade',
-              select: '_id grade fee'
+              select: '_id grade charge'
             }
           })
         }))
@@ -176,7 +176,7 @@ const updateQuantity = async (req, res) => {
           if(filterProduct) {
             filterProduct.quantity = quantity
             filterProduct.subTotal = filterProduct.quantity * filterProduct.productDetail.product_price
-            filterProduct.handlingFee = filterProduct.quantity * filterProduct.productDetail.product_grade.fee
+            filterProduct.handlingFee = filterProduct.quantity * filterProduct.productDetail.product_grade.charge
             
             const productsIndex = products.findIndex(p => p.productDetail._id.toString() === filterProduct.productDetail._id.toString())
 

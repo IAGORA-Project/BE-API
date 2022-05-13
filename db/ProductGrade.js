@@ -6,7 +6,7 @@ const ProductGrade = mongoose.Schema({
     required: true,
     max: 1
   },
-  fee: {
+  charge: {
     type: Number,
     required: true
   }
