@@ -355,13 +355,11 @@ async function addAddress(req, res) {
     const accessToken = req.headers['x-access-token']
     const decode = jwt.decode(accessToken.split(' ')[1])
     const userId = decode.jti
-    console.log(userId)
 
     try {
         const user = await User.findById(userId)
 
         if(user) {
-            console.log("success detect user")
 
             const result = await User.findOneAndUpdate(
                 { _id: userId }, 
@@ -394,17 +392,53 @@ async function deleteAddress(req, res) {
     const accessToken = req.headers['x-access-token']
     const decode = jwt.decode(accessToken.split(' ')[1])
     const userId = decode.jti
-    console.log(userId)
 
     try {
         const user = await User.findById(userId)
 
         if(user) {
-            console.log("success detect user")
 
             const result = await User.findOneAndUpdate(
                 { _id: userId }, 
                 { $pull: { "userDetail.addressHistories":  {"_id": addressId} }},
+                {new: true}
+            );
+
+            return res.status(200).json(basicResponse({
+                status: res.statusCode,
+                message: "Success!",
+                result: result
+            }))
+        }
+
+        return res.status(404).json(basicResponse({
+            status: res.statusCode,
+            message: "User not found!"
+        }))
+    } catch (error) {
+        return res.status(500).json(basicResponse({
+            status: res.statusCode,
+            result: error
+        }));
+    }
+}
+
+async function setCheckoutAddress(req, res) {
+    const {addressId} = req.body
+    
+    const accessToken = req.headers['x-access-token']
+    const decode = jwt.decode(accessToken.split(' ')[1])
+    const userId = decode.jti
+
+    try {
+        const user = await User.findById(userId)
+
+        if(user) {
+            const address = user.userDetail.addressHistories.id(addressId)
+
+            const result = await User.findOneAndUpdate(
+                { _id: userId }, 
+                { $set: { "userDetail.checkoutAddress":  address }},
                 {new: true}
             );
 
@@ -435,5 +469,6 @@ module.exports = {
     verifyOtp,
     completeRegistration,
     addAddress,
-    deleteAddress
+    deleteAddress,
+    setCheckoutAddress
 }

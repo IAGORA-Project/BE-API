@@ -22,14 +22,24 @@ const Users = mongoose.Schema({
         avatar: String,
         email: String,
         address: String,
+        checkoutAddress: {
+            recipientName: String,
+            addressName: String,
+            fullAddress: String,
+            addressDetails: String,
+            phoneNumber: String,
+            latitude: Number,
+            longitude: Number,
+            _id: false
+        },
         addressHistories: [{
             recipientName: String,
             addressName: String,
             fullAddress: String,
             addressDetails: String,
             phoneNumber: String,
-            longitude: Number,
-            latitude: Number
+            latitude: Number,
+            longitude: Number
         }],
         _id: false
     }

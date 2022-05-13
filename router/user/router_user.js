@@ -49,4 +49,8 @@ router.put('/add-address', authAccess, controllerUser.addAddress);
 
 router.delete('/delete-address', authAccess, controllerUser.deleteAddress);
 
+/* Set Checkout Address */
+
+router.put('/checkout-address', authAccess, controllerUser.setCheckoutAddress);
+
 module.exports = router
