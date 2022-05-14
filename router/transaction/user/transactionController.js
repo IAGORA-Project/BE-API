@@ -142,6 +142,7 @@ const transaction = async (req, res) => {
 
         if(user) {
             const checkout = await Checkout.findOne({ user: user._id })
+            console.log(user.userDetail.checkoutAddress)
 
             if(checkout) {
                 const transaction = new Transaction({
@@ -151,6 +152,7 @@ const transaction = async (req, res) => {
                     shippingCosts,
                     total: checkout.total,
                     totalHandlingFee: checkout.totalHandlingFee,
+                    recipientAddress: user.userDetail.checkoutAddress,    
                     paidDate: null,
                     paymentMethod
                 })

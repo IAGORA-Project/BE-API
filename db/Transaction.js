@@ -32,6 +32,15 @@ const Transaction = mongoose.Schema({
   shippingCosts: Number,
   total: Number,
   totalHandlingFee: Number,
-  recipientAddress: String,
+  recipientAddress: {
+    recipientName: String,
+    addressName: String,
+    fullAddress: String,
+    addressDetails: String,
+    phoneNumber: String,
+    latitude: Number,
+    longitude: Number,
+    _id: false
+  },
 }, { timestamps: true });
 module.exports.Transaction = mongoose.model('transaction', Transaction);
