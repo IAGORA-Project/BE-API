@@ -1,6 +1,6 @@
 # **API WINGMAN**
 
-#### ***Base URL : http://iagora.id***
+#### ***Base URL : http://api.iagora.id***
 
 ### Access Token
 
@@ -162,6 +162,24 @@ NB Gambar document :
 contoh: **`URL : ${BaseURL}/image/wingman/621587db64c58b68ca659e0f/document/1645597463225.png`**
 
 
+### Menghapus Satu Akun Wingman
+**`URL : ${BaseURL}/api/v1/wingman/wingmanId/delete-one-wingman`**
+```js
+// AXIOS
+await axios.delete(`${baseURL}/api/v1/wingman/627e3345efd34cd44d3a6933/delete-one-wingman`, {
+  headers: {
+      'x-access-token': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI2MjEyZjE0NTk4ZmFhOGU2ZTgyZDI4ZGUiLCJub19ocCI6NjI4MjExNjEwNDAxNiwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdCIsImF1ZCI6Imh0dHA6Ly9sb2NhbGhvc3QiLCJpYXQiOjE2NDU0MzU4NDgsImV4cCI6MTY0NTUyMjI0OH0.yMha3e80dQDPlvw_2Ou6hA3XyNAcBjlZzEF_meo42l8'
+  }
+})
+
+// Contoh response
+{
+    "status": 200,
+    "code": "SS200",
+    "message": "Success Delete One Wingman"
+}
+
+```
 
 # Wingman Request Pembukaan Pasar Baru dan Penambahan Product Baru
 
@@ -189,24 +207,23 @@ await axios.post(`${baseURL}/api/v1/wingman/request-new-market`, data, {
     "status": 201,
     "message": "Success.",
     "result": {
-        "name": "Pasar tradisional buol",
-        "address": "JL",
+        "name": "Pasar Kranggan",
+        "address": "jl Poncowinatan",
         "city": {
-            "_id": "6222f56b6d52dbb0b86d85c9",
-            "name": "Kab. Buol",
+            "_id": "622368cb590c828bdc217e73",
+            "name": "Yogyakarta",
             "markets": [
-                "622342ee9ec09bf428b4dbcb",
-                "622360c349610e7187ff0f2b"
+                "627f52f6551f949941838291"
             ],
-            "createdAt": "2022-03-05T05:30:19.214Z",
-            "updatedAt": "2022-03-05T13:08:19.867Z",
-            "__v": 3
+            "createdAt": "2022-03-05T13:42:35.126Z",
+            "updatedAt": "2022-05-14T06:57:58.915Z",
+            "__v": 1
         },
         "products": [],
         "isAccept": true,
-        "_id": "622360c349610e7187ff0f2b",
-        "createdAt": "2022-03-05T13:08:19.861Z",
-        "updatedAt": "2022-03-05T13:08:19.861Z",
+        "_id": "627f52f6551f949941838291",
+        "createdAt": "2022-05-14T06:57:58.908Z",
+        "updatedAt": "2022-05-14T06:57:58.908Z",
         "__v": 0
     }
 }
@@ -238,16 +255,16 @@ await axios.post(`${baseURL}/api/v1/wingman/request-new-product`, formData, {
     "message": "Success.",
     "result": {
         "product_name": "Pisang",
-        "product_category": "Buah",
-        "product_grade": "A",
-        "product_image": "1646484975275.jpg",
-        "product_price": "15000",
-        "product_uom": "/sisir",
-        "market": "622342ee9ec09bf428b4dbcb",
+        "product_category": "6239cfbaf75d0a193b5fb501",
+        "product_grade": "623ab81f1f1dcb714e7cc18f",
+        "product_image": "1652512322018.jpg",
+        "product_price": 15000,
+        "product_uom": "sisir",
+        "market": "627f52f6551f949941838291",
         "isAccept": true,
-        "_id": "62235def9e814002330e32b1",
-        "createdAt": "2022-03-05T12:56:15.367Z",
-        "updatedAt": "2022-03-05T12:56:15.367Z",
+        "_id": "627f5642551f949941838299",
+        "createdAt": "2022-05-14T07:12:02.061Z",
+        "updatedAt": "2022-05-14T07:12:02.061Z",
         "__v": 0
     }
 }
