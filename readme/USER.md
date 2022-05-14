@@ -1,6 +1,6 @@
 # **API USER**
 
-#### ***Base URL : http://iagora.id***
+#### ***Base URL : http://api.iagora.id***
 
 ### Access Token
 
@@ -144,7 +144,7 @@ await axios.get(`${baseURL}/api/v1/user/get-data`, {
     }
 }
 ```
-### **1. Update User Data**
+### **2. Update User Data**
 Endpoint update user data membutuhkan header x-access-token yang di dapat dari endpoint get-access-token.
 
 **`URL : ${BaseURL}/api/v1/user/update-data`**
@@ -192,4 +192,194 @@ await axios.put(`${baseURL}/api/v1/user/update-data`, data | formData , {
     }
 }
 ```
+
+### **3. Add User Address**
+Endpoint add user address membutuhkan header x-access-token yang di dapat dari endpoint get-access-token.
+
+**`URL : ${BaseURL}/api/v1/user/add-address`**
+```js
+
+// Contoh data :
+const data = {
+    "recipientName": "Odie",
+    "addressName": "Rumah Odie",
+    "fullAddress": "Jalan Utama, nomor 23",
+    "addressDetails": "Pagar hitam",
+    "phoneNumber": "6282133555115",
+    "latitude": 53.46,
+    "longitude": -2.29
+}
+
+// AXIOS
+await axios.put(`${baseURL}/api/v1/user/add-address`, data | formData , {
+  headers: {
+      'x-access-token': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI2MjEyZjE0NTk4ZmFhOGU2ZTgyZDI4ZGUiLCJub19ocCI6NjI4MjExNjEwNDAxNiwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdCIsImF1ZCI6Imh0dHA6Ly9sb2NhbGhvc3QiLCJpYXQiOjE2NDU0MzU4NDgsImV4cCI6MTY0NTUyMjI0OH0.yMha3e80dQDPlvw_2Ou6hA3XyNAcBjlZzEF_meo42l8'
+  }
+})
+
+// Contoh response
+{
+    "status": 200,
+    "message": "Success!",
+    "result": {
+        "userDetail": {
+            "checkoutAddress": null,
+            "name": "Harry Magguire2",
+            "email": "harry2@emyu.com",
+            "address": "City of Manchester",
+            "avatar": "http://api.iagora.id/image/user/default.png",
+            "addressHistories": [
+                {
+                    "recipientName": "Steven",
+                    "addressName": "Rumah Steven",
+                    "fullAddress": "Jalan Steven, nomor 23",
+                    "addressDetails": "Pagar hitam",
+                    "phoneNumber": "6282132351252332",
+                    "latitude": 73.46,
+                    "longitude": 202.29,
+                    "_id": "627f1f76ac21db2373cb8fc0"
+                },
+                {
+                    "recipientName": "Odie",
+                    "addressName": "Rumah Odie",
+                    "fullAddress": "Jalan Utama, nomor 23",
+                    "addressDetails": "Pagar hitam",
+                    "phoneNumber": "6282133555115",
+                    "latitude": 53.46,
+                    "longitude": -2.29,
+                    "_id": "627f236da4a7ecb8e7bad418"
+                }
+            ]
+        },
+        "_id": "627a54e7b510c0116d4abd7c",
+        "type": "User",
+        "no_hp": 6282133555115,
+        "createdAt": "2022-05-10T12:04:55.593Z",
+        "updatedAt": "2022-05-14T03:35:09.360Z",
+        "__v": 3,
+        "cart": "627e1644b510c0116d4ac167"
+    }
+}
+```
+  
+Perlu di Note bahwa alamat masuk ke key addressHistories dan mendapatkan objectId per alamat.
+  
+### **4. Delete User Address**
+Endpoint Delete user address membutuhkan header x-access-token yang di dapat dari endpoint get-access-token.
+
+**`URL : ${BaseURL}/api/v1/user/delete-address`**
+```js
+// Menggunakan ObjectId untuk alamat yang akan dihapus sebagai acuan
+// Contoh data :
+const data = {
+    "addressId": "627f1f76ac21db2373cb8fc0"
+}
+
+// AXIOS
+await axios.put(`${baseURL}/api/v1/user/add-address`, data | formData , {
+  headers: {
+      'x-access-token': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI2MjEyZjE0NTk4ZmFhOGU2ZTgyZDI4ZGUiLCJub19ocCI6NjI4MjExNjEwNDAxNiwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdCIsImF1ZCI6Imh0dHA6Ly9sb2NhbGhvc3QiLCJpYXQiOjE2NDU0MzU4NDgsImV4cCI6MTY0NTUyMjI0OH0.yMha3e80dQDPlvw_2Ou6hA3XyNAcBjlZzEF_meo42l8'
+  }
+})
+
+// Contoh response
+{
+    "status": 200,
+    "message": "Success!",
+    "result": {
+        "userDetail": {
+            "checkoutAddress": null,
+            "name": "Harry Magguire2",
+            "email": "harry2@emyu.com",
+            "address": "City of Manchester",
+            "avatar": "http://api.iagora.id/image/user/default.png",
+            "addressHistories": [
+                {
+                    "recipientName": "Odie",
+                    "addressName": "Rumah Odie",
+                    "fullAddress": "Jalan Utama, nomor 23",
+                    "addressDetails": "Pagar hitam",
+                    "phoneNumber": "6282133555115",
+                    "latitude": 53.46,
+                    "longitude": -2.29,
+                    "_id": "627f236da4a7ecb8e7bad418"
+                }
+            ]
+        },
+        "_id": "627a54e7b510c0116d4abd7c",
+        "type": "User",
+        "no_hp": 6282133555115,
+        "createdAt": "2022-05-10T12:04:55.593Z",
+        "updatedAt": "2022-05-14T03:35:45.110Z",
+        "__v": 3,
+        "cart": "627e1644b510c0116d4ac167"
+    }
+}
+```
+  
+Perlu di Note bahwa salah satu addressHistories terhapus.
+  
+### **5. Set Checkout Address**
+Endpoint Set Checkout Address membutuhkan header x-access-token yang di dapat dari endpoint get-access-token.
+
+**`URL : ${BaseURL}/api/v1/user/delete-address`**
+```js
+// Menggunakan ObjectId salah satu alamat sebagai acuan
+// Contoh data :
+const data = {
+    "addressId": "627f236da4a7ecb8e7bad418"
+}
+
+// AXIOS
+await axios.put(`${baseURL}/api/v1/user/add-address`, data | formData , {
+  headers: {
+      'x-access-token': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI2MjEyZjE0NTk4ZmFhOGU2ZTgyZDI4ZGUiLCJub19ocCI6NjI4MjExNjEwNDAxNiwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdCIsImF1ZCI6Imh0dHA6Ly9sb2NhbGhvc3QiLCJpYXQiOjE2NDU0MzU4NDgsImV4cCI6MTY0NTUyMjI0OH0.yMha3e80dQDPlvw_2Ou6hA3XyNAcBjlZzEF_meo42l8'
+  }
+})
+
+// Contoh response
+{
+    "status": 200,
+    "message": "Success!",
+    "result": {
+        "userDetail": {
+            "checkoutAddress": {
+                "recipientName": "Odie",
+                "addressName": "Rumah Odie",
+                "fullAddress": "Jalan Utama, nomor 23",
+                "addressDetails": "Pagar hitam",
+                "phoneNumber": "6282133555115",
+                "latitude": 53.46,
+                "longitude": -2.29
+            },
+            "name": "Harry Magguire2",
+            "email": "harry2@emyu.com",
+            "address": "City of Manchester",
+            "avatar": "http://api.iagora.id/image/user/default.png",
+            "addressHistories": [
+                {
+                    "recipientName": "Odie",
+                    "addressName": "Rumah Odie",
+                    "fullAddress": "Jalan Utama, nomor 23",
+                    "addressDetails": "Pagar hitam",
+                    "phoneNumber": "6282133555115",
+                    "latitude": 53.46,
+                    "longitude": -2.29,
+                    "_id": "627f236da4a7ecb8e7bad418"
+                }
+            ]
+        },
+        "_id": "627a54e7b510c0116d4abd7c",
+        "type": "User",
+        "no_hp": 6282133555115,
+        "createdAt": "2022-05-10T12:04:55.593Z",
+        "updatedAt": "2022-05-14T03:36:16.297Z",
+        "__v": 3,
+        "cart": "627e1644b510c0116d4ac167"
+    }
+}
+```
+  
+Perlu di Note key checkoutAddress telah terisi.
+
 </details>
