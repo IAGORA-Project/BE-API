@@ -30,25 +30,49 @@ await axios.post(`${baseURL}/api/v1/transaction/user/6218bb4d03faab15554bb78b/ch
     "status": 201,
     "message": "Success",
     "result": {
-        "user": "6218bb4d03faab15554bb78b",
+        "_id": "627f3e3581d329dd9eb56a96",
+        "user": {
+            "userDetail": {
+                "checkoutAddress": {
+                    "recipientName": "Steven",
+                    "addressName": "Rumah Steven",
+                    "fullAddress": "Jalan Steven, nomor 23",
+                    "addressDetails": "Pagar hitam",
+                    "phoneNumber": "6282132351252332",
+                    "latitude": 73.46,
+                    "longitude": 202.29
+                },
+                "name": "Harry Magguire2",
+                "email": "harry2@emyu.com",
+                "avatar": "http://localhost:5050/image/user/default.png",
+                "addressHistories": [
+                    {
+                        "recipientName": "Steven",
+                        "addressName": "Rumah Steven",
+                        "fullAddress": "Jalan Steven, nomor 23",
+                        "addressDetails": "Pagar hitam",
+                        "phoneNumber": "6282132351252332",
+                        "latitude": 73.46,
+                        "longitude": 202.29,
+                        "_id": "627e93fe479db39458684861"
+                    }
+                ]
+            },
+            "_id": "627e3140efd34cd44d3a691e",
+            "no_hp": 6282133555115
+        },
         "products": [
             {
-                "productDetail": "6239b4f1e05f770c37927334",
-                "subTotal": 10000,
-                "note": "Test note terong update."
-            },
-            {
-                "productDetail": "6239b3d1e05f770c37927329",
-                "subTotal": 8000,
-                "note": "Test note semangka update."
+                "productDetail": "627e60d2e3a006a9bddbd197",
+                "subTotal": 15000,
+                "note": "Test note pisang."
             }
         ],
-        "tip": 7000,
-        "total": 18000,
+        "tip": 5000,
+        "total": 15000,
         "totalHandlingFee": 1500,
-        "_id": "624e482d008eb19a96cd107e",
-        "createdAt": "2022-04-07T02:10:53.551Z",
-        "updatedAt": "2022-04-07T02:10:53.551Z",
+        "createdAt": "2022-05-14T05:29:25.517Z",
+        "updatedAt": "2022-05-14T05:29:25.517Z",
         "__v": 0
     }
 }
@@ -69,21 +93,52 @@ await axios.get(`${baseURL}/api/v1/transaction/user/6218bb4d03faab15554bb78b/che
     "status": 200,
     "message": "Success",
     "result": {
-        "_id": "6247fc68ea39dcd749b09d89",
-        "user": "6218bb4d03faab15554bb78b",
+        "_id": "627f3e3581d329dd9eb56a96",
+        "user": {
+            "userDetail": {
+                "checkoutAddress": {
+                    "recipientName": "Steven",
+                    "addressName": "Rumah Steven",
+                    "fullAddress": "Jalan Steven, nomor 23",
+                    "addressDetails": "Pagar hitam",
+                    "phoneNumber": "6282132351252332",
+                    "latitude": 73.46,
+                    "longitude": 202.29
+                },
+                "name": "Harry Magguire2",
+                "email": "harry2@emyu.com",
+                "avatar": "http://localhost:5050/image/user/default.png",
+                "addressHistories": [
+                    {
+                        "recipientName": "Steven",
+                        "addressName": "Rumah Steven",
+                        "fullAddress": "Jalan Steven, nomor 23",
+                        "addressDetails": "Pagar hitam",
+                        "phoneNumber": "6282132351252332",
+                        "latitude": 73.46,
+                        "longitude": 202.29,
+                        "_id": "627e93fe479db39458684861"
+                    }
+                ]
+            },
+            "_id": "627e3140efd34cd44d3a691e",
+            "no_hp": 6282133555115
+        },
         "products": [
             {
-                "productDetail": "6239b3d1e05f770c37927329",
-                "subTotal": 8000
+                "productDetail": {
+                    "_id": "627e60d2e3a006a9bddbd197",
+                    "product_name": "Pisang"
+                },
+                "subTotal": 15000,
+                "note": "Test note pisang."
             }
         ],
-        "recipientAddress": "Jl. dulu",
-        "tip": 1000,
-        "total": 8000,
-        "shippingCost": 8000,
-        "totalHandlingFee": 1000,
-        "createdAt": "2022-04-02T07:34:00.919Z",
-        "updatedAt": "2022-04-02T07:34:00.919Z",
+        "tip": 5000,
+        "total": 15000,
+        "totalHandlingFee": 1500,
+        "createdAt": "2022-05-14T05:29:25.517Z",
+        "updatedAt": "2022-05-14T05:29:25.517Z",
         "__v": 0
     }
 }
