@@ -789,6 +789,38 @@ async function delete_all_wingman(req, res) {
     }
 }
 
+async function delete_one_wingman(req, res) {
+    const {wingmanId} = req.params
+    
+    const accessToken = req.headers['x-access-token']
+    const decode = jwt.decode(accessToken.split(' ')[1])
+    const wingmanIdConfirm = decode.jti
+    
+    //checks if wingmanId in token is the same as wingmanId in params
+    if (wingmanId === wingmanIdConfirm) {
+        try {
+            await Wingman.deleteOne({_id: wingmanId});
+            return res.status(200).send({
+                status: res.statusCode,
+                code: respons[200],
+                message: 'Success Delete One Wingman'
+            })
+        } catch (error) {
+            console.log(error);
+            return res.status(500).send({status: res.statusCode, code: respons.InternalServerError, message: 'Internal Server Error'});
+        }
+    }
+
+    // Jika wingmanId tidak cocok, maka muncul error
+    return res.status(403).json(basicResponse({
+        status: res.statusCode,
+        message: "WingmanId antara params dan token tidak cocok!"
+    }))
+
+    
+}
+
+
 async function input_Pin(req, res) {
     try {
         if (req.user) {
@@ -888,6 +920,7 @@ module.exports = {
     edit_income,
     change_data_wingman,
     delete_all_wingman,
+    delete_one_wingman,
     input_Pin,
     enterPIN
 }

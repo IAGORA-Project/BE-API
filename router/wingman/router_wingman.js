@@ -96,7 +96,11 @@ router.post('/change-data-wingman', verifyToken, verifJWT, controllerWingman.cha
 
 /* DELETE ALL WINGMAN */
 
-router.get('/delete-all-wingman', verifyToken, controllerWingman.delete_all_wingman);
+router.delete('/delete-all-wingman', verifyToken, controllerWingman.delete_all_wingman);
+
+/* DELETE ONE WINGMAN IN DB */
+
+router.delete('/:wingmanId/delete-one-wingman', authAccess, controllerWingman.delete_one_wingman);
 
 /* Input PIN */
 
