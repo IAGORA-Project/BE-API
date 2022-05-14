@@ -2,10 +2,6 @@ const { check, validationResult } = require("express-validator")
 const { basicResponse } = require("../basic-response")
 
 const storeTransaction = [
-  check('recipientAddress')
-    .trim()
-    .notEmpty()
-    .withMessage("Alamat penerima harus diisi."),
   check('shippingCosts')
     .trim()
     .notEmpty()
