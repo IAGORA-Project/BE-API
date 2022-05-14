@@ -23,26 +23,34 @@ await axios.post(`${baseURL}/api/v1/transaction/user/625a5a9ee4b126105f064fbb`, 
     "status": 201,
     "message": "Success",
     "result": {
-        "user": "625a5a9ee4b126105f064fbb",
+        "user": "627e3140efd34cd44d3a691e",
         "products": [
             {
-                "productDetail": "6239b4f1e05f770c37927334",
+                "productDetail": "627e60d2e3a006a9bddbd197",
                 "subTotal": 15000,
-                "note": ""
+                "note": "Test note pisang."
             }
         ],
         "payment": {
             "paid": false
         },
         "paymentMethod": "BNI Transfer",
-        "tip": 0,
+        "tip": 5000,
         "shippingCosts": 4000,
         "total": 15000,
-        "totalHandlingFee": 750,
-        "recipientAddress": "Jl. aja dulu",
-        "_id": "6268e58d632740bf55b81c78",
-        "createdAt": "2022-04-27T06:41:17.985Z",
-        "updatedAt": "2022-04-27T06:41:17.985Z",
+        "totalHandlingFee": 1500,
+        "recipientAddress": {
+            "recipientName": "Steven",
+            "addressName": "Rumah Steven",
+            "fullAddress": "Jalan Steven, nomor 23",
+            "addressDetails": "Pagar hitam",
+            "phoneNumber": "6282132351252332",
+            "latitude": 73.46,
+            "longitude": 202.29
+        },
+        "_id": "627f3e3081d329dd9eb56a85",
+        "createdAt": "2022-05-14T05:29:20.506Z",
+        "updatedAt": "2022-05-14T05:29:20.506Z",
         "__v": 0
     }
 }
