@@ -33,12 +33,16 @@ const checkout = async (req, res) => {
                     totalHandlingFee: cart.totalHandlingFee
                 })
                 await newCheckout.save()
+                const result = await Checkout.findOne(newCheckout).populate({
+                    path: 'user',
+                    select: '_id no_hp userDetail'
+                })
                 await cart.remove()
 
                 return res.status(201).json(basicResponse({
                     status: res.statusCode,
                     message: "Success",
-                    result: newCheckout
+                    result: result
                 }))
             }
 
