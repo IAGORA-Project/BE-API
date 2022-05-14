@@ -151,7 +151,6 @@ const transaction = async (req, res) => {
                     shippingCosts,
                     total: checkout.total,
                     totalHandlingFee: checkout.totalHandlingFee,
-                    recipientAddress,
                     paidDate: null,
                     paymentMethod
                 })
