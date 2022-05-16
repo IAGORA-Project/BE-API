@@ -103,6 +103,18 @@ async function getOne(req, res) {
 
 async function getAll(req, res) {
     try {
+        if (req.query.category) {
+            const categoryName = req.query.category
+            const category = await ProductCategory.findOne().where({name: categoryName})
+            const products = await Product.find().where({ isAccept: true, product_category: category._id}).populate('market')
+        
+            return res.status(200).json(basicResponse({
+                status: res.statusCode,
+                message: "Success",
+                result: products
+            })) 
+        }
+
         const products = await Product.find().where({ isAccept: true }).populate('market')
         
         return res.status(200).json(basicResponse({
