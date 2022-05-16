@@ -53,4 +53,8 @@ router.delete('/delete-address', authAccess, controllerUser.deleteAddress);
 
 router.put('/checkout-address', authAccess, controllerUser.setCheckoutAddress);
 
+/* DELETE ONE User IN DB */
+
+router.delete('/:userId/delete-one-user', authAccess, controllerUser.delete_one_user);
+
 module.exports = router

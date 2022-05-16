@@ -461,6 +461,35 @@ async function setCheckoutAddress(req, res) {
     }
 }
 
+async function delete_one_user(req, res) {
+    const {userId} = req.params
+    
+    const accessToken = req.headers['x-access-token']
+    const decode = jwt.decode(accessToken.split(' ')[1])
+    const userIdConfirm = decode.jti
+    
+    //checks if wingmanId in token is the same as wingmanId in params
+    if (userId === userIdConfirm) {
+        try {
+            await User.deleteOne({_id: userId});
+            return res.status(200).send({
+                status: res.statusCode,
+                code: respons[200],
+                message: 'Success delete one user account'
+            })
+        } catch (error) {
+            console.log(error);
+            return res.status(500).send({status: res.statusCode, code: respons.InternalServerError, message: 'Internal Server Error'});
+        }
+    }
+
+    // Jika wingmanId tidak cocok, maka muncul error
+    return res.status(403).json(basicResponse({
+        status: res.statusCode,
+        message: "UserId antara params dan token tidak cocok!"
+    }))   
+}
+
 module.exports = {
     getAccessToken,
     getUserData,
@@ -470,5 +499,6 @@ module.exports = {
     completeRegistration,
     addAddress,
     deleteAddress,
-    setCheckoutAddress
+    setCheckoutAddress,
+    delete_one_user
 }
