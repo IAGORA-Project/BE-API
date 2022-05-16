@@ -283,12 +283,12 @@ async function complateWingmanDocument(req, res) {
             message: "Foto KTP anda wajib diisi."
         }))
     }
-    if(!skck) {
-        return res.status(422).json(basicResponse({
-            status: res.statusCode,
-            message: "Foto SKCK anda wajib diisi."
-        }))
-    }
+    // if(!skck) {
+    //     return res.status(422).json(basicResponse({
+    //         status: res.statusCode,
+    //         message: "Foto SKCK anda wajib diisi."
+    //     }))
+    // }
 
     if(!isValidObjectId(wingmanId)) {
         return res.status(400).json(basicResponse({
