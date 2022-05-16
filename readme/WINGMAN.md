@@ -164,6 +164,9 @@ contoh: **`URL : ${BaseURL}/image/wingman/621587db64c58b68ca659e0f/document/1645
 
 ### Menghapus Satu Akun Wingman
 **`URL : ${BaseURL}/api/v1/wingman/wingmanId/delete-one-wingman`**
+
+Perlu dicatat bahwa wingmanId pada params dan token harus sama.
+
 ```js
 // AXIOS
 await axios.delete(`${baseURL}/api/v1/wingman/627e3345efd34cd44d3a6933/delete-one-wingman`, {
