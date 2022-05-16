@@ -15,6 +15,7 @@ const requestNewProduct = async (req, res) => {
     marketId
   } = req.body
   const product_image = req.file
+  const product_link_name = `https://api.iagora.id/image/product/${product_image.filename}`
 
   if(!product_image) {
     return res.status(422).json(basicResponse({
@@ -35,7 +36,7 @@ const requestNewProduct = async (req, res) => {
         product_price,
         product_uom,
         market: market._id,
-        product_image: product_image.filename,
+        product_image: product_link_name,
       })
 
       market.products.push(product)
