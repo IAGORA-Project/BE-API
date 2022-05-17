@@ -109,6 +109,28 @@ await axios.put(`${baseURL}/api/v1/user/6212f14598faa8e6e82d28de/complete-regist
 }
 ```
 
+### Menghapus Satu Akun User
+**`URL : ${BaseURL}/api/v1/user/userId/delete-one-user`**
+
+Perlu diperhatikan bahwa userId pada params dan token harus sama.
+
+```js
+// AXIOS
+await axios.delete(`${baseURL}/api/v1/user/627e3345e2134cd44e3a6c82/delete-one-user`, {
+  headers: {
+      'x-access-token': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI2MjdhNTRlN2I1MTBjMDExNmQ0YWJkN2MiLCJub19ocCI6NjI4MjEzMzU1NTExNSwidHlwZSI6InVzZXIiLCJpc3MiOiJodHRwOi8vYXBpLmlhZ29yYS5pZCIsImF1ZCI6Imh0dHA6Ly9hcGkuaWFnb3JhLmlkIiwiaWF0IjoxNjUyNDk0MjQ5LCJleHAiOjE2NTI1ODA2NDl9.9OE18Ok2rt-3-tEJrrdHW2alQy7sdmzJzkuML3_2IBQ'
+  }
+})
+
+// Contoh response
+{
+    "status": 200,
+    "code": "SS200",
+    "message": "Success delete one user"
+}
+
+```
+
 # Manage USER Data
 
 **<details><summary>List Endpoint</summary>**
