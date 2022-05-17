@@ -42,11 +42,17 @@ await axios.get(`${baseURL}/api/v1/product/62235def9e814002330e32b1/get`)
 }
 ```
 
-### Menampilkan Semua product
+### Menampilkan Semua product (Berdasarkan kategori)
 **`URL : ${BaseURL}/api/v1/product/get-all`**
+atau apabila ingin mnampilkan semua produk dalam kategori tertentu: 
+**`URL : ${BaseURL}/api/v1/product/get-all/?category-name-query`**
 ```js
 // AXIOS
 await axios.get(`${baseURL}/api/v1/product/get-all`)
+// Atau
+await axios.get(`${baseURL}/api/v1/product/get-all/?category=Buah`)
+
+// Semenatara ada 3 kategory yaitu : Buah, Sayur, dan Daging 
 
 // Contoh response
 {
