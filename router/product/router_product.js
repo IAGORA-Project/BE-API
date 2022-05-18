@@ -13,6 +13,7 @@ const ProductGradeController = require('./product_grade_controller')
 router.post('/create-product', productUpload.single('product_image'), createProductValidator, controllerProduct.store);
 router.get('/get-all', controllerProduct.getAll);
 router.get('/:productId/get', controllerProduct.getOne);
+router.get('/get-specific-product', controllerProduct.getSpecificProduct);
 
 // PRODUCT CATEGORY ROUTES
 

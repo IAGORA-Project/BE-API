@@ -130,8 +130,37 @@ async function getAll(req, res) {
     }
 }
 
+async function getSpecificProduct(req, res) {
+    try {
+        if (req.query.productName) {
+            const productName = req.query.productName
+    
+            const products = await Product.find({ isAccept: true, product_name: { $regex: productName, $options: 'i'} }).populate('market')
+        
+            return res.status(200).json(basicResponse({
+                status: res.statusCode,
+                message: "Success",
+                result: products
+            })) 
+        } else {
+            return res.status(422).json(basicResponse({
+                status: res.statusCode,
+                message: 'Validation Errors!',
+                result: 'Query "productName" harus diisi!'
+            }))
+        }
+
+    } catch (error) {
+        return res.status(500).json(basicResponse({
+            status: res.statusCode,
+            result: error
+        }))
+    }
+}
+
 module.exports = {
     store,
     getOne,
-    getAll
+    getAll,
+    getSpecificProduct
 }
