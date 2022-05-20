@@ -90,6 +90,90 @@ await axios.get(`${baseURL}/api/v1/product/get-all/?category=Buah`)
 }
 ```
 
+### Menampilkan Semua Product (memakai query nama produk)
+**`URL : ${BaseURL}/api/v1/product/get-specific-product/?productName=xxx`**
+
+```js
+// AXIOS
+await axios.get(`${baseURL}/api/v1/product/get-specific-product/?productName=ang`)
+
+//Query search bersifat CASE INSENSITIVE
+
+// Contoh response
+{
+    "status": 200,
+    "message": "Success",
+    "result": [
+        {
+            "_id": "627e60d2e3a006a9bddbd197",
+            "product_name": "Pisang",
+            "product_category": "627e4f8a14a05494faa0157d",
+            "product_grade": "627e56fce8546f6f31b5b6f4",
+            "product_image": "1652449490390.jpg",
+            "product_price": 15000,
+            "product_uom": "/sisir",
+            "market": {
+                "_id": "627e3e67970d6128a93fc7cd",
+                "name": "Pasar Kranggan",
+                "address": "JL",
+                "city": "627e3e3a970d6128a93fc7c8",
+                "products": [
+                    "627e60d2e3a006a9bddbd197",
+                    "627e6381e3a006a9bddbd19f",
+                    "62821ba3d5fc4d511c4bc30f",
+                    "62824a73cfa0592f2db75484",
+                    "62824aa2cfa0592f2db7548a",
+                    "62824ac1cfa0592f2db75490",
+                    "62824ad1cfa0592f2db75496",
+                    "6284b28a37dafd4e4185a5e7"
+                ],
+                "isAccept": true,
+                "createdAt": "2022-05-13T11:17:59.345Z",
+                "updatedAt": "2022-05-18T08:47:06.139Z",
+                "__v": 8
+            },
+            "isAccept": true,
+            "createdAt": "2022-05-13T13:44:50.470Z",
+            "updatedAt": "2022-05-13T13:44:50.470Z",
+            "__v": 0
+        },
+        {
+            "_id": "627e6381e3a006a9bddbd19f",
+            "product_name": "Anggur",
+            "product_category": "627e4f8a14a05494faa0157d",
+            "product_grade": "627e5707e8546f6f31b5b6f7",
+            "product_image": "1652450177291.jpeg",
+            "product_price": 10000,
+            "product_uom": "/kg",
+            "market": {
+                "_id": "627e3e67970d6128a93fc7cd",
+                "name": "Pasar Kranggan",
+                "address": "JL",
+                "city": "627e3e3a970d6128a93fc7c8",
+                "products": [
+                    "627e60d2e3a006a9bddbd197",
+                    "627e6381e3a006a9bddbd19f",
+                    "62821ba3d5fc4d511c4bc30f",
+                    "62824a73cfa0592f2db75484",
+                    "62824aa2cfa0592f2db7548a",
+                    "62824ac1cfa0592f2db75490",
+                    "62824ad1cfa0592f2db75496",
+                    "6284b28a37dafd4e4185a5e7"
+                ],
+                "isAccept": true,
+                "createdAt": "2022-05-13T11:17:59.345Z",
+                "updatedAt": "2022-05-18T08:47:06.139Z",
+                "__v": 8
+            },
+            "isAccept": true,
+            "createdAt": "2022-05-13T13:56:17.308Z",
+            "updatedAt": "2022-05-13T13:56:17.308Z",
+            "__v": 0
+        }
+    ]
+}
+```
+
 # ENDPOINT KATEGORI PRODUK
 
 **<details><summary>List Endpoint</summary>**
