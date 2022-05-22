@@ -11,10 +11,13 @@ const { basicResponse } = require('../../utils/basic-response');
 const { isValidObjectId } = require('mongoose')
 
 async function getAccessToken(req, res) {
+    // token obtained from verify otp
     const refreshToken = req.headers['x-refresh-token']
     const decode = jwt.decode(refreshToken.split(' ')[1])
+    // get user id from decode
     const userId = decode.jti
     
+    //check if the token is valid
     if(!decode.type) {
         return res.status(500).json(basicResponse({
             status: res.statusCode,
@@ -27,6 +30,7 @@ async function getAccessToken(req, res) {
         }))
     }
 
+    // generate access token for 1 day period
     try {
         const user = await User.findById(userId)
         const baseUrl = `${req.protocol}://${req.hostname}`
@@ -54,10 +58,12 @@ async function getAccessToken(req, res) {
 }
 
 async function getUserData(req, res) {
+    //get access token and its user id
     const accessToken = req.headers['x-access-token']
     const decode = jwt.decode(accessToken.split(' ')[1])
     const userId = decode.jti
 
+    //get user data
     try {
         const user = await User.findById(userId)
 
@@ -85,8 +91,8 @@ async function updateUserData(req, res) {
     const { name, email, address } = req.body
     const avatar = req.file
 
+    // check if email data is in correct format
     const isEmail = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(email)
-
     if(email) {
         if(!isEmail) {
             return res.status(400).json(basicResponse({
@@ -143,6 +149,7 @@ async function updateUserData(req, res) {
 
 async function send_otp_user(req, res) {
     try {
+        //check if phone number format is correct or not
         let { no_hp } = req.body;
 
         const isPhone = /^(^\+62|62|^08)(\d{3,4}-?){2}\d{3,4}$/g.test(parseInt(no_hp))
@@ -321,6 +328,7 @@ async function completeRegistration(req, res) {
     
     try {
         const user = await User.findById(userId)
+        //check the environment
         const baseUrl = `${req.protocol}://${req.hostname}${process.env.NODE_ENV === 'development' ? ':' + 5050 : ''}`
 
         if(user) {
@@ -360,7 +368,7 @@ async function addAddress(req, res) {
         const user = await User.findById(userId)
 
         if(user) {
-
+            // add the address to the array
             const result = await User.findOneAndUpdate(
                 { _id: userId }, 
                 { $push: { "userDetail.addressHistories": data } },
@@ -398,6 +406,7 @@ async function deleteAddress(req, res) {
 
         if(user) {
 
+            // pull the specific address (by address id)
             const result = await User.findOneAndUpdate(
                 { _id: userId }, 
                 { $pull: { "userDetail.addressHistories":  {"_id": addressId} }},
@@ -431,11 +440,14 @@ async function setCheckoutAddress(req, res) {
     const userId = decode.jti
 
     try {
+        // get yser data
         const user = await User.findById(userId)
 
         if(user) {
+            //get entire address object from its id
             const address = user.userDetail.addressHistories.id(addressId)
-
+            
+            // update checkout address from the obtained object
             const result = await User.findOneAndUpdate(
                 { _id: userId }, 
                 { $set: { "userDetail.checkoutAddress":  address }},

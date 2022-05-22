@@ -2,6 +2,7 @@ const { ProductGrade } = require("../../db/ProductGrade");
 const { basicResponse } = require("../../utils/basic-response");
 const { isValidObjectId } = require('mongoose')
 
+//save a grade
 async function store(req, res) {
     const { grade, charge } = req.body
 
@@ -21,6 +22,7 @@ async function store(req, res) {
     }
 }
 
+// update charge values of a grade based on its id
 async function update(req, res) {
     const { productGradeId } = req.params
     const { charge } = req.body
@@ -58,6 +60,7 @@ async function update(req, res) {
     }
 }
 
+// get all product grades
 async function getAll(req, res) {
     try {
         const productGrades = await ProductGrade.find().select('_id grade charge')

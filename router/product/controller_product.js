@@ -69,6 +69,7 @@ async function store(req, res) {
     }
 }
 
+// get one product from id
 async function getOne(req, res) {
     const { productId } = req.params
 
@@ -101,8 +102,10 @@ async function getOne(req, res) {
     }
 }
 
+// get akk product, optional by its category
 async function getAll(req, res) {
     try {
+        // if there is category query
         if (req.query.category) {
             const categoryName = req.query.category
             const category = await ProductCategory.findOne().where({name: categoryName})
@@ -115,6 +118,7 @@ async function getAll(req, res) {
             })) 
         }
 
+        // if there isn't category query, just search all products.
         const products = await Product.find().where({ isAccept: true }).populate('market')
         
         return res.status(200).json(basicResponse({
@@ -130,6 +134,7 @@ async function getAll(req, res) {
     }
 }
 
+//get product by name (case insensitive)
 async function getSpecificProduct(req, res) {
     try {
         const productName = req.query.productName || ""

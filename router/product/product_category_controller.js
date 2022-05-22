@@ -2,6 +2,7 @@ const { Product } = require("../../db/Product");
 const { ProductCategory } = require("../../db/ProductCategory");
 const { basicResponse } = require("../../utils/basic-response");
 
+// save a category
 async function store(req, res) {
     const { name } = req.body
 
@@ -21,6 +22,7 @@ async function store(req, res) {
     }
 }
 
+// get all categories
 async function getAll(req, res) {
     try {
         const productCategories = await ProductCategory.find().select('_id name')
