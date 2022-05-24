@@ -110,21 +110,12 @@ async function updateUserData(req, res) {
         const user = await User.findById(userId)
 
         if(user) {
-            const oldUserData = {
-                name: user.userDetail.name,
-                email: user.userDetail.email,
-                address: user.userDetail.address,
-                avatar: user.userDetail.avatar
-            }
 
             const updateUser = await User.findByIdAndUpdate(user._id, {
                 $set: {
-                    userDetail: {
-                        name: name ? name : oldUserData.name,
-                        email: email ? email : oldUserData.email,
-                        address: address ? address : oldUserData.address,
-                        avatar: avatar ? avatar.filename : oldUserData.avatar
-                    }
+                    "userDetail.name": name,
+                    "userDetail.email": email,
+                    "userDetail.avatar": avatar
                 }
             }, { new: true })
 
@@ -333,9 +324,10 @@ async function completeRegistration(req, res) {
 
         if(user) {
             const updatedUser = await User.findByIdAndUpdate(user._id, {
-                $set: {userDetail: {
-                    name, email, avatar: `${baseUrl}/image/user/default.png`
-                }}
+                $set: {
+                    "userDetail.name": name,
+                    "userDetail.email": email,
+                }
             }, { new: true })
 
             return res.status(200).json(basicResponse({
